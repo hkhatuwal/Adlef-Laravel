@@ -1,6 +1,10 @@
+@import '@fontsource/inter';
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
     html {
         font-family: Inter, Inter, serif;
@@ -13,6 +17,9 @@
 }
 
 
+
+
+
 @font-face {
     font-family: 'visulet-light';
     src: url('../fonts/VisueltPro-Light.woff2') format('woff2'),
@@ -20,6 +27,18 @@
     font-weight: 400; /* Adjust the weight according to the font file */
     font-style: normal; /* Adjust the style if necessary (e.g., italic) */
 }
+
+
+
+
+
+
+
+body{
+    @apply font-visuletProLight;
+}
+
+
 
 .btn-primary {
     @apply border-[1px] border-black px-5 py-3;
@@ -53,9 +72,14 @@ div {
 }
 
 
+
 .navbar {
     top: 0;
     left: 0;
     transition: all 0.4s ease-in-out;
     transition-delay: 0.1s;
 }
+
+
+
+

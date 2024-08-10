@@ -27,17 +27,45 @@ dropdownContent.addEventListener('mouseleave', () => {
 /* Smooth navbar hiding/showing on scroll */
 const navbar = document.querySelector('.navbar');
 let lastScrollTop = 0;
-
-window.addEventListener('scroll', function () {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollTop > lastScrollTop)
-    {
-        navbar.classList.add('hidden');
-        // Use a dedicated class for better maintainability
+window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop) {
+        navbar.style.top = '-80px';
+        navbar.style.opacity = '0';
     } else {
-        navbar.classList.remove('hidden');
+        // Scroll up - show navbar
+        navbar.style.top = '0';
+        navbar.style.opacity = '1';
+
     }
 
     lastScrollTop = scrollTop;
+});
+
+
+
+const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    direction: 'horizontal',
+    loop: true,
+    breakpoints:{
+        480:{
+            slidesPerView: 1,
+            spaceBetween: 1,
+        },
+        1024:{
+            slidesPerView: 3,
+            spaceBetween: 4,
+        },1688:{
+            slidesPerView: 5,
+            spaceBetween: 8,
+        }
+    },
+    // Navigation arrows
+    navigation: {
+        nextEl: '.swiper-button-next-custom',
+        prevEl: '.swiper-button-prev-custom',
+    },
+
+
 });

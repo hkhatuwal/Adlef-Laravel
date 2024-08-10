@@ -9,7 +9,9 @@ export default {
     theme: {
         extend: {
             fontFamily:{
-                visuletProLight:['visulet-light','sans-serif']
+                visuletProLight:['visulet-light','sans-serif'],
+                inter: ['Inter', 'sans-serif'],
+
             },
             colors: {
                 'accent': '#CBFF77',
