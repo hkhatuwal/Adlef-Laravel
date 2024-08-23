@@ -1,4 +1,6 @@
-@extends('_partials.app')
+@extends('_partials.app',['title' => 'ADLEF GROUP | HOME','description' => ' Power your finances with our personalized platform designed for
+                Multi asset servicing, seamlessly Connecting traditional and
+                digital financial ecosystems','image' => asset('assets/images/savings.svg')])
 
 @section('content')
 
@@ -8,7 +10,8 @@
             <h3 class="text-3xl mt-4 md:text-[3.5rem] font-visuletProLight leading-tight text-center md:text-start">
                 Corporate
                 <mark class="font-semibold bg-accent">Payment
-                    Services for</mark>
+                    Services for
+                </mark>
                 for global businesses.
             </h3>
             <p class="text-xl text-center md:text-start">
@@ -39,7 +42,8 @@
                 <div class="flex-1" data-aos="fade-up" data-aos-delay="100">
                     <h5 class="font-[500] text-xl">Multi-Asset Custody</h5>
                     <p class="inter_regular_normal">
-                        Power your finances with our personalized platform designed for multi-asset servicing, seamlessly
+                        Power your finances with our personalized platform designed for multi-asset servicing,
+                        seamlessly
                         connecting traditional and digital financial ecosystems.
                     </p>
                 </div>
@@ -53,7 +57,8 @@
                 <div class="flex-1" data-aos="fade-up" data-aos-delay="300">
                     <h5 class="font-[500] text-xl">Complementary Services</h5>
                     <p class="inter_regular_normal">
-                        Enhance your experience with our integrated approach to FX and OTC—all ancillary to your custodial
+                        Enhance your experience with our integrated approach to FX and OTC—all ancillary to your
+                        custodial
                         or trust account.
                     </p>
                 </div>
@@ -80,12 +85,14 @@
                     <img src="{{ asset('assets/images/relationship.svg') }}" alt="Relationship-driven" class="mb-4">
                     <h3 class="text-lg font-semibold">Relationship-driven</h3>
                     <p class="text-gray-600 mt-2 text-center">
-                        Our team of experts are committed to providing innovative solutions to ensure the best outcomes for our clients.
+                        Our team of experts are committed to providing innovative solutions to ensure the best outcomes
+                        for our clients.
                     </p>
                 </div>
 
                 <div class="flex flex-col items-center justify-center p-8 md:border-l md:border-black">
-                    <img src="{{ asset('assets/images/vertically_integrated.svg') }}" alt="Vertically integrated" class="mb-4">
+                    <img src="{{ asset('assets/images/vertically_integrated.svg') }}" alt="Vertically integrated"
+                         class="mb-4">
                     <h3 class="text-lg font-semibold">Vertically integrated</h3>
                     <p class="text-gray-600 mt-2 text-center">
                         Our connectivity to traditional and next-generation financial services makes us a one-stop-shop
@@ -97,7 +104,8 @@
                     <img src="{{ asset('assets/images/bridget.svg') }}" alt="Bridge to digital assets" class="mb-4">
                     <h3 class="text-lg font-semibold">Bridge to digital assets</h3>
                     <p class="text-gray-600 mt-2 text-center">
-                        We safely store a wide array of digital assets, assisting in navigating the evolving digital asset landscape.
+                        We safely store a wide array of digital assets, assisting in navigating the evolving digital
+                        asset landscape.
                     </p>
                 </div>
 
@@ -179,7 +187,8 @@
                 <span class="font-semibold">We're ready</span> when you are.
             </h1>
             <p class="text-2xl text-center">
-                Talk to our experts today to learn more about our trustee services and how we can help you launch and grow your financial services business.
+                Talk to our experts today to learn more about our trustee services and how we can help you launch and
+                grow your financial services business.
             </p>
             <button class="btn-dark btn-lg">Start a Conversation</button>
         </div>

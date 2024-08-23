@@ -14,6 +14,8 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "@fontsource/inter": "^5.0.20"
+        "@fontsource/inter": "^5.0.20",
+        "flowbite": "^2.5.1",
+        "simple-datatables": "^9.1.0"
     }
 }

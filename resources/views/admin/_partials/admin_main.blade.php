@@ -5,9 +5,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css','resources/js/app.js'])
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-
     <link rel="stylesheet" href="{{asset('assets/css/aos.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/swiper.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
@@ -41,21 +40,34 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <body class="flex items-center justify-center">
 <div class="w-screen" data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0">
-    @include('_partials.navbar')
-    @yield('content')
-    @include('_partials.footer')
+    @include('admin._partials.sidebar')
+    <div class="p-4 sm:ml-64">
+        <div class="w-full p-8 bg-white shadow-xl rounded-lg">
 
-
-
-
+        @if ($errors->any())
+            <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="bg-green-500 text-white p-4 rounded-lg mb-6">
+                {{ session('success') }}
+            </div>
+        @endif
+        @yield('content')
+    </div>
+    </div>
 </div>
 
 
 </body>
 @yield('pre-script')
-<script src="{{asset("assets/js/aos.js")}}"></script>
-<script src="{{asset("assets/js/swiper.min.js")}}"></script>
-<script src="{{asset("assets/js/script.js")}}"></script>
+<script src="{{asset('common/js/jquery.min.js')}}"></script>
+<script src="{{asset("admin/js/script.js")}}"></script>
 @yield('post-script')
 
 </html>

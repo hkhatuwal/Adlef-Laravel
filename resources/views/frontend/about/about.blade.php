@@ -1,4 +1,6 @@
-@extends('_partials.app')
+@extends('_partials.app',['title' => 'ADLEF GROUP | ABOUT','description' => '  First Digital brings traditional fiduciary services into the digital-first world through technology and
+                developing financial services infrastructure that lets us and our clients create world-class financial
+                products and services.','image' => asset('assets/images/building.avif')])
 
 @section('content')
 

@@ -1,6 +1,8 @@
 // Initialize AOS library if needed (assuming AOS is a library for animations)
 AOS.init();
 
+
+
 /* Mobile menu handling */
 const menuToggle = document.getElementById('menu-toggle');
 const menuItems = document.getElementById('menu-items');
@@ -31,11 +33,9 @@ window.addEventListener('scroll', function() {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     if (scrollTop > lastScrollTop) {
         navbar.style.top = '-80px';
-        navbar.style.opacity = '0';
     } else {
         // Scroll up - show navbar
         navbar.style.top = '0';
-        navbar.style.opacity = '1';
 
     }
 

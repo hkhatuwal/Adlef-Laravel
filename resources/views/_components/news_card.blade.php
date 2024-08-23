@@ -1,4 +1,4 @@
-<div class="card w-full md:w-[300px] bg-light p-5 " data-aos="fade-up" data-aos-delay="100" style="background: {{(isset($bg) )?$bg:""}}!important;" >
+<div class="card w-full md:w-[300px] shrink-0 bg-light " data-aos="fade-up" data-aos-delay="100" style="background: {{(isset($bg) )?$bg:""}}!important;" >
     <div class="card-image">
         <img src="{{asset($image)}}" alt="">
     </div>

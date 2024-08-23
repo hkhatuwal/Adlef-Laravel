@@ -4,12 +4,13 @@ export default {
     content: [
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
+        "./node_modules/flowbite/**/*.js",
         "./resources/**/*.vue",
     ],
     theme: {
         extend: {
-            fontFamily:{
-                visuletProLight:['visulet-light','sans-serif'],
+            fontFamily: {
+                visuletProLight: ['visulet-light', 'sans-serif'],
                 inter: ['Inter', 'sans-serif'],
 
             },
@@ -21,5 +22,9 @@ export default {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        require('flowbite/plugin')({
+            datatables: true,
+        }),
+    ],
 }
