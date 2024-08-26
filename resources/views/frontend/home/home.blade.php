@@ -3,12 +3,11 @@
                 digital financial ecosystems','image' => asset('assets/images/savings.svg')])
 
 @section('content')
-
     {{-- Hero Section --}}
     <section class="container mx-auto hero flex flex-col-reverse md:flex-row items-center bg-white p-3 md:p-10">
         <div class="hero-content flex-1 flex flex-col items-center md:items-start gap-4">
             <h3 class="text-3xl mt-4 md:text-[3.5rem] font-visuletProLight leading-tight text-center md:text-start">
-                Corporate
+                Corporates
                 <mark class="font-semibold bg-accent">Payment
                     Services for
                 </mark>
