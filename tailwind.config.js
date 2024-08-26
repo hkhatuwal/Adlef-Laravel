@@ -15,9 +15,10 @@ export default {
 
             },
             colors: {
-                'accent': '#CBFF77',
+                'accent': 'rgba(95,195,246,0.36)',
                 'dark': '#212121',
-                'light': 'rgb(244, 244, 244) !important',
+                'primary': '#2079b3',
+                'light': 'rgb(241,247,253)',
 
             },
         },

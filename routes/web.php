@@ -3,6 +3,11 @@
 use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('generate', function (){
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    echo 'ok';
+});
+
 Route::group(['as' => 'frontend.'],function (){
 
     Route::get('/', [\App\Http\Controllers\Frontend\HomeController::class,'index'])->name('home');
@@ -25,6 +30,7 @@ Route::group(['as' => 'admin.','prefix' => 'admin'],function (){
 
     Route::middleware('auth:web')->group(function () {
         Route::resource('posts',\App\Http\Controllers\Admin\PostController::class);
+        Route::post('logout',[AuthController::class, 'logout'])->name('logout');
     });
 
 });

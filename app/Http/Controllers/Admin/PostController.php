@@ -48,7 +48,7 @@ class PostController extends Controller
             'label' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Optional image with validation
+            'image' => 'nullable|image|max:2048', // max 2MB
         ]);
 
         // Handle the image upload if it exists
@@ -107,7 +107,7 @@ class PostController extends Controller
             'label' => 'nullable|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
+            'image' => 'nullable|image|max:2048', // max 2MB
         ]);
 
         if ($validator->fails()) {

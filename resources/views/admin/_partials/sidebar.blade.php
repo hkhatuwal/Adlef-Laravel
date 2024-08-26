@@ -50,7 +50,7 @@
 
         <div class="bottom">
 
-            <form action="#" method="post" id="logout-form">
+            <form action="{{route('admin.logout')}}" method="post" id="logout-form">
                 @csrf
             <button type="button" class="btn btn-danger flex justify-center items-center w-full border-red-500" onclick="logout()">
                 Logout

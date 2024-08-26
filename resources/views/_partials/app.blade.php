@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite('resources/css/app.css')
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-
+    <title>{{isset($title) ? $title : env('APP_NAME')}}</title>
     <link rel="stylesheet" href="{{asset('assets/css/aos.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/swiper.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
@@ -44,8 +44,6 @@
     @include('_partials.navbar')
     @yield('content')
     @include('_partials.footer')
-
-
 
 
 </div>

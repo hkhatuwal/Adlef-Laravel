@@ -13,7 +13,6 @@
                 <div class="swiper">
                     <div class="swiper-wrapper">
                         @foreach($podcasts as $podcast)
-
                         <div class="swiper-slide ">
                                   @include('_components.podcast_card', [
                                                                            'image' => 'storage/'.$podcast->image,
@@ -53,7 +52,6 @@
                     Articles
                 </h2>
             </div>
-
             @foreach($categoriesWithPosts as $categoryWithPosts)
                 <h2 class="font-visuletProLight  text-3xl md:text-3xl ">
                     {{$categoryWithPosts->name}}

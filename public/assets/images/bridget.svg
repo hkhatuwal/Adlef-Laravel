@@ -1,8 +1,8 @@
 <svg width="52" height="48" viewBox="0 0 52 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M45.5 30L52 31.5L11.5 41.5L1 38.5L45.5 30Z" fill="#EAEAEA"/>
 <path d="M19 34.5134V10H34V35" stroke="black" stroke-width="4"/>
-<path d="M34.5 13L16 40" stroke="black" stroke-width="1.2"/>
-<path d="M19.5 13L4.5 37" stroke="black" stroke-width="1.2"/>
-<path d="M34 19L45 29.5" stroke="black" stroke-width="1.2"/>
-<path d="M1 38L45.5 29.5" stroke="black" stroke-width="1.2"/>
+<path d="M34.5 13L16 40" stroke="#2079b3" stroke-width="1.2"/>
+<path d="M19.5 13L4.5 37" stroke="#2079b3" stroke-width="1.2"/>
+<path d="M34 19L45 29.5" stroke="#2079b3" stroke-width="1.2"/>
+<path d="M1 38L45.5 29.5" stroke="#2079b3" stroke-width="1.2"/>
 </svg>
