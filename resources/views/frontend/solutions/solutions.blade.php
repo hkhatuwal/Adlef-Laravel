@@ -93,7 +93,7 @@
     {{-- Section 3--}}
     <section>
         <div class="container mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14 ">
-            <div class="md:w-1/2">
+            <div class="w-full xl:w-1/2">
                 <h2 class="font-visuletProLight  text-3xl md:text-6xl ">
                     Our Comprehensive Treasury Solutions
                 </h2>
@@ -106,9 +106,9 @@
 
     {{-- Section 4--}}
 
-    <section class="container flex flex-col md:flex-row items-center justify-between p-6 bg-white mx-auto">
+    <section class="container flex flex-col md:flex-row items-center justify-between px-6 bg-white mx-auto">
         <div class="w-full md:w-1/2 md:flex-1">
-            <img src="{{asset('assets/images/liquidity.svg')}}" alt="Vault" class="w-full h-3/4]">
+            <img src="{{asset('assets/images/liquidity.svg')}}" alt="Vault" class="w-full h-3/4 p-12">
         </div>
         <div class="w-full md:w-1/2 mt-6 md:mt-0 md:ml-10  font-visuletProLight ">
             <h2 class="text-3xl font-bold text-gray-800 mb-4 object-center">Liquidity Management</h2>
@@ -117,9 +117,9 @@
     </section>
 
     {{-- Section 5--}}
-    <section class="container flex flex-col md:flex-row-reverse items-center justify-between p-6 bg-white mx-auto">
+    <section class="container flex flex-col md:flex-row-reverse items-center justify-between px-6 bg-white mx-auto">
         <div class="w-full md:w-1/2">
-            <img src="{{asset('assets/images/risk_management.svg')}}" alt="Vault" class="w-full h-auto">
+            <img src="{{asset('assets/images/risk_management.svg')}}" alt="Vault" class="w-full h-auto p-12">
         </div>
         <div class="w-full md:w-1/2 mt-6 md:mt-0 md:ml-10 font-visuletProLight">
             <h2 class="text-3xl font-bold text-gray-800 mb-4 ">Risk Mitigation</h2>
@@ -127,15 +127,14 @@
         </div>
     </section>
     {{-- Section 6--}}
-    <section class="container flex flex-col md:flex-row-reverse items-center justify-between p-6 bg-white mx-auto">
-
+    <section class="container flex flex-col md:flex-row-reverse items-center justify-between px-6 bg-white mx-auto">
         <div class="w-full md:w-1/2 mt-6 md:mt-0 md:ml-10 font-visuletProLight">
             <h2 class="text-3xl font-bold text-gray-800 mb-4 ">Financial Planning & Analysis</h2>
             <p class="text-lg text-gray-600 mb-6">Optimize your financial strategy with our Financial Planning & Analysis tools. Use real-time data, forecasting models, and scenario planning to align financial decisions with your company’s long-term goals. Our solutions help you stay agile in a rapidly changing market, allowing you to adjust strategies and maximize profitability.
             </p>
         </div>
         <div class="w-full md:w-1/2">
-            <img src="{{asset('assets/images/planing.svg')}}" alt="Vault" class="w-full h-auto">
+            <img src="{{asset('assets/images/planing.svg')}}" alt="Vault" class="w-full h-auto p-12">
         </div>
     </section>
 
