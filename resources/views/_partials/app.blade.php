@@ -22,6 +22,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{url()->current()}}">
     <meta property="og:site_name" content="{{env('APP_NAME')}}">
+    <meta property="og:image" content="{{isset($image)?$image:asset('assets/images/logo.png')}}">>
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card Meta Tags (for Twitter sharing) -->
