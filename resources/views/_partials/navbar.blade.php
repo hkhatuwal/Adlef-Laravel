@@ -3,7 +3,7 @@
     <div class="flex justify-between px-4 md:px-10 container  mx-auto">
         <div class="logo flex justify-center items-center">
             <a href="{{route('frontend.home')}}">
-                <img class="h-20" src="{{ asset('assets/images/logo.svg') }}" alt="Logo">
+                <img class="h-16" src="{{ asset('assets/images/logo.svg') }}" alt="Logo">
             </a>
         </div>
         <div class="sm:hidden flex items-center">

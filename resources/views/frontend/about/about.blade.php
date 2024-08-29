@@ -9,9 +9,7 @@
         <div class="py-16  container px-4 md:px-10 mx-auto">
             <h2 class="text-5xl  mb-6 font-visuletProLight ">Our <span class="text-black font-bold">mission</span></h2>
             <p class="text-3xl leading-relaxed font-visuletProLight ">
-                First Digital brings traditional fiduciary services into the digital-first world through technology and
-                developing financial services infrastructure that lets us and our clients create world-class financial
-                products and services.
+                At Adlef Group, our mission is to Empower  Global Businesses with cutting- edge Digital Technology.
             </p>
         </div>
     </section>
@@ -22,50 +20,34 @@
             <h2 class="text-4xl font-bold mb-6">Our <span class="text-black">story</span></h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
+                    <h4 class="font-semibold text-xl">It All Begins with an Idea
+                    </h4>
                     <p class="text-lg leading-relaxed mb-4">
-                        It starts with an idea: the solution to asset safety and management for digital assets already
-                        exists.
+                        With extensive experience in international trade, our senior leaders identified the need for advanced technology in global markets. Recognizing the challenges businesses faced in a digital economy, we combined traditional finance with digital assets to create open finance solutions. This led to the founding of ADLEF GROUP in 2019, now a multinational company headquartered in Dubai.
+
                     </p>
-                    <p class="text-lg leading-relaxed mb-4">
-                        It’s trusts and custody. But no one knows how to apply it to a new, fast-moving, and entirely
-                        digital asset class. First Digital was built out of this realization in 2017, under the umbrella
-                        of Legacy Trust Company.
-                    </p>
-                    <p class="text-lg leading-relaxed mb-4">
-                        We brought together skills from the traditional financial world and knowledge of the digital
-                        assets economy to offer open finance solutions. After spinning off and becoming an independent
-                        company in 2019, First Digital became a fully independent public trust corporation headquartered
-                        in Hong Kong.
-                    </p>
-                </div>
-                <div class="space-y-6">
-                    <img src="{{asset('assets/images/building.avif')}}" alt="Building Image"
-                         class="w-full h-auto object-cover ">
                     <img src="{{asset('assets/images/office.webp')}}" alt="Bridge Image"
                          class="w-full h-auto object-cover">
                 </div>
+                <div class="space-y-6 ">
+                    <img src="{{asset('assets/images/building.avif')}}" alt="Building Image"
+                         class="w-full h-full object-cover  ">
+
+                </div>
             </div>
-            <p class="text-lg leading-relaxed mt-8">
-                We are now preparing to grow our presence across APAC, Europe, and North America in the next few years
-                and continue helping customers navigate the payments ecosystem.
-            </p>
+
         </div>
     </section>
 
 
     <section class="bg-black p-4 py-24 md:p-16 xl:p-28 mt-10">
         <div class="container logos flex flex-row  gap-6 overflow-x-auto mx-auto">
-            <div class="brand w-full  p-6 shrink-0 md:shrink">
-                <img src="{{asset('assets/images/partner1.svg')}}" alt="" class="w-full h-auto">
-            </div>
-            <div class="brand w-full  p-6 shrink-0  md:shrink">
-                <img src="{{asset('assets/images/partner2.svg')}}" alt="" class="w-full h-auto">
-            </div>
-            <div class="brand w-full  p-6 shrink-0  md:shrink">
-                <img src="{{asset('assets/images/partner3.svg')}}" alt="" class="w-full h-auto">
-            </div>
-            <div class="brand w-full  p-6 shrink-0  md:shrink">
-                <img src="{{asset('assets/images/partner4.svg')}}" alt="" class="w-full h-auto">
+            <div class="logos flex flex-row gap-6 overflow-x-auto items-center">
+                @foreach(['uplef.png', 'ubs.png', 'bitgo.webp', 'token.com.svg', 'biget.svg','creed.webp'] as $partner)
+                    <div class="brand w-full p-6 shrink-0 md:shrink">
+                        <img src="{{ asset("assets/images/$partner") }}" alt="Partner Logo" class="w-full h-auto">
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -159,7 +141,7 @@
                Core <span class="text-black">values</span>
            </h2>
            <p class="text-lg text-gray-600 mb-8">
-               First Digital is a company of independent thinkers united by our core values and our drive to challenge the status quo. The following values shape what we do and how we do it:
+               We specialize in next-generation treasury solutions while focusing on customer success, employee support, and community benefits. Our ESG program ensures a positive impact on employees, customers, communities, and the planet.
            </p>
 
            <!-- Values Container -->
