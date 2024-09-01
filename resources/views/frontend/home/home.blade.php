@@ -7,15 +7,14 @@
     <section class="container mx-auto hero flex flex-col-reverse md:flex-row items-center bg-white p-3 md:p-10">
         <div class="hero-content flex-1 flex flex-col items-center md:items-start gap-4">
             <h3 class="text-3xl mt-4 md:text-[3.5rem] font-visuletProLight leading-tight text-center md:text-start">
-                Corporate
-                <mark class="font-semibold bg-accent">Payment
+                Corporate <br>
+                <mark class="font-semibold bg-accent">Payment <br>
                     Services for
                 </mark>
-                for global businesses.
+                <br>global <br> businesses.
             </h3>
             <p class="text-xl text-center md:text-start">
-                Power your finances with our personalized platform designe
-                d for
+                Power your finances with our personalized platform designed for
                 Multi asset servicing, seamlessly Connecting traditional and
                 digital financial ecosystems.
             </p>
