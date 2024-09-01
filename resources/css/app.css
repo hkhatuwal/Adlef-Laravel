@@ -38,6 +38,13 @@ body{
     @apply font-visuletProLight;
 }
 
+.dark{
+    background: black;
+    color: white;
+}
+.light{
+    background: white;
+}
 
 
 .btn-primary {
