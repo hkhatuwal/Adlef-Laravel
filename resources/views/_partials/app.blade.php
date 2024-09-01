@@ -22,7 +22,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{url()->current()}}">
     <meta property="og:site_name" content="{{isset($title) ? $title : env('APP_NAME')}}">
-    <meta property="og:image" content="{{isset($image)?$image:asset('assets/images/logo.png')}}">>
+    <meta property="og:image" content="{{isset($image)?$image:asset('assets/images/logo.png')}}">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card Meta Tags (for Twitter sharing) -->
@@ -41,10 +41,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <body class="flex items-center justify-center">
+@php $isDark=$isDark??false;
+ $themeMode=$isDark?"-dark":"";
+@endphp
 <div class="w-screen" data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0">
-    @include('_partials.navbar')
+
+    @include('_partials.navbar'.$themeMode)
+
     @yield('content')
-    @include('_partials.footer')
+    @include('_partials.footer'.$themeMode)
 
 
 </div>

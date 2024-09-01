@@ -19,7 +19,7 @@
                 Multi asset servicing, seamlessly Connecting traditional and
                 digital financial ecosystems.
             </p>
-            <button class="btn-dark btn-lg">Contact Sales</button>
+            <button class="btn-dark btn-lg"><a href="{{route('frontend.contact-us.business-enquiry')}}">Contact Sales</a></button>
         </div>
         <div class="hero-content flex-1 flex flex-col justify-end items-end">
             <img src="{{ asset('assets/images/hero.svg') }}" class="w-full h-full" alt="Hero Image">
@@ -187,7 +187,7 @@
                 Talk to our experts today to learn more about our trustee services and how we can help you launch and
                 grow your financial services business.
             </p>
-            <button class="btn-dark btn-lg">Start a Conversation</button>
+            <button class="btn-dark btn-lg"><a href="{{route('frontend.contact-us.business-enquiry')}}">Start a Conversation</a></button>
         </div>
     </section>
 

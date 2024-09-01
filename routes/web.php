@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('generate', function (){
-    \Illuminate\Support\Facades\Artisan::call('storage:link');
+Route::get('install', function (){
+    \Illuminate\Support\Facades\Artisan::call('migrate');
     echo 'ok';
 });
 
@@ -15,6 +15,8 @@ Route::group(['as' => 'frontend.'],function (){
     Route::get('/solutions', [\App\Http\Controllers\Frontend\SolutionsController::class,'index'])->name('solutions');
     Route::get('/news-insights', [\App\Http\Controllers\Frontend\NewsInsightsController::class,'index'])->name('news-insights');
     Route::get('/careers', [\App\Http\Controllers\Frontend\CareerController::class,'index'])->name('careers');
+    Route::get('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'businessEnquiry'])->name('contact-us.business-enquiry');
+    Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'store'])->name('contact-us.business-enquiry');
 
 });
 

@@ -1,6 +1,5 @@
 <footer class="bg-white py-8">
     <hr class="my-20">
-
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap">
         <!-- Left section -->
         <div class="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
