@@ -47,6 +47,14 @@
                     </p>
                 </div>
                 <div class="flex-1" data-aos="fade-up" data-aos-delay="200">
+                    <h5 class="font-[500] text-xl">By Business</h5>
+                    <p class="inter_regular_normal">
+                        Designed to cater to the diverse needs of various types of businesses, ensuring that we provide relevant and effective financial management regardless of size or sector.
+                        Whether you’re a growing startup looking to establish robust financial processes, a large organization needing sophisticated financial solutions, a bank requiring advanced compliance measures, or a public sector entity managing complex budgets, our platform is equipped to address your specific requirements with precision and efficiency.
+
+                    </p>
+                </div>
+                <div class="flex-1" data-aos="fade-up" data-aos-delay="300">
                     <h5 class="font-[500] text-xl">By Industry</h5>
                     <p class="inter_regular_normal">
                         Tailored to meet the distinct needs of various industries, providing specialized support across multiple sectors.
@@ -55,14 +63,7 @@
 
                     </p>
                 </div>
-                <div class="flex-1" data-aos="fade-up" data-aos-delay="300">
-                    <h5 class="font-[500] text-xl">By Business</h5>
-                    <p class="inter_regular_normal">
-                        Designed to cater to the diverse needs of various types of businesses, ensuring that we provide relevant and effective financial management regardless of size or sector.
-                        Whether you’re a growing startup looking to establish robust financial processes, a large organization needing sophisticated financial solutions, a bank requiring advanced compliance measures, or a public sector entity managing complex budgets, our platform is equipped to address your specific requirements with precision and efficiency.
 
-                    </p>
-                </div>
             </div>
         </div>
     </section>
