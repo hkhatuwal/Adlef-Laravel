@@ -18,6 +18,11 @@ class ContactUsController extends Controller
         return view('frontend.contact.business-enquiry');
     }
 
+    public function contactUs()
+    {
+        return view('frontend.contact.contact-us');
+
+    }
 
     public function store(Request $request)
     {

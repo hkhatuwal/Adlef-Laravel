@@ -27,7 +27,7 @@
                         <ul class="py-2">
                             <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.about')}}">About Us</a></li>
                             <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.careers')}}">Careers</a></li>
-                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="">Get in touch</a></li>
+                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.contact-us')}}">Get in touch</a></li>
                         </ul>
                     </div>
                 </div>

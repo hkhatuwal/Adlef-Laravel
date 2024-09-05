@@ -17,6 +17,7 @@ Route::group(['as' => 'frontend.'],function (){
     Route::get('/open-trust-apis', [\App\Http\Controllers\Frontend\OpentrustApisPageController::class,'index'])->name('opentrust-apis-page');
     Route::get('/careers', [\App\Http\Controllers\Frontend\CareerController::class,'index'])->name('careers');
     Route::get('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'businessEnquiry'])->name('contact-us.business-enquiry');
+    Route::get('/contact-us', [\App\Http\Controllers\Frontend\ContactUsController::class,'contactUs'])->name('contact-us');
     Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'store'])->name('contact-us.business-enquiry');
 
 });
