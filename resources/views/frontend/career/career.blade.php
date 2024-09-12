@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADELF GROUP | Careers','description' => 'Shape your career around what matters to you, in a company where every voice makes a difference. Together, let\'s drive innovation for a more sustainable future.'])
+@extends('_partials.app',['title' => 'ADLEF GROUP | Careers','description' => 'Explore the exciting career opportunities at ADLEF Group, Asia\'s innovative trust company. Learn more about the available positions and our unique work culture.'])
 
 @section('content')
     {{-- Section 1 --}}
@@ -6,10 +6,10 @@
         <div class="mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14">
             <div class="md:w-1/2">
                 <h2 class="font-visuletProLight text-3xl md:text-6xl">
-                    We're <span class="font-bold">hiring</span>
+                    We're <span class="font-bold">recruiting</span>
                 </h2>
                 <p class="text-xl mt-4">
-                    Shape your career around what matters to you, in a company where every voice makes a difference. Together, let’s drive innovation for a more sustainable future.
+                    As a leader in tech innovation across Asia, the career paths at ADLEF Group are limitless. Explore the diverse job roles we offer and gain insight into the vibrant workplace culture that sets us apart.
                 </p>
             </div>
 
@@ -29,84 +29,155 @@
         </div>
     </section>
 
-    {{-- Section 2: Life at Adelf Group --}}
+    {{-- Section 2 --}}
     <section class="px-6 py-12 bg-[#e0e9f0]">
         <div class="container mx-auto">
-            <h2 class="text-4xl font-bold">Life at <span class="text-black">Adelf Group</span></h2>
-            <p class="mt-4 text-lg">We’re passionate about our work, but we also believe in enjoying the journey. Whether it's through Hackathons or Team Events, we make time to have fun and connect with amazing people like you.</p>
-
+            <h2 class="text-4xl font-bold">A workplace built on cooperation and  <span class="text-black">constructive feedback</span></h2>
+            <p class="mt-4 text-lg">
+                We conduct our Employee Engagement Survey twice a year to truly hear our team's feedback and ensure we're creating a workplace that inspires long-term commitment
+            </p>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mt-8">
-                <!-- Working at Adelf Group -->
+                <!-- Working at ADLEF -->
                 <div class="bg-white p-6">
-                    <h3 class="font-bold text-lg">Flexible Benefits</h3>
-                    <p class="mt-4 text-sm">You can use your flexible personal budget to support your individual goals, whether for sports, skills development, or well-being.</p>
+                    <h3 class="font-bold text-lg">Life at ADLEF Group
+ </h3>
+                    <div class="progress-bar h-3 w-full bg-gray-200 my-3">
+                        <div class="h-full w-3/4 bg-green-400"></div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-2xl font-semibold">88%</p>
+                        <p class="text-sm">
+                            of our employees take pride in being a part of ADLEF Group.</p>
+                    </div>
+                    <div class="progress-bar h-3 w-full bg-gray-200 my-3">
+                        <div class="h-full w-3/4 bg-green-400"></div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-2xl font-semibold">83%</p>
+                        <p class="text-sm">would recommend working here to others.</p>
+                    </div>
                 </div>
-                <!-- Personal Development -->
+                <!-- Innovation -->
                 <div class="bg-white p-6">
-                    <h3 class="font-bold text-lg">Personal Development</h3>
-                    <p class="mt-4 text-sm">Knowledge thrives when it flows freely. We attend conferences and organize events to benefit career starters and professionals alike.</p>
+                    <h3 class="font-bold text-lg">Creativity and Innovation</h3>
+                    <div class="progress-bar h-3 w-full bg-gray-200 my-3">
+                        <div class="h-full w-3/4 bg-blue-100"></div>
+                    </div>
+                    <p class="mt-4 text-2xl font-semibold">79%</p>
+                    <p class="text-sm">feel they are supported in thinking creatively and innovatively .</p>
                 </div>
                 <!-- Work-Life Balance -->
                 <div class="bg-white p-6">
-                    <h3 class="font-bold text-lg">Work-Life Balance</h3>
-                    <p class="mt-4 text-sm">A flexible work approach adapts to your needs and aligns with your projects, giving you control of your schedule.</p>
+                    <h3 class="font-bold text-lg">Work-Life Harmony</h3>
+                    <div class="progress-bar h-3 w-full bg-gray-200 my-3">
+                        <div class="h-full w-3/4 bg-blue-600"></div>
+                    </div>
+                    <p class="mt-4 text-2xl font-semibold">82%</p>
+                    <p class="text-sm">feel they maintain a healthy balance between their work and personal life..</p>
+                </div>
+                <!-- Belonging -->
+                <div class="bg-white p-6">
+                    <h3 class="font-bold text-lg">Sense of Community</h3>
+                    <div class="progress-bar h-3 w-full bg-gray-200 my-3">
+                        <div class="h-full w-3/4 bg-green-500"></div>
+                    </div>
+                    <p class="mt-4 text-2xl font-semibold">78%</p>
+                    <p class="text-sm">experience a profound sense of belonging within ADLEF Group. </p>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- Section 3: Benefits --}}
+    {{-- Section 3 --}}
     <section class="bg-[#e0e9f0] px-6 py-12">
         <div class="container mx-auto">
             <div class="w-full md:w-1/2">
-                <h2 class="text-5xl">We recognize <span class="text-black font-bold">hard work and dedication.</span></h2>
-                <p class="mt-4 text-lg">We adopt a holistic approach to benefits, offering packages that reflect our commitment to your overall well-being.</p>
+                <h2 class="text-5xl">We celebrate <span class="text-black font-bold">commitment and hard work.</span></h2>
+                <p class="mt-4 text-lg">
+                    Our comprehensive benefits showcase our dedication to supporting every aspect of our employees' lives, with packages tailored to a variety of needs.
+                </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                <!-- Benefit 1 -->
                 <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-lg"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Competitive Base Salary</h3>
-                    <p class="mt-4 text-sm">We ensure our salaries are benchmarked and competitive within the industry and region.</p>
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Attractive salary</h3>
+                    <p class="mt-4 text-sm">We continuously evaluate our pay scales to ensure they are in line with industry standards.</p>
                 </div>
+                <!-- Benefit 2 -->
                 <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-lg"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Personalized Benefits</h3>
-                    <p class="mt-4 text-sm">Medical plans, provident fund contributions, and a personalized monthly cash allowance.</p>
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Comprehensive benefits package</h3>
+                    <p class="mt-4 text-sm">Our package includes health insurance, retirement savings, and personalized allowances each month.</p>
                 </div>
+                <!-- Benefit 3 -->
                 <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-lg"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Learning Stipend</h3>
-                    <p class="mt-4 text-sm">We reimburse expenses for job-related courses, helping you expand your skills and develop your potential.</p>
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Flexible leave policies</h3>
+                    <p class="mt-4 text-sm">We offer various leave options to help you maintain a healthy work-life balance.</p>
+                </div>
+                <!-- Benefit 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Educational support</h3>
+                    <p class="mt-4 text-sm">We cover 100% of expenses for job-related courses to enhance your professional development.</p>
+                </div>
+                <!-- Benefit 5 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Matching donations</h3>
+                    <p class="mt-4 text-sm">We match your charitable contributions and acknowledge hours spent volunteering.</p>
+                </div>
+                <!-- Benefit 6 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-lg flex items-center"><span class="material-symbols-outlined text-green-500">check_circle</span>&nbsp; Social events</h3>
+                    <p class="mt-4 text-sm">Join us for engaging company events where you can connect and unwind with your teammates.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- Section 4: Teams --}}
+    {{-- Section 4 --}}
     <section class="bg-white px-6 py-12">
         <div class="container mx-auto">
-            <h2 class="text-5xl">Choose Your <span class="text-black font-bold">Team</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                <!-- Business Development -->
-                <div class="bg-gray-100 p-6">
-                    <h3 class="font-bold text-lg">Business Development</h3>
-                    <p class="mt-4 text-sm">Our Business Development team drives growth by building partnerships and identifying new opportunities.</p>
+            <h2 class="text-5xl">Explore Our <span class="text-black font-bold">Career Opportunities</span></h2>
+
+            <div class="flex w-full gap-3 flex-col mt-8">
+                <div class="bg-gray-100 p-6 w-full">
+                    <div class="flex items-center">
+                        <h3 class="font-bold text-lg">Attractive Compensation Packages</h3>
+                    </div>
+                    <p class="mt-4 text-sm">Our salary packages are designed to be competitive and reflect current market trends.</p>
                 </div>
-                <!-- Customer Relations -->
-                <div class="bg-gray-100 p-6">
-                    <h3 class="font-bold text-lg">Customer Relations</h3>
-                    <p class="mt-4 text-sm">Our CRM team maintains strong relationships with clients, ensuring personalized experiences.</p>
+
+                <div class="bg-gray-100 p-6 w-full mt-4">
+                    <div class="flex items-center">
+                        <h3 class="font-bold text-lg">Extensive Health Coverage</h3>
+                    </div>
+                    <p class="mt-4 text-sm">Select from a range of health plans tailored to meet your and your family’s needs.</p>
                 </div>
-                <!-- Product -->
-                <div class="bg-gray-100 p-6">
-                    <h3 class="font-bold text-lg">Product</h3>
-                    <p class="mt-4 text-sm">The Product team transforms insights into cutting-edge solutions, guiding our development from concept to execution.</p>
+
+                <div class="bg-gray-100 p-6 w-full mt-4">
+                    <div class="flex items-center">
+                        <h3 class="font-bold text-lg">Adaptive Work Hours</h3>
+                    </div>
+                    <p class="mt-4 text-sm">We support various flexible work arrangements to accommodate your personal needs.</p>
                 </div>
-                <!-- Tech -->
-                <div class="bg-gray-100 p-6">
-                    <h3 class="font-bold text-lg">Tech</h3>
-                    <p class="mt-4 text-sm">Our tech team powers innovation by building secure and scalable systems that enhance the client experience.</p>
+
+            </div>
+        </div>
+    </section>
+
+    {{-- Section 4: FAQ --}}
+    <section class="bg-black px-6 py-12">
+        <div class="container mx-auto p-10">
+            <div class="flex">
+                <div class="md:flex-1">
+                    <h3 class="text-white font-semibold text-2xl inline-block"> <span class="material-symbols-outlined text-white">trending_down</span>How can I apply for a role at ADLEF Group?</h3>
+                    <p class="text-white opacity-80">You can explore open positions on our career page or through external job platforms like LinkedIn. Each job listing will provide details on the application process.</p>
+                </div>
+                <div class="md:flex-1 p-10 flex justify-center items-center">
+                    <img class="w-3/4 h-3/4" src="{{asset('assets/images/faq.svg')}}" alt="">
                 </div>
             </div>
         </div>
     </section>
+
 @endsection
 
 @section('pre-script')
