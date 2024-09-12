@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Section 1 --}}
-    <section class="container mx-auto">
+    <section  class="container mx-auto">
         <div class="mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14">
             <div class="md:w-1/2">
                 <h2 class="font-visuletProLight text-3xl md:text-6xl">
@@ -13,7 +13,7 @@
                 </p>
             </div>
 
-            <div class="slider w-full overflow-hidden">
+            <div class="slider w-full overflow-hidden" >
                 <div class="flex gap-3 w-full " data-0="transform: translateX(0%);" data-1000="transform: translateX(-100%);">
                     <div class="shrink-0 w-full md:w-1/3 h-52">
                         <img class="h-full object-cover" src="{{asset('assets/images/career1.avif')}}" alt="">
@@ -182,7 +182,6 @@
 
 @section('pre-script')
     <script src="{{ asset('assets/js/skrollr.js') }}"></script>
-
     <script>
         skrollr.init();
     </script>

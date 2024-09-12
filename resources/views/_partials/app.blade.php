@@ -44,7 +44,7 @@
 @php $isDark=$isDark??false;
  $themeMode=$isDark?"-dark":"";
 @endphp
-<div class="w-screen {{$isDark?"dark":"light"}} " data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0" >
+<div class="w-screen {{$isDark?"dark":"light"}} " data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0" id="skrollr-body" >
 
     @include('_partials.navbar'.$themeMode)
 
