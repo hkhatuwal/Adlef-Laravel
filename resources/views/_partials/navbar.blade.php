@@ -36,7 +36,7 @@
                 <button class="btn-primary hidden md:block">Login</button>
             </li>
             <li>
-                <button class="btn-secondary hidden md:block">Become a Client</button>
+                <button class="btn-secondary hidden md:block">Client Login</button>
             </li>
         </ul>
     </div>

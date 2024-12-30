@@ -35,7 +35,7 @@
                 <button class="px-8 py-3 hidden md:block text-white border border-white">Login</button>
             </li>
             <li>
-                <button class="btn-secondary hidden md:block">Become a Client</button>
+                <button class="btn-secondary hidden md:block">Client Login</button>
             </li>
         </ul>
     </div>

@@ -159,13 +159,12 @@
         <div class="container mx-auto flex flex-col md:flex-row md:justify-between">
             <div class="flex-1 mb-10 md:p-10">
                 <h2 class="font-visuletProLight text-3xl md:text-5xl leading-[1.15] text-white">
-                    <span class="font-bold">Friends with everyone</span> you know.
+                    <span class="font-bold">Friends with right people</span> you know.
                 </h2>
             </div>
             <div class="flex-1 mb-10 md:p-10">
                 <p class="text-white">
-                    Our ecosystem of best-in-class players includes technology providers, asset managers, law firms,
-                    consultants, and advisors, all supporting our clients to get things done.
+                Our ecosystem is created for all In-Class players which Redefines your right move and Success.
                 </p>
             </div>
         </div>

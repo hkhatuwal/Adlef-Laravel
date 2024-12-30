@@ -44,7 +44,6 @@
                 <h3 class="font-bold text-black">Social</h3>
                 <ul class="mt-2 space-y-2">
                     <li><a href="#" class="text-black block">LinkedIn</a></li>
-                    <li><a href="#" class="text-black block">Twitter</a></li>
                     <li><a href="#" class="text-black block">YouTube</a></li>
                     <li><a href="#" class="text-black block">Crunchbase</a></li>
                 </ul>
