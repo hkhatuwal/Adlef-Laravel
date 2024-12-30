@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF GROUP | Contact Us','description' => 'Power your finances with our personalized platform designed for Multi-asset servicing, seamlessly connecting traditional and digital financial ecosystems','image' => asset('assets/images/savings.svg'),'isDark' => true])
+@extends('_partials.app',['title' => 'ADLEF | Contact Us','description' => 'Power your finances with our personalized platform designed for Multi-asset servicing, seamlessly connecting traditional and digital financial ecosystems','image' => asset('assets/images/savings.svg'),'isDark' => true])
 @section('content')
     <div class="container mx-auto p-6 py-24">
         <!-- Heading Section -->
@@ -36,7 +36,7 @@
                 <!-- General Questions -->
                 <div class="text-center md:text-left">
                     <h3 class="font-semibold text-lg">General Questions</h3>
-                    <p class="text-gray-600">For general inquiries, please email us at <a href="mailto:hello@adlefgroup.com" class="text-blue-500 hover:underline">hello@adlefgroup.com</a> or Whats app +1 209 890 0004.</p>
+                    <p class="text-gray-600">For general inquiries, please email us at <a href="mailto:hello@adlef.com" class="text-blue-500 hover:underline">hello@adlef.com</a> or Whats app +1 209 890 0004.</p>
                 </div>
                 <!-- Mailing Address -->
                 <div class="text-center md:text-left">

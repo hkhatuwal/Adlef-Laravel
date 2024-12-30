@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF GROUP | Careers','description' => 'Explore the exciting career opportunities at ADLEF Group, Asia\'s innovative trust company. Learn more about the available positions and our unique work culture.'])
+@extends('_partials.app',['title' => 'ADLEF | Careers','description' => 'Explore the exciting career opportunities at ADLEF Group, Asia\'s innovative trust company. Learn more about the available positions and our unique work culture.'])
 
 @section('content')
     {{-- Section 1 --}}
@@ -9,7 +9,7 @@
                     We're <span class="font-bold">recruiting</span>
                 </h2>
                 <p class="text-xl mt-4">
-                    As a leader in tech innovation across Asia, the career paths at ADLEF Group are limitless. Explore the diverse job roles we offer and gain insight into the vibrant workplace culture that sets us apart.
+                    As a leader in tech innovation across Asia, the career paths at ADLEF are limitless. Explore the diverse job roles we offer and gain insight into the vibrant workplace culture that sets us apart.
                 </p>
             </div>
 
