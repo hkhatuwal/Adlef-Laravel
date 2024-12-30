@@ -21,7 +21,7 @@
             <li><a href="{{route('frontend.solutions')}}">Solutions</a></li>
             <li><a href="{{route('frontend.news-insights')}}">News & Insights</a></li>
             <li>
-                <div class=" inline-block">
+                <div class="inline-block">
                     <button class="text-gray-800 font-medium hover:text-gray-900 dropdown-button">Company</button>
                     <div class="hidden absolute bg-white rounded-md shadow-sm w-48 mt-2 dropdown-content z-[9999]">
                         <ul class="py-2">
@@ -33,10 +33,10 @@
                 </div>
             </li>
             <li>
-                <button class="btn-primary hidden md:block">Login</button>
+                <button class="btn-primary  md:block">Login</button>
             </li>
             <li>
-                <button class="btn-secondary hidden md:block">Client Login</button>
+                <button class="btn-secondary  md:block">Client Login</button>
             </li>
         </ul>
     </div>
