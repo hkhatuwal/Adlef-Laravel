@@ -32,10 +32,10 @@
                 </div>
             </li>
             <li>
-                <button class="px-8 py-3  md:block text-white border border-white">Login</button>
+                <button class="px-8 py-3  md:block text-white border border-white">Client Login</button>
             </li>
             <li>
-                <button class="btn-secondary  md:block">Client Login</button>
+                <button class="btn-secondary  md:block">Become a Client</button>
             </li>
         </ul>
     </div>

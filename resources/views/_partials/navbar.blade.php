@@ -33,10 +33,10 @@
                 </div>
             </li>
             <li>
-                <button class="btn-primary  md:block">Login</button>
+                <button class="btn-primary  md:block">Client Login</button>
             </li>
             <li>
-                <button class="btn-secondary  md:block">Client Login</button>
+                <button class="btn-secondary  md:block">Become a Client</button>
             </li>
         </ul>
     </div>
