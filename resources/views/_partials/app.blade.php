@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="{{asset('assets/css/aos.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/swiper.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
+    <link href="{{asset('common/css/select2.min.css')}}" rel="stylesheet"/>
+    <link href="{{asset('common/css/fontawesome.min.css')}}" rel="stylesheet"/>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{isset($description) ? $description : env('APP_NAME')}}">
@@ -44,10 +48,9 @@
 @php $isDark=$isDark??false;
  $themeMode=$isDark?"-dark":"";
 @endphp
-<div class="w-screen {{$isDark?"dark":"light"}} " data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0" id="skrollr-body" >
-
+<div class="w-screen {{$isDark?"dark":"light"}} " data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0"
+     id="skrollr-body">
     @include('_partials.navbar'.$themeMode)
-
     @yield('content')
     @include('_partials.footer'.$themeMode)
 
@@ -56,10 +59,16 @@
 
 
 </body>
+<script src="{{asset('common/js/jquery.min.js')}}" crossorigin="anonymous"></script>
 @yield('pre-script')
 <script src="{{asset("assets/js/aos.js")}}"></script>
 <script src="{{asset("assets/js/swiper.min.js")}}"></script>
 <script src="{{asset("assets/js/script.js")}}"></script>
+<script src="{{asset('common/js/select2.min.js')}}"></script>
+<script src="{{asset('common/js/fontawesome.js')}}"></script>
+
+{{--<script src="https://kit.fontawesome.com/6494bc34f7.js" crossorigin="anonymous"></script>--}}
+
 @yield('post-script')
 
 </html>

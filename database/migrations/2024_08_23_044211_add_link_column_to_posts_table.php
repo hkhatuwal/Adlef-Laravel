@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->json('links')->default(json_encode([]));
+            $table->json('links')->nullable();
         });
     }
 

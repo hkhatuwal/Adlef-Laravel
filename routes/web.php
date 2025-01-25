@@ -9,7 +9,6 @@ Route::get('install', function (){
 });
 
 Route::group(['as' => 'frontend.'],function (){
-
     Route::get('/', [\App\Http\Controllers\Frontend\HomeController::class,'index'])->name('home');
     Route::get('/about-us', [\App\Http\Controllers\Frontend\AboutController::class,'index'])->name('about');
     Route::get('/solutions', [\App\Http\Controllers\Frontend\SolutionsController::class,'index'])->name('solutions');
@@ -19,6 +18,11 @@ Route::group(['as' => 'frontend.'],function (){
     Route::get('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'businessEnquiry'])->name('contact-us.business-enquiry');
     Route::get('/contact-us', [\App\Http\Controllers\Frontend\ContactUsController::class,'contactUs'])->name('contact-us');
     Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'store'])->name('contact-us.business-enquiry');
+
+    /*Client Auth Routes*/
+    Route::get('/register', [\App\Http\Controllers\ClientRegistrationController::class,'showRegistrationForm'])->name('client-registration');
+    Route::post('/register/save', [\App\Http\Controllers\ClientRegistrationController::class,'saveRegistrationDetails'])->name('client-registration.save');
+
 
 });
 

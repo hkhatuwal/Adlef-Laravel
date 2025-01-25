@@ -69,3 +69,29 @@ const swiper = new Swiper('.swiper', {
 
 
 });
+
+
+
+$(document).ready(function() {
+    $('.select2').select2();
+});
+
+
+/* Registration */
+const tinProvidedRadio = document.getElementById('tin_provided');
+const tinNotProvidedRadio = document.getElementById('tin_not_provided');
+const tinInputSection = document.getElementById('tin_input_section');
+const tinReasonSection = document.getElementById('tin_reason_section');
+
+function updateSections() {
+    if (tinProvidedRadio.checked) {
+        tinInputSection.style.display = 'block';
+        tinReasonSection.style.display = 'none';
+    } else if (tinNotProvidedRadio.checked) {
+        tinInputSection.style.display = 'none';
+        tinReasonSection.style.display = 'block';
+    }
+}
+
+tinProvidedRadio.addEventListener('change', updateSections);
+tinNotProvidedRadio.addEventListener('change', updateSections);

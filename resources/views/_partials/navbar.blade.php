@@ -36,7 +36,10 @@
                 <button class="btn-primary  md:block">Client Login</button>
             </li>
             <li>
-                <button class="btn-secondary  md:block">Become a Client</button>
+                <a href="{{route('frontend.client-registration')}}">
+
+                    <button class="btn-secondary  md:block" >Become a Client</button>
+                </a>
             </li>
         </ul>
     </div>

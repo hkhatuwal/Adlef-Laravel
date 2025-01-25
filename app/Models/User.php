@@ -21,6 +21,7 @@ class User extends Authenticatable
         'is_admin',
         'email',
         'password',
+        'account_type'
     ];
 
     /**
@@ -43,6 +44,42 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    public function businessDetails()
+    {
+        return $this->hasOne(BusinessDetail::class);
+    }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function cryptoWallets()
+    {
+        return $this->hasMany(CryptoWallet::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function contactDetails()
+    {
+        return $this->hasMany(ContactDetail::class);
     }
 }

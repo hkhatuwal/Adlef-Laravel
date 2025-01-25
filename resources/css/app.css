@@ -69,6 +69,9 @@ mark{
     @apply bg-accent;
 }
 
+input{
+    @apply h-12 ;
+}
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 div::-webkit-scrollbar {
@@ -93,5 +96,14 @@ div {
 .menu-items.dark > li > a{
     color: white;
 }
-
+.toggle-checkbox:checked {
+    right: 0;
+    border-color: #68D391;
+}
+.toggle-checkbox:checked + .toggle-label {
+    background-color: #68D391;
+}
+.toggle-label {
+    transition: background-color 0.2s ease-in;
+}
 

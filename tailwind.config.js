@@ -17,7 +17,7 @@ export default {
             colors: {
                 'accent': 'rgba(95,195,246,0.36)',
                 'dark': '#212121',
-                'primary': '#2079b3',
+                'primary': '#bef264',
                 'light': 'rgb(241,247,253)',
 
             },
