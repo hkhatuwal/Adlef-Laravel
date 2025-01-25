@@ -36,6 +36,7 @@ class UserProfile extends Model
         'country_id',
         'is_hong_kong_tax_resident',
         'tax_identification_number',
+        'tin_not_provided_reason',
         'secondary_tax_country_id',
         'agreement_accepted'
     ];
@@ -46,9 +47,6 @@ class UserProfile extends Model
         'third_party_contributions' => 'boolean',
         'is_hong_kong_tax_resident' => 'boolean',
         'agreement_accepted' => 'boolean',
-        'account_purpose' => 'array',
-        'funds_source' => 'array',
-        'wealth_source' => 'array'
     ];
 
     public function user()

@@ -20,8 +20,13 @@ Route::group(['as' => 'frontend.'],function (){
     Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class,'store'])->name('contact-us.business-enquiry');
 
     /*Client Auth Routes*/
-    Route::get('/register', [\App\Http\Controllers\ClientRegistrationController::class,'showRegistrationForm'])->name('client-registration');
-    Route::post('/register/save', [\App\Http\Controllers\ClientRegistrationController::class,'saveRegistrationDetails'])->name('client-registration.save');
+
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [\App\Http\Controllers\ClientLoginController::class,'showLoginForm'])->name('client-login');
+        Route::get('/register', [\App\Http\Controllers\ClientRegistrationController::class,'showRegistrationForm'])->name('client-registration');
+        Route::post('/register/save', [\App\Http\Controllers\ClientRegistrationController::class,'saveRegistrationDetails'])->name('client-registration.save');
+
+    });
 
 
 });

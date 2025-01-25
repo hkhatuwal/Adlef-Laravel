@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('contact_details', function (Blueprint $table) {
             $table->id();
             $table->string('email');
+            $table->string('country_code', 6);
             $table->string('phone', 20);
             $table->enum('phone_type', ['Home','Office','Mobile']);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

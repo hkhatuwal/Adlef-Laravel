@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AccountOpeningRequest;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\ContactDetail;
 use App\Models\Address;
+use Flasher\Prime\Notification\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class ClientRegistrationController extends Controller
 {
@@ -17,17 +21,19 @@ class ClientRegistrationController extends Controller
         return view('frontend.auth.register');
     }
 
-    public function saveRegistrationDetails(Request $request)
+    public function saveRegistrationDetails(AccountOpeningRequest $request)
     {
+        $validatedData = $request->validated();
+
+
         try {
             DB::beginTransaction();
-
             // Create user
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'account_type' => 'client'
+                'is_admin' => false
             ]);
 
             // Create user profile
@@ -42,10 +48,12 @@ class ClientRegistrationController extends Controller
                 'gender' => $request->gender,
                 'marital_status' => $request->marital_status,
                 'annual_income_range' => $request->annual_income,
-                'account_purpose' => $request->purpose,
-                'funds_source' => $request->source_funds,
-                'wealth_source' => $request->wealth_source,
+                'account_purpose' => implode(',', $request->purpose),
+                'funds_source' => implode(',', $request->source_funds),
+                'wealth_source' => implode(',', $request->wealth_source),
                 'is_hong_kong_tax_resident' => $request->has('hk_tax_resident'),
+                'tax_identification_number' => $request->tin_status === 'provided' ? $request->tin_number : null,
+                'tin_not_provided_reason' => $request->tin_status === 'not_provided' ? $request->tin_reason : null,
                 'agreement_accepted' => $request->has('terms')
             ]);
 
@@ -53,7 +61,8 @@ class ClientRegistrationController extends Controller
             ContactDetail::create([
                 'user_id' => $user->id,
                 'email' => $request->email,
-                'phone' => $request->phone_country . ' ' . $request->phone_number
+                'phone' => $request->phone_number,
+                'country_code' => $request->phone_country
             ]);
 
             // Create address
@@ -63,17 +72,18 @@ class ClientRegistrationController extends Controller
                 'address_line2' => $request->apartment,
                 'city' => $request->city,
                 'state' => $request->state,
-                'country' => explode(' ', $request->phone_country)[1] ?? 'Hong Kong' // Using phone country or default to Hong Kong
+                'country' => explode(' ', $request->phone_country)[1] ?? 'Hong Kong'
             ]);
 
             DB::commit();
-
-            // Redirect to login or dashboard
-            return redirect()->route('login')->with('success', 'Registration successful! Please login to continue.');
+            return redirect()->route('frontend.client-login')->with('success', 'Registration successful! Please login to continue.');
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
-            return back()->withInput()->with('error', 'Registration failed. Please try again.');
+            return back()
+                ->withInput($request->except('password'))
+                ->with('error', 'Registration failed. Please try again.');
         }
     }
 }

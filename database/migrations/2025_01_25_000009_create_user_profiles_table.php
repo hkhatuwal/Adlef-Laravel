@@ -80,6 +80,7 @@ return new class extends Migration
             // Tax Residency
             $table->boolean('is_hong_kong_tax_resident')->nullable();
             $table->string('tax_identification_number', 50)->nullable();
+            $table->enum('tin_not_provided_reason', array_keys(config('constants.tin_reasons')))->nullable();
             $table->unsignedInteger('secondary_tax_country_id')->nullable();
 
             // Consent and Tracking

@@ -9,7 +9,8 @@ class ContactDetail extends Model
     protected $fillable = [
         'email',
         'phone',
-        'user_id'
+        'user_id',
+        'country_code'
     ];
 
     public function user()
