@@ -35,6 +35,7 @@ class ClientRegistrationController extends Controller
                 'password' => Hash::make($request->password),
                 'is_admin' => false
             ]);
+            $user->assignRole('client');
 
             // Create user profile
             UserProfile::create([
@@ -86,4 +87,7 @@ class ClientRegistrationController extends Controller
                 ->with('error', 'Registration failed. Please try again.');
         }
     }
+
+
+
 }

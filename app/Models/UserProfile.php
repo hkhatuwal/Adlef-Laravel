@@ -38,6 +38,8 @@ class UserProfile extends Model
         'tax_identification_number',
         'tin_not_provided_reason',
         'secondary_tax_country_id',
+        'document_path',
+        'document_verified',
         'agreement_accepted'
     ];
 

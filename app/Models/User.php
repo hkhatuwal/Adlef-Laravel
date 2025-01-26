@@ -6,10 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -79,6 +80,11 @@ class User extends Authenticatable
 
     public function contactDetails()
     {
-        return $this->hasMany(ContactDetail::class);
+        return $this->hasOne(ContactDetail::class);
+    }
+
+    public function areDetailsVerified(): bool
+    {
+        return isset($this->contactDetails) && $this->contactDetails->is_email_verified && $this->contactDetails->is_phone_verified;
     }
 }

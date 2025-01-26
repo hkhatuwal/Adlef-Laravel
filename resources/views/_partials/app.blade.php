@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
     <link href="{{asset('common/css/select2.min.css')}}" rel="stylesheet"/>
     <link href="{{asset('common/css/fontawesome.min.css')}}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{asset('common/css/toastr.min.css')}}">
 
 
     <meta charset="UTF-8">
@@ -63,9 +64,10 @@
 @yield('pre-script')
 <script src="{{asset("assets/js/aos.js")}}"></script>
 <script src="{{asset("assets/js/swiper.min.js")}}"></script>
-<script src="{{asset("assets/js/script.js")}}"></script>
 <script src="{{asset('common/js/select2.min.js')}}"></script>
 <script src="{{asset('common/js/fontawesome.js')}}"></script>
+<script src="{{asset('common/js/toastr.min.js')}}"></script>
+<script src="{{asset("assets/js/script.js")}}"></script>
 
 {{--<script src="https://kit.fontawesome.com/6494bc34f7.js" crossorigin="anonymous"></script>--}}
 

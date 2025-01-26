@@ -64,6 +64,11 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
+        'email' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/email.log'),
+            'level' => 'debug',
+        ],
 
         'daily' => [
             'driver' => 'daily',

@@ -2,6 +2,10 @@
 
 
 return [
+    "client_login" =>[
+        "email" =>"mawofo@mailinator.com",
+        "password" =>"Pa$\$w0rd!"
+    ],
     "tin_reasons" => [
         'reason_no_issue' => 'The country where the Account Holder is liable to pay tax does not issue TINs to its residents',
         'reason_unable' => 'The Account Holder is otherwise unable to obtain a TIN or equivalent number',

@@ -3,7 +3,7 @@
     <div class="flex justify-between px-4 md:px-10 container  mx-auto">
         <div class="logo flex justify-center items-center">
             <a href="{{route('frontend.home')}}">
-                    <img class="h-16 text-white" src="{{ asset('assets/images/logo.svg?v=1') }}"  alt="Logo">
+                <img class="h-16 text-white" src="{{ asset('assets/images/logo.svg?v=1') }}" alt="Logo">
 
             </a>
         </div>
@@ -25,21 +25,34 @@
                     <button class="text-gray-800 font-medium hover:text-gray-900 dropdown-button">Company</button>
                     <div class="hidden absolute bg-white rounded-md shadow-sm w-48 mt-2 dropdown-content z-[9999]">
                         <ul class="py-2">
-                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.about')}}">About Us</a></li>
-                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.careers')}}">Careers</a></li>
-                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a href="{{route('frontend.contact-us')}}">Get in touch</a></li>
+                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a
+                                    href="{{route('frontend.about')}}">About Us</a></li>
+                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a
+                                    href="{{route('frontend.careers')}}">Careers</a></li>
+                            <li class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><a
+                                    href="{{route('frontend.contact-us')}}">Get in touch</a></li>
                         </ul>
                     </div>
                 </div>
             </li>
             <li>
-                <button class="btn-primary  md:block">Client Login</button>
+                @if(auth()->check())
+                    <a href="{{route('frontend.client-logout')}}">
+                        <button class="btn-primary  md:block">Log Out</button>
+                    </a>
+                @else
+                    <a href="{{route('frontend.client-login')}}">
+                        <button class="btn-primary  md:block">Client Login</button>
+                    </a>
+                @endif
+
             </li>
             <li>
+                @if(!auth()->check())
                 <a href="{{route('frontend.client-registration')}}">
-
-                    <button class="btn-secondary  md:block" >Become a Client</button>
+                    <button class="btn-secondary  md:block">Become a Client</button>
                 </a>
+                @endif
             </li>
         </ul>
     </div>

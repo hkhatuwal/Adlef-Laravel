@@ -10,8 +10,8 @@
         <div class="progress bg-lime-300 w-1/4 h-full"></div>
     </div>
     <section class="container mx-auto px-4 md:p-10 mt-10">
-        <div class="flex flex-row justify-start items-start gap-8">
-            <div class="flex flex-col gap-2 sticky left-0 top-14 max-w-[18rem]">
+        <div class="flex  flex-col-reverse md:flex-row justify-start items-start gap-8">
+            <div class="flex flex-col gap-2 sticky left-0 right-0 mx-auto md:mx-0 top-14 max-w-[18rem]">
                 <div class="py-8 px-6 bg-black text-white ">
                     <ul class="flex flex-col gap-6">
                         <li class="flex gap-2 items-center text-primary "><i class="fa-regular fa-address-card"></i>Application
@@ -184,7 +184,7 @@
                                 <legend class="text-base font-bold text-gray-900">What is the source of the funds for
                                     your future transactions with us?
                                 </legend>
-                                <div class="mt-4 grid grid-cols-3 gap-1">
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-1">
                                     @foreach(config('constants.source_funds') as $source)
                                         <div class="flex items-start">
                                             <div class="flex items-center h-5">
@@ -210,7 +210,7 @@
                                     </legend>
 
                                 </div>
-                                <div class="mt-4 grid grid-cols-2 gap-1">
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-1">
                                     @foreach(config('constants.wealth_source') as  $source)
                                         <div class="flex items-start">
                                             <div class="flex items-center h-5">

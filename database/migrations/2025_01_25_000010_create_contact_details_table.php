@@ -13,6 +13,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('country_code', 6);
             $table->string('phone', 20);
+            $table->boolean('is_phone_verified')->default(false);
+            $table->boolean('is_email_verified')->default(false);
             $table->enum('phone_type', ['Home','Office','Mobile']);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();

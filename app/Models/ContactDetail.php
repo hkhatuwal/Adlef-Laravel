@@ -10,6 +10,9 @@ class ContactDetail extends Model
         'email',
         'phone',
         'user_id',
+        'is_email_verified',
+        'is_phone_verified',
+        'user_id',
         'country_code'
     ];
 

@@ -73,9 +73,6 @@ return new class extends Migration
             ])->nullable();
             $table->boolean('third_party_contributions')->nullable();
 
-            // Contact Information
-
-
 
             // Tax Residency
             $table->boolean('is_hong_kong_tax_resident')->nullable();

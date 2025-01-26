@@ -2,7 +2,6 @@
 AOS.init();
 
 
-
 /* Mobile menu handling */
 const menuToggle = document.getElementById('menu-toggle');
 const menuItems = document.getElementById('menu-items');
@@ -29,7 +28,7 @@ dropdownContent.addEventListener('mouseleave', () => {
 /* Smooth navbar hiding/showing on scroll */
 const navbar = document.querySelector('.navbar');
 let lastScrollTop = 0;
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     if (scrollTop > lastScrollTop) {
         navbar.style.top = '-80px';
@@ -43,20 +42,19 @@ window.addEventListener('scroll', function() {
 });
 
 
-
 const swiper = new Swiper('.swiper', {
     // Optional parameters
     direction: 'horizontal',
     loop: true,
-    breakpoints:{
-        480:{
+    breakpoints: {
+        480: {
             slidesPerView: 1,
             spaceBetween: 1,
         },
-        1024:{
+        1024: {
             slidesPerView: 3,
             spaceBetween: 4,
-        },1688:{
+        }, 1688: {
             slidesPerView: 5,
             spaceBetween: 8,
         }
@@ -71,27 +69,34 @@ const swiper = new Swiper('.swiper', {
 });
 
 
-
-$(document).ready(function() {
+$(document).ready(function () {
     $('.select2').select2();
-});
 
 
-/* Registration */
-const tinProvidedRadio = document.getElementById('tin_provided');
-const tinNotProvidedRadio = document.getElementById('tin_not_provided');
-const tinInputSection = document.getElementById('tin_input_section');
-const tinReasonSection = document.getElementById('tin_reason_section');
+    /* Registration */
+    const tinProvidedRadio = document.getElementById('tin_provided');
+    const tinNotProvidedRadio = document.getElementById('tin_not_provided');
+    const tinInputSection = document.getElementById('tin_input_section');
+    const tinReasonSection = document.getElementById('tin_reason_section');
 
-function updateSections() {
-    if (tinProvidedRadio.checked) {
-        tinInputSection.style.display = 'block';
-        tinReasonSection.style.display = 'none';
-    } else if (tinNotProvidedRadio.checked) {
-        tinInputSection.style.display = 'none';
-        tinReasonSection.style.display = 'block';
+    function updateSections() {
+        if (tinProvidedRadio.checked) {
+            tinInputSection.style.display = 'block';
+            tinReasonSection.style.display = 'none';
+        } else if (tinNotProvidedRadio.checked) {
+            tinInputSection.style.display = 'none';
+            tinReasonSection.style.display = 'block';
+        }
     }
-}
 
-tinProvidedRadio.addEventListener('change', updateSections);
-tinNotProvidedRadio.addEventListener('change', updateSections);
+    tinProvidedRadio.addEventListener('change', updateSections);
+    tinNotProvidedRadio.addEventListener('change', updateSections);
+
+
+    /* Verification Page  */
+    $('#file-upload').on('click', function () {
+        $('#file-upload input').click();
+    });
+
+
+});
