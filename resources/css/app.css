@@ -29,6 +29,10 @@
 }
 
 
+input[type="text"]{
+    @apply focus:ring-green-500 focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm read-only:cursor-not-allowed read-only:bg-gray-200 read-only:text-gray-400;
+}
+
 
 
 
@@ -107,3 +111,9 @@ div {
     transition: background-color 0.2s ease-in;
 }
 
+
+
+/* Bank Account */
+input[type="radio"]:checked + div {
+    @apply border border-[#3B82F6] bg-[#F3F4F6];
+}

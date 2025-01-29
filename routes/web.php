@@ -45,7 +45,11 @@ Route::group(['as' => 'frontend.'], function () {
         // Document upload route
         Route::post('/verification/upload-document', [App\Http\Controllers\VerificationController::class, 'uploadDocument'])->name('verification.upload.document');
 
-
+        // Account Management Routes
+        Route::middleware(['auth'])->group(function () {
+            Route::get('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'showAddAccountForm'])->name('account.add.form');
+            Route::post('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'addAccount'])->name('account.add');
+        });
     });
 
 
