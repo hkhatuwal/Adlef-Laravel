@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class BankAccount extends Model
 {
+
+    const  TYPE_OWN="Own";
+    const  TYPE_THIRD_PARTY="ThirdParty";
     protected $fillable = [
         'account_type',
         'account_holder_name',

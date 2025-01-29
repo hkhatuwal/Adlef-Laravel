@@ -108,6 +108,7 @@
                     if (this.value === 'bank_account') {
                         ownershipSection.classList.remove('hidden');
                         ownershipRadios.forEach(radio => radio.required = true);
+                        ownershipRadios[0].checked = true;
                     } else {
                         ownershipSection.classList.add('hidden');
                         ownershipRadios.forEach(radio => radio.required = false);

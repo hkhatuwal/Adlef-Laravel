@@ -11,13 +11,11 @@
         scroll-behavior: smooth;
 
     }
-    *{
+
+    * {
         margin: 0;
     }
 }
-
-
-
 
 
 @font-face {
@@ -29,24 +27,30 @@
 }
 
 
-input[type="text"]{
-    @apply focus:ring-green-500 focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-sm read-only:cursor-not-allowed read-only:bg-gray-200 read-only:text-gray-400;
+input[type="text"],
+input[type="number"],input[type="email"],input[type="password"],input[type="search"],input[type="tel"],input[type="date"] {
+    @apply focus:ring-black  block w-full bg-white p-4 rounded-lg border shadow-sm sm:text-lg border-gray-300  read-only:cursor-not-allowed read-only:bg-gray-200 read-only:text-gray-400  py-7;
+}
+
+select {
+    @apply focus:ring-green-500 focus:border-green-500 block w-full bg-white p-4 rounded-lg border-2 shadow-sm sm:text-lg border-gray-300 cursor-pointer    font-semibold py-7;
 }
 
 
+.card {
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+}
 
-
-
-
-body{
+body {
     @apply font-visuletProLight;
 }
 
-.dark{
+.dark {
     background: black;
     color: white;
 }
-.light{
+
+.light {
     background: white;
 }
 
@@ -54,26 +58,29 @@ body{
 .btn-primary {
     @apply border-[1px] border-black px-5 py-3;
 }
+
 .btn-secondary {
     @apply bg-gray-300 px-5 py-3;
 }
+
 .btn-dark {
-    @apply  bg-black px-5 py-3 text-white;
+    @apply bg-black px-5 py-3 text-white;
 }
 
 .btn-danger {
-    @apply border-[1px] border-red-600 px-5 py-3 text-red-600;}
+    @apply border-[1px] border-red-600 px-5 py-3 text-red-600;
+}
 
 .btn-lg {
-    @apply  px-6 py-4;
+    @apply px-6 py-4;
 
 }
 
-mark{
+mark {
     @apply bg-accent;
 }
 
-input{
+input {
     @apply h-12 ;
 }
 
@@ -84,10 +91,9 @@ div::-webkit-scrollbar {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 div {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
-
 
 
 .navbar {
@@ -97,20 +103,22 @@ div {
     transition-delay: 0.1s;
 }
 
-.menu-items.dark > li > a{
+.menu-items.dark > li > a {
     color: white;
 }
+
 .toggle-checkbox:checked {
     right: 0;
     border-color: #68D391;
 }
+
 .toggle-checkbox:checked + .toggle-label {
     background-color: #68D391;
 }
+
 .toggle-label {
     transition: background-color 0.2s ease-in;
 }
-
 
 
 /* Bank Account */
