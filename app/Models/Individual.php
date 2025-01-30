@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Individual extends Model
 {
+
+    const  TYPE="individual";
     protected $fillable = [
         'fname',
         'lname',

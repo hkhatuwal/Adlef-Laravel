@@ -72,29 +72,9 @@
                         <div class="space-y-3">
                             <label class="block text-sm font-medium text-gray-700">Upload Identity Document</label>
 
-                            <div id="file-upload" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer relative">
-                                <input type="file" name="document" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer" accept=".png,.jpg,.jpeg,.pdf">
-                                <div class="space-y-1 text-center cursor-pointer">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <div class="flex text-sm text-gray-600 justify-center">
-                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-dark focus-within:outline-none">
-                                            <span>Upload a file</span>
-                                        </label>
-                                        <p class="pl-1">or drag and drop</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
-                                    <p class="text-xs text-gray-500 selected-file hidden"></p>
-                                </div>
-                            </div>
-                            <div class="upload-progress hidden">
-                                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-primary h-2.5 rounded-full progress-bar" style="width: 0%"></div>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1 progress-text">0%</p>
-                            </div>
+                            @include('_components.file_picker',['id'=>'identity_document'])
                         </div>
+                        <button type="button" id="verify-document" onclick="verifyDocument(this)" class="mt-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Verify Document</button>
                     </div>
                 </div>
             </div>
@@ -110,92 +90,7 @@
     let phoneVerified = {{ auth()->user()->contactDetails->is_phone_verified ? 'true' : 'false' }};
     let documentUploaded = {{ auth()->user()->profile->document_path ? 'true' : 'false' }};
 
-    // File Upload Handling
-    const fileUpload = $('#file-upload');
-    const fileInput = $('input[name="document"]');
-    const selectedFileText = $('.selected-file');
-    const uploadProgress = $('.upload-progress');
-    const progressBar = $('.progress-bar');
-    const progressText = $('.progress-text');
 
-    fileInput.on('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            selectedFileText.text('Selected: ' + file.name).removeClass('hidden');
-            uploadDocument(file);
-        }
-    });
-
-    // Drag and drop functionality
-    fileUpload.on('dragover', function(e) {
-        e.preventDefault();
-        $(this).addClass('border-primary');
-    });
-
-    fileUpload.on('dragleave', function(e) {
-        e.preventDefault();
-        $(this).removeClass('border-primary');
-    });
-
-    fileUpload.on('drop', function(e) {
-        e.preventDefault();
-        $(this).removeClass('border-primary');
-
-        const file = e.originalEvent.dataTransfer.files[0];
-        if (file) {
-            fileInput.prop('files', e.originalEvent.dataTransfer.files);
-            selectedFileText.text('Selected: ' + file.name).removeClass('hidden');
-            uploadDocument(file);
-        }
-    });
-
-    function uploadDocument(file) {
-        const formData = new FormData();
-        formData.append('document', file);
-
-        uploadProgress.removeClass('hidden');
-        progressBar.css('width', '0%');
-        progressText.text('0%');
-
-        $.ajax({
-            url: '/verification/upload-document',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            xhr: function() {
-                const xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener('progress', function(e) {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        progressBar.css('width', percent + '%');
-                        progressText.text(percent + '%');
-                    }
-                });
-                return xhr;
-            },
-            success: function(response) {
-                if (response.status === 'success') {
-                    toastr.success('Document uploaded successfully');
-                    progressBar.css('width', '100%');
-                    progressText.text('100%');
-                    documentUploaded = true;
-                    $('#file-upload').addClass('opacity-50 pointer-events-none');
-                    checkAllVerified();
-                } else {
-                    toastr.error(response.message || 'Failed to upload document');
-                }
-            },
-            error: function(error) {
-                console.error('Error:', error);
-                toastr.error('Failed to upload document');
-                uploadProgress.addClass('hidden');
-            }
-        });
-    }
 
     // Check initial verification status
     function initializeVerificationStatus() {
@@ -392,6 +287,40 @@
             error: function(error) {
                 console.error('Error:', error);
                 toastr.error('Failed to verify OTP');
+            }
+        });
+    }
+    function verifyDocument() {
+        if (documentUploaded) return;
+
+        const path = $('input[name="identity_document_path"]').val();
+        console.log(path)
+        if (!path) {
+            toastr.error('Document is not uploaded');
+            return;
+        }
+
+        $.ajax({
+            url: '/verification/verify-document',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            data: JSON.stringify({ path }),
+            contentType: 'application/json',
+            success: function(data) {
+                if (data.status === 'success') {
+                    toastr.success(data.message);
+                    documentUploaded = true;
+                    checkAllVerified();
+                } else {
+                    toastr.error(data.message || 'File not uploaded yet');
+                }
+            },
+            error: function(error) {
+                console.error('Error:', error);
+                toastr.error( 'File not uploaded yet');
             }
         });
     }

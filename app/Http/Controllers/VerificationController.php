@@ -163,32 +163,21 @@ class VerificationController extends Controller
             'message' => 'Phone verified successfully'
         ]);
     }
-
-    public function uploadDocument(Request $request)
+    public function verifyDocument(Request $request)
     {
         $request->validate([
-            'document' => 'required|file|mimes:png,jpg,jpeg,pdf|max:10240', // 10MB max
+            'path' => 'required|string'
         ]);
 
-        try {
-            $file = $request->file('document');
-            $path = $file->store('user-documents', 'public');
+        $user = auth()->user();
+        $user->profile->document_path = $request->path;
+        $user->profile->document_verified = false; // Will be verified by admin
+        $user->profile->save();
 
-            $user = auth()->user();
-            $user->profile->document_path = $path;
-            $user->profile->document_verified = false; // Will be verified by admin
-            $user->profile->save();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Document uploaded successfully',
-                'path' => $path
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to upload document'.$e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Document send for verification'
+        ]);
     }
+
 }

@@ -35,21 +35,21 @@ Route::group(['as' => 'frontend.'], function () {
 
         // Verification Routes
         Route::get('/verification', [\App\Http\Controllers\VerificationController::class, 'showVerifyForm'])->name('client-registration.verify');
-        Route::post('/verification/send-email-otp', [App\Http\Controllers\VerificationController::class, 'sendEmailOtp'])->middleware('auth');
-        Route::post('/verification/verify-email-otp', [App\Http\Controllers\VerificationController::class, 'verifyEmailOtp'])->middleware('auth');
-        Route::post('/verification/send-phone-otp', [App\Http\Controllers\VerificationController::class, 'sendPhoneOtp'])->middleware('auth');
-        Route::post('/verification/verify-phone-otp', [App\Http\Controllers\VerificationController::class, 'verifyPhoneOtp'])->middleware('auth');
+        Route::post('/verification/send-email-otp', [App\Http\Controllers\VerificationController::class, 'sendEmailOtp']);
+        Route::post('/verification/verify-email-otp', [App\Http\Controllers\VerificationController::class, 'verifyEmailOtp']);
+        Route::post('/verification/send-phone-otp', [App\Http\Controllers\VerificationController::class, 'sendPhoneOtp']);
+        Route::post('/verification/verify-phone-otp', [App\Http\Controllers\VerificationController::class, 'verifyPhoneOtp']);
+        Route::post('/verification/verify-document', [App\Http\Controllers\VerificationController::class, 'verifyDocument']);
         Route::get('/verification/complete', function () {
             return redirect()->route('frontend.home')->with('success', 'Verification completed successfully');
         })->name('verification.complete')->middleware('auth');
         // Document upload route
-        Route::post('/verification/upload-document', [App\Http\Controllers\VerificationController::class, 'uploadDocument'])->name('verification.upload.document');
+        Route::post('/document/upload-document', [App\Http\Controllers\DocumentController::class, 'uploadDocument'])->name('document.upload-document');
 
         // Account Management Routes
-        Route::middleware(['auth'])->group(function () {
-            Route::get('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'showAddAccountForm'])->name('account.add.form');
-            Route::post('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'addAccount'])->name('account.add');
-        });
+        Route::get('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'showAddAccountForm'])->name('account.add.form');
+        Route::post('/account/add', [App\Http\Controllers\Frontend\AccountController::class, 'addAccount'])->name('account.add');
+        Route::post('/account/add/third-party', [App\Http\Controllers\Frontend\AccountController::class, 'addThirdPartyAccount'])->name('account.add.third-party');
     });
 
 

@@ -72,7 +72,7 @@ class AccountOpeningRequest extends FormRequest
             'tin_reason' => ['required_if:tin_status,not_provided', 'in:reason_not_required,reason_unable,reason_no_issue'],
 
             // Password and Terms
-            'password' => ['required', 'string', Password::min(8)
+            'password' => ['required', 'string',config('app.debug')?null: Password::min(8)
                 ->mixedCase()
                 ->numbers()
                 ->symbols()
