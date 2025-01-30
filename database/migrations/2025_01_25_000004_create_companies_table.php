@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('registration_number')->nullable();
             $table->string('email')->nullable();
             $table->string('contact', 20)->nullable();
-            $table->enum('relationship', ['Vendor', 'Client', 'Supplier', 'Consultant', 'Professional Service Provider']);
+            $table->enum('relationship', );
             $table->string('registration_proof')->nullable();
             $table->foreignId('third_party_account_id')->unique()->nullable();
             $table->timestamps();

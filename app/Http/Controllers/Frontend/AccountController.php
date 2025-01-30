@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\BankAccount;
+use App\Models\Company;
 use App\Models\Individual;
 use Illuminate\Http\Request;
 
@@ -45,28 +47,66 @@ class AccountController extends Controller
             "account_number" => $request->get('account_number'),
             "shortcode" => $request->get('shortcode'),
             "branch_code" => $request->get('branch_code'),
-            "user_id" =>auth()->user()->id,
+            "user_id" => auth()->user()->id,
         ]);
         if ($request->get('third_party_type') == Individual::TYPE) {
-            $individual = Individual::create([
-                "fname" => $request->get('first_name'),
-                "lname" => $request->get('last_name'),
-                "dob" => $request->get('date_of_birth'),
-                "gender" => $request->get('gender'),
-                "email" => $request->get('first_name'),
-                "contact" => $request->get('first_name'),
-                "country_of_origin" => $request->get('country_of_birth'),
-                "relationship" => $request->get('counterparty_relationship'),
-                "document_id_number" => $request->get('document_number'),
-                "document_issued_country" => $request->get('document_country'),
-                "document_url" => $request->get('id_proof_path'),
-                "third_party_account_id" => $account->id,
-            ]);
-
-            return redirect()->back()->with('success',"Account Send For Verification");
+            $this->createIndividualAccount($request, $account);
+        } else {
+            $this->createCompanyAccount($request, $account);
         }
-        return  redirect()->back()->with('error',"Failed to create account");
+        return redirect()->back()->with('success', "Account Send For Verification");
 
+    }
 
+    private function createIndividualAccount(Request $request, BankAccount $bank)
+    {
+        $individual = Individual::create([
+            "fname" => $request->get('first_name'),
+            "lname" => $request->get('last_name'),
+            "dob" => $request->get('date_of_birth'),
+            "gender" => $request->get('gender'),
+            "email" => $request->get('first_name'),
+            "contact" => $request->get('first_name'),
+            "country_of_origin" => $request->get('country_of_birth'),
+            "relationship" => $request->get('counterparty_relationship'),
+            "document_id_number" => $request->get('document_number'),
+            "document_issued_country" => $request->get('document_country'),
+            "document_url" => $request->get('id_proof_path'),
+            "third_party_account_id" => $bank->id,
+        ]);
+
+        $this->createAddress($request,  $individual->id);
+    }
+
+    private function createCompanyAccount(Request $request, BankAccount $bank)
+    {
+        $company = Company::create([
+            "company_name" => $request->get('company_name'),
+            "country" => $request->get('registration_country'),
+            "registration_date" => $request->get('registration_date'),
+            "registration_number" => $request->get('registration_number'),
+            "email" => $request->get('email'),
+            "contact" => $request->get('phone'),
+            "relationship" => $request->get('counterparty_relationship'),
+            "registration_proof" => $request->get('company_document_proof_path'),
+            "third_party_account_id" => $bank->id,
+        ]);
+
+        $this->createAddress($request, null,$company->id);
+    }
+
+    private function createAddress(Request $request,int $individual_id = null, ?int $company_id = null)
+    {
+        return Address::create([
+            'country' => $request->get('country'),
+            'state' => $request->get('state'),
+            'postal_code' => $request->get('postal_code'),
+            'city' => $request->get('city'),
+            'address_line1' => $request->get('street_address'),
+            'address_line2' => null,
+            'user_id' => auth()->user()->id,
+            'individual_id' => $individual_id,
+            'company_id' => $company_id,
+        ]);
     }
 }

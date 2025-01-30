@@ -272,9 +272,9 @@
                                     class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
                                     required>
                                 <option value="">Select Relationship</option>
-                                <option value="vendor">Vendor</option>
-                                <option value="client">Client</option>
-                                <option value="partner">Partner</option>
+                                @foreach(config('constants.relationship') as $relationshiop)
+                                    <option value="{{$relationshiop}}">{{$relationshiop}}</option>
+                                @endforeach
                             </select>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
