@@ -37,11 +37,12 @@
             </li>
             <li>
                 @if(auth()->check())
-                    <a href="{{route('frontend.client-logout')}}">
+
+                    <a href="{{route('client.client-logout')}}">
                         <button class="btn-primary  md:block">Log Out</button>
                     </a>
                 @else
-                    <a href="{{route('frontend.client-login')}}">
+                    <a href="{{route('client-login')}}">
                         <button class="btn-primary  md:block">Client Login</button>
                     </a>
                 @endif
@@ -49,9 +50,13 @@
             </li>
             <li>
                 @if(!auth()->check())
-                <a href="{{route('frontend.client-registration')}}">
+                <a href="{{route('client-registration')}}">
                     <button class="btn-secondary  md:block">Become a Client</button>
                 </a>
+                @else
+                    <a href="{{route('client.dashboard')}}">
+                        <button class="btn-secondary ">Client Dashboard</button>
+                    </a>
                 @endif
             </li>
         </ul>

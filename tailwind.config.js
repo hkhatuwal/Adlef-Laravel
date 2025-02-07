@@ -12,6 +12,8 @@ export default {
             fontFamily: {
                 visuletProLight: ['visulet-light', 'sans-serif'],
                 inter: ['Inter', 'sans-serif'],
+                visuletProBold: ['visulet-bold', 'sans-serif'], // Added bold version
+
 
             },
             colors: {

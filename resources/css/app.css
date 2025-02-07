@@ -9,8 +9,8 @@
     html {
         font-family: Inter, Inter, serif;
         scroll-behavior: smooth;
-
     }
+
 
     * {
         margin: 0;
@@ -26,6 +26,12 @@
     font-style: normal; /* Adjust the style if necessary (e.g., italic) */
 }
 
+@font-face {
+    font-family: 'visulet-bold';
+    src: url('../fonts/VisueltPro-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
 
 input[type="text"],
 input[type="number"],input[type="email"],input[type="password"],input[type="search"],input[type="tel"],input[type="date"] {

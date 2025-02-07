@@ -135,7 +135,7 @@
         progressText.text('0%');
 
         $.ajax({
-            url: '{{route('frontend.document.upload-document')}}',
+            url: '{{route('client.document.upload-document')}}',
             method: 'POST',
             data: formData,
             processData: false,

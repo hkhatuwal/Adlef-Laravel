@@ -18,7 +18,7 @@
                     <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Sign in to your account
                     </h1>
-                    <form class="space-y-4 md:space-y-6" action="{{route('frontend.auth.login')}}" method="post">
+                    <form class="space-y-4 md:space-y-6" action="{{route('client-login')}}" method="post">
                         @csrf
                         <div>
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
@@ -40,7 +40,7 @@
 
                         </div>
                         <button type="submit" class="btn btn-primary w-full">Sign in</button>
-                        <a  href="{{route('frontend.client-registration')}}" class="text-center w-full block underline">Create New Account?</a>
+                        <a  href="{{route('client-registration')}}" class="text-center w-full block underline">Create New Account?</a>
 
                     </form>
                 </div>

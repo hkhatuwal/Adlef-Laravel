@@ -1,4 +1,4 @@
-@extends('_partials.app')
+@extends('client.layouts.app',['hideSidebar' => true])
 @section('content')
 
     <section class="container mx-auto px-4 md:p-10 mt-10 relative">
@@ -332,7 +332,7 @@
     }
 
     function submitVerification() {
-        window.location.href = '{{ route("frontend.verification.complete") }}';
+        window.location.href = '{{ route("client.verification.complete") }}';
     }
 </script>
 @endsection

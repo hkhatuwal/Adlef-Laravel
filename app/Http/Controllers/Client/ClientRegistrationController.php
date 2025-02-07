@@ -1,24 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountOpeningRequest;
+use App\Models\Address;
+use App\Models\ContactDetail;
 use App\Models\User;
 use App\Models\UserProfile;
-use App\Models\ContactDetail;
-use App\Models\Address;
-use Flasher\Prime\Notification\Type;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 
 class ClientRegistrationController extends Controller
 {
     public function showRegistrationForm()
     {
-        return view('frontend.auth.register');
+        return view('client.auth.register');
     }
 
     public function saveRegistrationDetails(AccountOpeningRequest $request)
@@ -77,7 +74,7 @@ class ClientRegistrationController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('frontend.client-login')->with('success', 'Registration successful! Please login to continue.');
+            return redirect()->route('client-login')->with('success', 'Registration successful! Please login to continue.');
 
         } catch (\Exception $e) {
             dd($e);

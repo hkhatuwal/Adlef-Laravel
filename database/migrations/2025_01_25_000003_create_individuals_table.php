@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('contact', 20)->nullable();
             $table->string('country_of_origin', 100)->nullable();
-            $table->enum('relationship', ['Vendor', 'Client', 'Supplier', 'Consultant', 'Professional Service Provider']);
+            $table->enum('relationship', config('constants.relationship'));
             $table->string('document_id_number')->nullable();
             $table->string('document_issued_country', 100)->nullable();
             $table->string('document_url')->nullable();

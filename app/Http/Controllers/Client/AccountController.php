@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
@@ -13,7 +13,7 @@ class AccountController extends Controller
 {
     public function showAddAccountForm()
     {
-        return view('frontend.account.add');
+        return view('client.account.add');
     }
 
     public function addAccount(Request $request)

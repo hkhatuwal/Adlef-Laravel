@@ -1,14 +1,14 @@
-@extends('_partials.app')
+@extends('client.layouts.app')
 
 @section('content')
     <div class="container mx-auto px-4 py-8">
         @if(request()->has('type'))
             @if(request()->get('type') === 'bank_account' && request()->get('ownership') === 'own')
-                @include('frontend.account.components.bank-own')
+                @include('client.account.components.bank-own')
             @elseif(request()->get('type') === 'bank_account' && request()->get('ownership') === 'third_party')
-                @include('frontend.account.components.bank-third-party')
+                @include('client.account.components.bank-third-party')
             @elseif(request()->get('type') === 'crypto_wallet')
-                @include('frontend.account.components.crypto-wallet')
+                @include('client.account.components.crypto-wallet')
             @endif
         @else
             <div class="max-w-lg mx-auto bg-white rounded-lg shadow-md p-6">

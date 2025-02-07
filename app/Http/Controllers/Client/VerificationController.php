@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Mail\OtpVerification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ class VerificationController extends Controller
 
     public function showVerifyForm(){
 
-        return view('frontend.auth.verify');
+        return view('client.auth.verify');
     }
     public function sendEmailOtp(Request $request)
     {

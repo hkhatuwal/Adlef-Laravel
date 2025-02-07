@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ClientLoginController extends Controller
 {
     public function showLoginForm(){
-        return view('frontend.auth.login');
+        return view('client.auth.login');
     }
 
     public function login(Request $request){
@@ -21,7 +22,7 @@ class ClientLoginController extends Controller
 
             toastr()->success('You are now logged in as '.\auth()->user()->name);
             if (!auth()->user()->areDetailsVerified()){
-                return redirect()->route('frontend.client-registration.verify');
+                return redirect()->route('client.client-registration.verify');
             }
             return redirect()->route('frontend.home');
 
