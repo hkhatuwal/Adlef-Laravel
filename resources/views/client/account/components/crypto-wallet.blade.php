@@ -6,7 +6,7 @@
         </a>
     </div>
 
-    <form action="#" method="POST">
+    <form action="{{ route('client.crypto-wallet.store') }}" method="POST" id="crypto-wallet-form">
         @csrf
         <div class="space-y-4">
             <div>
@@ -21,12 +21,13 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Network</label>
-                <select name="network" class="w-full border rounded-lg px-3 py-2" required>
+                <select  name="network" class="w-full border rounded-lg px-3 py-2 select2" required>
                     <option value="">Select Network</option>
-                    <option value="ethereum">Ethereum (ETH)</option>
-                    <option value="bitcoin">Bitcoin (BTC)</option>
-                    <option value="binance">Binance Smart Chain (BSC)</option>
-                    <option value="polygon">Polygon (MATIC)</option>
+                    @foreach (\App\Models\Currency::all() as $currency)
+                        <option value="{{ $currency->id }}" data-icon="{{asset("storage/".$currency->icon)}}" class='currency-icon'>
+                            {{ $currency->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
         </div>

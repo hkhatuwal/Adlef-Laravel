@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('crypto_wallets', function (Blueprint $table) {
             $table->id();
-            $table->string('crypto_currency', 50);
+            $table->foreignIdFor(\App\Models\Currency::class);
             $table->string('wallet_address');
             $table->string('alias', 100)->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->onDelete('cascade');
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
         });

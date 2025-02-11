@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ThirdPartyAccount extends Model
 {
+
+
+const TYPE_INDIVIDUAL="Individual";
+const TYPE_COMPANY="Company";
     protected $fillable = [
         'third_party_type',
         'bank_account_id',
@@ -16,6 +20,11 @@ class ThirdPartyAccount extends Model
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);
+    }
+
+    public function isCompany(): bool
+    {
+        return $this->third_party_type === self::TYPE_COMPANY;
     }
 
     public function individual()

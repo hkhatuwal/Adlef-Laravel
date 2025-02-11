@@ -20,10 +20,23 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         Route::get('/holdings', [DashboardController::class, 'holdings'])->name('holdings');
         Route::get('/activity', [DashboardController::class, 'activity'])->name('activity');
 
+        // Asset Transfer Routes
+        Route::get('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'index'])->name('transfer');
+        Route::get('/transfer/in', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferIn'])->name('transfer.in');
+        Route::get('/transfer/out', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferOut'])->name('transfer.out');
+        Route::post('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'store'])->name('transfer.store');
+        Route::get('/transfer/{transfer}/review', [\App\Http\Controllers\Client\AssetTransferController::class, 'review'])->name('transfer.review');
+        Route::post('/transfer/create-instruction', [\App\Http\Controllers\Client\AssetTransferController::class, 'createTransferInstruction'])->name('transfer.create-instruction');
+
         // Account Management Routes
+        Route::get('/account', [\App\Http\Controllers\Client\AccountController::class, 'index'])->name('account.index');
         Route::get('/account/add', [\App\Http\Controllers\Client\AccountController::class, 'showAddAccountForm'])->name('account.add.form');
         Route::post('/account/add', [\App\Http\Controllers\Client\AccountController::class, 'addAccount'])->name('account.add');
         Route::post('/account/add/third-party', [\App\Http\Controllers\Client\AccountController::class, 'addThirdPartyAccount'])->name('account.add.third-party');
+//    Crypto Wallet Route
+        Route::post('/crypto-wallet', [\App\Http\Controllers\Client\CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
+
+
     });
 
 
@@ -47,4 +60,3 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
 
 
 });
-

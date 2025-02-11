@@ -25,12 +25,12 @@ class BankAccount extends Model
         'is_verified' => 'boolean'
     ];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function thirdPartyAccount()
+    public function thirdPartyAccount(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(ThirdPartyAccount::class);
     }

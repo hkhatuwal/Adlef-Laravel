@@ -60,11 +60,14 @@
         @include('client._partials.sidebar')
     @endif
     <!-- Main Content -->
-    <div class="{{!$hideSidebar?"ml-64":""}}">
+    <div class="{{!$hideSidebar?"ml-64":""}} main">
         <!-- Top Navigation -->
-        <div class="bg-white h-16 fixed right-0 {{!$hideSidebar?"left-64":"left-0"}}  top-0 border-b border-gray-200 z-10">
+        <div class="top-nav bg-white h-16 fixed right-0 {{!$hideSidebar?"left-64":"left-0"}}  top-0 border-b border-gray-200 z-10">
             <div class="flex items-center justify-between h-full px-6">
                 <div class="flex items-center">
+                    <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-gray-100 mr-2 relative z-40">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <span class="text-xl font-semibold">@yield('page-title')</span>
                 </div>
                 <div class="flex items-center">
@@ -85,7 +88,7 @@
         </div>
 
         <!-- Page Content -->
-        <div class="pt-16 px-6 py-6">
+        <div class="pt-16 px-6 py-6 bg-gradient-to-b from-gray-50 to-white">
             @yield('content')
         </div>
     </div>

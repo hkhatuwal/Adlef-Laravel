@@ -3,7 +3,7 @@
 
 return [
     "client_login" => [
-        "email" => "mawofo@mailinator.com",
+        "email" => "lygezozi@mailinator.com",
         "password" => "Pa$\$w0rd!"
     ],
     "tin_reasons" => [

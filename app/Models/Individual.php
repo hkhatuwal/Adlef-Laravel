@@ -32,6 +32,11 @@ class Individual extends Model
         return $this->belongsTo(ThirdPartyAccount::class);
     }
 
+    public function fullName(): string
+    {
+        return $this->fname.''. $this->lname;
+    }
+
     public function address()
     {
         return $this->hasOne(Address::class);

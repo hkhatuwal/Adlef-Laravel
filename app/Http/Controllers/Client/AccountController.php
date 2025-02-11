@@ -7,6 +7,7 @@ use App\Models\Address;
 use App\Models\BankAccount;
 use App\Models\Company;
 use App\Models\Individual;
+use App\Models\ThirdPartyAccount;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -30,10 +31,7 @@ class AccountController extends Controller
         ]);
 
 
-        // Handle account addition logic here
-
-
-        return redirect()->back()->with('success', 'Account added successfully');
+        return redirect()->route('client.account.index')->with('success', 'Account added successfully');
     }
 
 
@@ -54,8 +52,29 @@ class AccountController extends Controller
         } else {
             $this->createCompanyAccount($request, $account);
         }
-        return redirect()->back()->with('success', "Account Send For Verification");
 
+        return redirect()->route('client.account.index')->with('success', "Account Send For Verification");
+
+    }
+
+    public function index()
+    {
+        $user = auth()->user();
+
+        $ownAccounts = BankAccount::where('user_id', $user->id)
+            ->where('account_type', BankAccount::TYPE_OWN)
+            ->get();
+
+        $thirdPartyAccounts = BankAccount::query()->where('user_id', $user->id)
+            ->where('account_type', BankAccount::TYPE_THIRD_PARTY)
+            ->with(['thirdPartyAccount'])
+            ->get();
+
+        $cryptoWallets = $user->cryptoWallets()
+            ->with('currency')
+            ->get();
+
+        return view('client.account.index', compact('ownAccounts', 'thirdPartyAccounts', 'cryptoWallets'));
     }
 
     private function createIndividualAccount(Request $request, BankAccount $bank)
@@ -74,8 +93,8 @@ class AccountController extends Controller
             "document_url" => $request->get('id_proof_path'),
             "third_party_account_id" => $bank->id,
         ]);
-
-        $this->createAddress($request,  $individual->id);
+        $this->createThirdpartyAccount($request, $bank->id, $individual->id);
+        $this->createAddress($request, $individual->id);
     }
 
     private function createCompanyAccount(Request $request, BankAccount $bank)
@@ -91,13 +110,14 @@ class AccountController extends Controller
             "registration_proof" => $request->get('company_document_proof_path'),
             "third_party_account_id" => $bank->id,
         ]);
+        $this->createThirdpartyAccount($request, $bank->id, null, $company->id);
 
-        $this->createAddress($request, null,$company->id);
+        $this->createAddress($request, null, $company->id);
     }
 
-    private function createAddress(Request $request,int $individual_id = null, ?int $company_id = null)
+    private function createAddress(Request $request, int $individual_id = null, ?int $company_id = null): void
     {
-        return Address::create([
+        Address::create([
             'country' => $request->get('country'),
             'state' => $request->get('state'),
             'postal_code' => $request->get('postal_code'),
@@ -106,6 +126,16 @@ class AccountController extends Controller
             'address_line2' => null,
             'user_id' => auth()->user()->id,
             'individual_id' => $individual_id,
+            'company_id' => $company_id,
+        ]);
+    }
+
+    private function createThirdpartyAccount(Request $request, int $bankAccountId, int $individual_id = null, ?int $company_id = null): void
+    {
+        ThirdPartyAccount::create([
+            'third_party_type' => isset($individual_id) ? ThirdPartyAccount::TYPE_INDIVIDUAL : ThirdPartyAccount::TYPE_COMPANY,
+            'individual_id' => $individual_id,
+            'bank_account_id' => $bankAccountId,
             'company_id' => $company_id,
         ]);
     }

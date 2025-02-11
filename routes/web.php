@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Client\ClientLoginController;
+use App\Http\Controllers\Client\CryptoWalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('install', function () {
@@ -19,10 +20,11 @@ Route::group(['as' => 'frontend.'], function () {
     Route::get('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class, 'businessEnquiry'])->name('contact-us.business-enquiry');
     Route::get('/contact-us', [\App\Http\Controllers\Frontend\ContactUsController::class, 'contactUs'])->name('contact-us');
     Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class, 'store'])->name('contact-us.business-enquiry');
+});
 
-
-
-
+// Client Routes
+Route::group(['prefix' => 'client', 'as' => 'client.', 'middleware' => ['auth:client']], function () {
+    Route::post('/crypto-wallet', [\App\Http\Controllers\Client\CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
 });
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {

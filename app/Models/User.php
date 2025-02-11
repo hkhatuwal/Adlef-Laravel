@@ -22,6 +22,7 @@ class User extends Authenticatable
         'is_admin',
         'email',
         'password',
+        'account_number',
     ];
 
     /**
@@ -86,5 +87,24 @@ class User extends Authenticatable
     public function areDetailsVerified(): bool
     {
         return isset($this->contactDetails) && $this->contactDetails->is_email_verified && $this->contactDetails->is_phone_verified;
+    }
+
+    public static function generateAccountNumber()
+    {
+        do {
+            $accountNumber = now()->format('Ym') . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        } while (self::where('account_number', $accountNumber)->exists());
+
+        return (int) $accountNumber;
+    }
+
+    /**
+     * Get all asset accounts belonging to the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assetAccounts()
+    {
+        return $this->hasMany(AssetAccount::class);
     }
 }

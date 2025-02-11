@@ -30,6 +30,7 @@ class ClientRegistrationController extends Controller
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'account_number' => User::generateAccountNumber(),
                 'is_admin' => false
             ]);
             $user->assignRole('client');

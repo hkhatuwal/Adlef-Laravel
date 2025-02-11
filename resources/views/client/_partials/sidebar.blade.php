@@ -1,4 +1,4 @@
-<nav class="fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-30">
+<nav class="sidebar fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-20 transition-transform duration-300 ease-in-out">
     <div class="flex flex-col h-full">
         <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200">
             <div class="text-xl font-bold"><img src="{{asset('assets/images/logo.svg')}}" alt=""></div>
@@ -18,7 +18,7 @@
             <ul class="space-y-2 mt-10">
                 <li>
                     <a href="{{ route('client.dashboard') }}"
-                       class="flex items-center px-4 py-2 text-gray-700  font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-100' : '' }}">
+                       class="flex items-center px-4 py-2 text-gray-700  font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs('client.dashboard') ? 'bg-gray-100' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -27,13 +27,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('client.holdings') }}"
-                       class="flex items-center px-4 py-2 text-gray-700 font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs('holdings') ? 'bg-gray-100' : '' }}">
+                    <a href="{{ route('client.transfer') }}"
+                       class="flex items-center px-4 py-2 text-gray-700 font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs('client.transfer') ? 'bg-gray-100' : '' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Asset Holdings
+                        Asset Transfer
                     </a>
                 </li>
                 <li>
@@ -51,8 +51,8 @@
         <div class=" px-4 py-4">
             <ul>
                 <li>
-                    <a href="{{ route('client.account.add') }}"
-                       class="flex items-center px-4 py-2 text-gray-700  font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-100' : '' }}">
+                    <a href="{{ route('client.account.index') }}"
+                       class="flex items-center px-4 py-2 text-gray-700  font-semibold hover:bg-gray-100 rounded-lg {{ request()->routeIs(['client.account.index','client.account.add']) ? 'bg-gray-100' : '' }}">
                         <i class="fa-solid fa-id-badge mr-3"></i> Whitelist
                     </a>
                 </li>

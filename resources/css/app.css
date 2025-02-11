@@ -35,7 +35,7 @@
 
 input[type="text"],
 input[type="number"],input[type="email"],input[type="password"],input[type="search"],input[type="tel"],input[type="date"] {
-    @apply focus:ring-black  block w-full bg-white p-4 rounded-lg border shadow-sm sm:text-lg border-gray-300  read-only:cursor-not-allowed read-only:bg-gray-200 read-only:text-gray-400  py-7;
+    @apply focus:ring-black  block w-full bg-white p-4 rounded-lg border shadow-sm sm:text-lg border-gray-300  read-only:cursor-not-allowed read-only:bg-gray-200 read-only:text-gray-400 py-3;
 }
 
 select {
@@ -86,17 +86,24 @@ mark {
     @apply bg-accent;
 }
 
-input {
-    @apply h-12 ;
+.select2::-webkit-scrollbar {
+    display: none;
+}
+body{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
+
+
+
 /* Hide scrollbar for Chrome, Safari and Opera */
-div::-webkit-scrollbar {
+.select2-results,div::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-div {
+.select2-results,div {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
