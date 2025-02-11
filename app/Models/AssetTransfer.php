@@ -13,10 +13,18 @@ class AssetTransfer extends Model
     protected $fillable = [
         'from_account_id',
         'to_account_id',
+        'currency_id',
+        'reference_number',
         'amount',
         'status',
+        'fee',
         'transfer_type',
     ];
+
+    public function currency(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
+    }
 
     //
 }

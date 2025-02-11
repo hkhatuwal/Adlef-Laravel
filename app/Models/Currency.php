@@ -14,4 +14,7 @@ class Currency extends Model
     {
         return $this->hasMany(Commission::class);
     }
+    public function isUSD():bool{
+        return  $this->symbol === "USD";
+    }
 }

@@ -20,6 +20,7 @@
     "dependencies": {
         "@fontsource/inter": "^5.0.20",
         "flowbite": "^2.5.1",
-        "simple-datatables": "^9.1.0"
+        "simple-datatables": "^9.1.0",
+        "ziggy-js": "^2.5.1"
     }
 }

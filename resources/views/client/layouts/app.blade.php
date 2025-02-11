@@ -94,7 +94,7 @@
     </div>
 </div>
 </body>
-
+@routes()
 <script src="{{asset('common/js/jquery.min.js')}}" crossorigin="anonymous"></script>
 @yield('pre-script')
 <script src="{{asset("assets/js/aos.js")}}"></script>

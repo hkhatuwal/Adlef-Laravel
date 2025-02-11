@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <form id="transferForm" action="{{ route('client.transfer.store') }}" method="POST" class="space-y-6">
+            <form id="transferForm" action="{{ route('client.transfer.out.post') }}" method="POST" class="space-y-6">
                 @csrf
                 <!-- Account Details -->
                 <div class="space-y-4 step-content" id="step1">
@@ -31,17 +31,17 @@
                     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg sm:text-xl font-semibold text-gray-900">To Account</h2>
-                            <input type="hidden" name="isUSD" value="{{$assetAccount->isUSD()}}">
-
+                            <input type="hidden" name="isUSD" id="isUSD" value="{{$assetAccount->currency->isUSD()}}">
+                            <input type="hidden" name="currency_id" value="{{request()->query('currency_id')}}">
                         </div>
-                        @if($assetAccount->isUSD())
+                        @if($assetAccount->currency->isUSD())
                             <div class="space-y-4">
                                 <div class="relative from-account">
-                                    <select name="from_account" id="fromAccount" class="select2">
-                                        <option value="">Select Your Bank Account</option>
+                                    <select name="to_account" id="to_account" class="select2">
+                                        <option value="">Select From Whitelisted Account</option>
                                         @foreach($fromAccounts as $account)
                                             <option value="{{ $account->id }}" @selected($loop->index==0)>
-                                                {{ $account->bank_name }} - {{ $account->account_number }} ({{ $account->account_type }})
+                                                {{ $account->bank_name }} - {{ $account->account_number }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -52,7 +52,7 @@
                         @else
                             <div class="space-y-4">
                                 <div class="relative from-wallet">
-                                    <select name="from_wallet" id="fromWallet" class="select2">
+                                    <select name="to_account" id="to_wallet"  class="select2">
                                         <option value="">Select Your Wallet</option>
                                         @foreach($fromAccounts as $account)
                                             <option value="{{ $account->id }}" @selected($loop->index==0)>
@@ -71,7 +71,7 @@
                     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg sm:text-xl font-semibold text-gray-900">From Account</h2>
-                            <span class="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-600 rounded-full">Recipient</span>
+                            <span class="px-3 py-1 text-xs font-medium bg-blue-50 text-blue-600 rounded-full">Account</span>
                         </div>
                         <div class="p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center justify-between">
@@ -85,13 +85,12 @@
                                             <p class="text-sm text-gray-500">A/C : {{ $assetAccount->account_number }}</p>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="recipient_id" value="{{ $assetAccount->id }}">
+                                    <input type="hidden" name="from_account" value="{{ $assetAccount->id }}">
                                 </div>
                                 <div class="flex flex-col items-end">
                                     <span class="text-sm font-medium text-gray-700">Balance:</span>
                                     <span class="text-lg font-semibold text-green-600">${{ $assetAccount->balance }}</span>
                                 </div>
-                                <input type="hidden" name="recipient_id" value="{{ $assetAccount->id }}">
                             </div>
                         </div>
                     </div>
@@ -132,11 +131,24 @@
                                        step="0.01"
                                        min="0"
                                        class="!pl-9"
-                                       placeholder="0.00">
+                                       placeholder="0.00"
+                                       >
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <span class="text-xl sm:text-2xl font-semibold text-gray-500">$</span>
                                 </div>
                                 <div class="error-message hidden mt-2 text-sm text-red-600"></div>
+                            </div>
+                            <!-- Transfer Fee -->
+                            <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Transfer Fee:</span>
+                                    <span id="fee-amount" class="font-medium text-gray-900">$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-gray-600">Total Amount:</span>
+                                    <span id="total-amount" class="font-medium text-gray-900">$0.00</span>
+                                </div>
+                                <input type="hidden" name="fee" id="fee-input" value="0">
                             </div>
                         </div>
                     </div>
@@ -199,5 +211,8 @@
         </div>
     </div>
 </div>
+
+<script>
+</script>
 
 @endsection

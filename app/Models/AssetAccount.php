@@ -35,7 +35,5 @@ class AssetAccount extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function isUSD():bool{
-        return  $this->currency->symbol === "USD";
-    }
+
 }

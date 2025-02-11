@@ -8,6 +8,9 @@ use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Account;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Utils\FeeCalculator;
 
 // Added this line
 
@@ -52,7 +55,7 @@ class AssetTransferController extends Controller
             ->with('currency')
             ->firstOrFail();
 
-        if ($assetAccount->isUSD()) {
+        if ($assetAccount->currency->isUSD()) {
             $fromAccounts = auth()->user()->bankAccounts;
         } else {
             $fromAccounts = auth()->user()->cryptoWallets()->where('currency_id', $currencyId)->get();
@@ -62,76 +65,120 @@ class AssetTransferController extends Controller
         return view('client.transfer.transfer-out', compact('fromAccounts', 'assetAccount', 'sourceOptions'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'from_account' => 'required|exists:accounts,id',
-            'to_account' => 'required|exists:accounts,id',
-            'amount' => 'required|numeric|min:100',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            // Create the transfer record
-            $transfer = AssetTransfer::create([
-                'user_id' => auth()->id(),
-                'from_account_id' => $validated['from_account'],
-                'to_account_id' => $validated['to_account'],
-                'amount' => $validated['amount'],
-                'notes' => $validated['notes'],
-                'status' => 'pending',
-                'reference' => 'TRF-' . strtoupper(uniqid()),
-            ]);
-
-            DB::commit();
-
-            return redirect()
-                ->route('client.transfer.review', $transfer->id)
-                ->with('success', 'Transfer created successfully. Please review the details.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create transfer. Please try again.');
-        }
-    }
 
     public function storeTransferIn(Request $request)
     {
-        $validatedData = $request->validate([
-            'from_account' => 'required|exists:accounts,id',
+        $isUSD = $request->boolean('isUSD');
+        $rules = [
+            'to_account' => 'required|exists:asset_accounts,id',
             'amount' => 'required|numeric|min:0.01',
+            'currency_id' => 'required|exists:currencies,id',
+        ];
+
+        if ($isUSD) {
+            $rules['from_account'] = 'required|exists:bank_accounts,id';
+        }
+
+        $validator = Validator::make($request->all(), $rules, [
+            'from_account.required' => 'The from account is required for USD transfers.',
+            'to_account.required' => 'The to account is required.',
+            'amount.required' => 'The amount is required.',
+            'amount.numeric' => 'The amount must be a number.',
+            'currency_id' => 'required|numeric|min:0.01|exists:currencies,id',
+            'amount.min' => 'The amount must be at least 0.01.',
+            'currency_id.required' => 'The currency is required.',
         ]);
 
-        AssetTransfer::create([
-            'from_account_id' => $validatedData['from_account'],
-            'to_account_id' => auth()->id(),
-            'amount' => $validatedData['amount'],
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Validation failed. Please check your inputs.');
+        }
+
+        $transfer = AssetTransfer::create([
+            'from_account_id' => $request->input('from_account'),
+            'to_account_id' => $request->input('to_account'),
+            'amount' => $request->input('amount'),
+            'currency_id' => $request->input('currency_id'),
+            'reference_number' => Str::uuid(),
             'status' => 'pending',
-            'transfer_type' => 'in',
+            'transfer_type' => AssetTransfer::TYPE_IN,
         ]);
 
-        return redirect()->back()->with('success', 'Transfer In request submitted successfully.');
+        // Load the currency relationship for the view
+
+        return view('client.transfer.transfer-in-success', compact('transfer'));
     }
 
     public function storeTransferOut(Request $request)
     {
-        $validatedData = $request->validate([
-            'to_account' => 'required|exists:accounts,id',
+        $isUSD = $request->boolean('isUSD');
+        $rules = [
+            'from_account' => 'required|exists:asset_accounts,id',
+            'to_account' =>  $isUSD ? 'required|exists:bank_accounts,id':'required|exists:crypto_wallets,id',
             'amount' => 'required|numeric|min:0.01',
+            'currency_id' => 'required|exists:currencies,id',
+        ];
+
+
+
+        $validator = Validator::make($request->all(), $rules, [
+            'from_account.required' => 'The from account is required for transfers.',
+            'to_account.required' => 'The to account is required.',
+            'amount.required' => 'The amount is required.',
+            'amount.numeric' => 'The amount must be a number.',
+            'currency_id' => 'required|numeric|min:0.01|exists:currencies,id',
+            'amount.min' => 'The amount must be at least 0.01.',
+            'currency_id.required' => 'The currency is required.',
         ]);
 
-        AssetTransfer::create([
-            'from_account_id' => auth()->id(),
-            'to_account_id' => $validatedData['to_account'],
-            'amount' => $validatedData['amount'],
+        if ($validator->fails()) {
+            dd($validator->messages());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Validation failed. Please check your inputs.');
+        }
+
+        $transfer = AssetTransfer::create([
+            'from_account_id' => $request->input('from_account'),
+            'to_account_id' => $request->input('to_account'),
+            'amount' => $request->input('amount'),
+            'currency_id' => $request->input('currency_id'),
+            'reference_number' => Str::uuid(),
             'status' => 'pending',
-            'transfer_type' => 'out',
+            'fee' => $request->input('fee'),
+            'transfer_type' => AssetTransfer::TYPE_OUT,
         ]);
 
-        return redirect()->back()->with('success', 'Transfer Out request submitted successfully.');
+        // Return the transfer-out-success view with the transfer data
+        return view('client.transfer.transfer-out-success', compact('transfer'));
+    }
+
+    public function calculateFee(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|numeric|min:0.01',
+            'currency_id' => 'required|exists:currencies,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $currency = Currency::find($request->currency_id);
+        $feeDetails = FeeCalculator::calculateTransferFee(
+            $request->amount,
+            $currency->symbol
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => $feeDetails
+        ]);
     }
 }

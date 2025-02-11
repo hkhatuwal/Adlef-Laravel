@@ -24,9 +24,9 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         Route::get('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'index'])->name('transfer');
         Route::get('/transfer/in', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferIn'])->name('transfer.in');
         Route::get('/transfer/out', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferOut'])->name('transfer.out');
-        Route::post('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'store'])->name('transfer.store');
-        Route::get('/transfer/{transfer}/review', [\App\Http\Controllers\Client\AssetTransferController::class, 'review'])->name('transfer.review');
-        Route::post('/transfer/create-instruction', [\App\Http\Controllers\Client\AssetTransferController::class, 'createTransferInstruction'])->name('transfer.create-instruction');
+        Route::post('/transfer/transfer/in', [\App\Http\Controllers\Client\AssetTransferController::class, 'storeTransferIn'])->name('transfer.in.post');
+        Route::post('/transfer/transfer/out', [\App\Http\Controllers\Client\AssetTransferController::class, 'storeTransferOut'])->name('transfer.out.post');
+        Route::post('/transfer/calculate-fee', [\App\Http\Controllers\Client\AssetTransferController::class, 'calculateFee'])->name('client.transfer.calculate-fee');
 
         // Account Management Routes
         Route::get('/account', [\App\Http\Controllers\Client\AccountController::class, 'index'])->name('account.index');

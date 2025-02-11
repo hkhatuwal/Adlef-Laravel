@@ -252,7 +252,42 @@ $(document).ready(function () {
         $('#file-upload input').click();
     });
 
-    // Transfer logic
+    /* Transfer Asset */
+    // Handle transfer option selection
+    $('.transfer-option').click(function () {
+        // Remove selected state from all options
+        $('.transfer-option').removeClass('border-black scale-105 shadow-xl').addClass('border-gray-100');
+        // Add selected state to clicked option
+        $(this).removeClass('border-gray-100').addClass('border-black scale-105 shadow-xl');
+        // Scroll to button on mobile
+        if (window.innerWidth < 768) {
+            $('#createInstructionBtn')[0].scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    });
+
+    // Handle create instruction button click
+    $('#createInstructionBtn').click(function () {
+        const selectedOption = $('.transfer-option.border-black');
+        if (!selectedOption.length) {
+            toastr.error('Please select a transfer type');
+            return;
+        }
+
+        const selectedCurrency = $('#currency_select').val();
+        if (!selectedCurrency) {
+            toastr.error('Please select a currency');
+            return;
+        }
+
+        let redirectUrl = selectedOption.data('url');
+        // Add currency_id as query parameter
+        redirectUrl += (redirectUrl.includes('?') ? '&' : '?') + 'currency_id=' + selectedCurrency;
+
+        // Redirect to the appropriate URL
+        window.location.href = redirectUrl;
+    });
+
+
     let currentStep = 1;
     const $form = $('#transferForm');
     let availableBalance = null;
@@ -293,7 +328,8 @@ $(document).ready(function () {
         let isValid = true;
         const isUSD = $('#isUSD').val();
         if (isUSD) {
-            const fromAccount = $('#fromAccount').val();
+            const fromAccount = $('#to_account').val();
+            console.log(fromAccount)
             if (!fromAccount) {
                 $('.from-account .error-message').text('Please select a bank account').removeClass('hidden');
                 isValid = false;
@@ -301,7 +337,7 @@ $(document).ready(function () {
                 $('.from-account .error-message').addClass('hidden');
             }
         } else {
-            const fromCrypto = $('#fromWallet').val();
+            const fromCrypto = $('#to_wallet').val();
             if (!fromCrypto) {
                 $('.from-wallet .error-message').text('Please select a cryptocurrency wallet').removeClass('hidden');
                 isValid = false;
@@ -403,38 +439,39 @@ $(document).ready(function () {
     // Show initial step
     showStep(currentStep);
 
-    /* Transfer Asset */
-    // Handle transfer option selection
-    $('.transfer-option').click(function () {
-        // Remove selected state from all options
-        $('.transfer-option').removeClass('border-black scale-105 shadow-xl').addClass('border-gray-100');
-        // Add selected state to clicked option
-        $(this).removeClass('border-gray-100').addClass('border-black scale-105 shadow-xl');
-        // Scroll to button on mobile
-        if (window.innerWidth < 768) {
-            $('#createInstructionBtn')[0].scrollIntoView({behavior: 'smooth', block: 'center'});
-        }
-    });
+    $('#transfer-out #amount').change(function (e) {
+        calculateFee(e.target.value);
+    })
 
-    // Handle create instruction button click
-    $('#createInstructionBtn').click(function () {
-        const selectedOption = $('.transfer-option.border-black');
-        if (!selectedOption.length) {
-            toastr.error('Please select a transfer type');
-            return;
-        }
+    function calculateFee(amount) {
+        // Get the currency ID from the hidden input
+        const currencyId = document.querySelector('input[name="currency_id"]').value;
+        // Make API call to calculate fee
+        fetch( route('client.client.transfer.calculate-fee'), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                amount: amount,
+                currency_id: currencyId
+            })
+        })
+    .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const feeDetails = data.data;
+                    document.getElementById('fee-amount').textContent = '$' + feeDetails.fee.toFixed(2);
+                    document.getElementById('total-amount').textContent = '$' + feeDetails.total.toFixed(2);
+                    document.getElementById('fee-input').value = feeDetails.fee.toFixed(2);
+                } else {
+                    console.error('Fee calculation failed:', data.errors);
+                }
+            })
+            .catch(error => {
+                console.error('Error calculating fee:', error);
+            });
+    }
 
-        const selectedCurrency = $('#currency_select').val();
-        if (!selectedCurrency) {
-            toastr.error('Please select a currency');
-            return;
-        }
-
-        let redirectUrl = selectedOption.data('url');
-        // Add currency_id as query parameter
-        redirectUrl += (redirectUrl.includes('?') ? '&' : '?') + 'currency_id=' + selectedCurrency;
-
-        // Redirect to the appropriate URL
-        window.location.href = redirectUrl;
-    });
 });

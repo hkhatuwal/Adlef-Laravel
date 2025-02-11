@@ -39,7 +39,7 @@ input[type="number"],input[type="email"],input[type="password"],input[type="sear
 }
 
 select {
-    @apply focus:ring-green-500 focus:border-green-500 block w-full bg-white p-4 rounded-lg border-2 shadow-sm sm:text-lg border-gray-300 cursor-pointer    font-semibold py-7;
+    @apply focus:ring-green-500 focus:border-green-500 block w-full bg-white p-4 rounded-lg border-2 shadow-sm sm:text-lg border-gray-300 cursor-pointer    font-semibold ;
 }
 
 

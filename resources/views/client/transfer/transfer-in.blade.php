@@ -23,15 +23,16 @@
                 </div>
             </div>
 
-            <form id="transferForm" action="{{ route('client.transfer.store') }}" method="POST" class="space-y-6">
+            <form id="transferForm" action="{{ route('client.transfer.in.post') }}" method="POST" class="space-y-6">
                 @csrf
-                <input type="hidden" name="isUSD" value="{{$assetAccount->isUSD()}}">
+                <input type="hidden" name="isUSD" id="isUSD" value="{{$assetAccount->currency->isUSD()}}">
+                <input type="hidden" name="currency_id" value="{{request()->query('currency_id')}}">
 
                 <!-- Account Details -->
                 <div class="space-y-4 step-content" id="step1">
                     <!-- From Account Section -->
 
-                    @if($assetAccount->isUSD())
+                    @if($assetAccount->currency->isUSD())
                         <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">From Account</h2>
@@ -79,7 +80,7 @@
                                     <span class="text-sm font-medium text-gray-700">Balance:</span>
                                     <span class="text-lg font-semibold text-green-600">${{ $assetAccount->balance }}</span>
                                 </div>
-                                <input type="hidden" name="recipient_id" value="{{ $assetAccount->id }}">
+                                <input type="hidden" name="to_account" value="{{ $assetAccount->id }}">
                             </div>
                         </div>
                     </div>
