@@ -1,0 +1,80 @@
+
+# Adlef-Laravel Project Rules and Context
+
+# Framework and Technologies
+Use Laravel as the primary framework
+Use Tailwind CSS for styling (not Bootstrap)
+Use Jquery for JavaScript interactions. Do not use Alpine.js
+Use Laravel Mix for asset compilation
+
+# Project Structure
+client routes are in client.php
+admin routes are in web.php
+views are organized by client/admin sections
+use blade templates for views
+styles are in resources/css/app.css so make sure to check if there any classes can be used
+
+# Coding Standards
+Follow PSR-12 coding standards
+Use type hints where possible
+Use Laravel's built-in authentication
+Follow RESTful conventions for APIs
+
+# Database
+Use migrations for database changes
+Use seeders for initial data
+Use Eloquent ORM for database operations
+Follow Laravel naming conventions for tables
+
+# Authentication
+Separate auth for admin and client sections
+Use Laravel's built-in auth scaffolding
+Implement email verification
+Store user avatars in storage/app/public
+
+# Frontend Guidelines
+Use Tailwind CSS utility classes
+Avoid inline styles
+Use blade components for reusability
+Follow mobile-first approach
+
+# Asset Management
+Store images in public/assets/images
+Store JS in public/assets/js
+Store CSS in public/assets/css
+Use Laravel Mix for compilation
+
+# Security
+Use CSRF protection
+Validate all user inputs
+Use Laravel's security features
+Implement proper authorization
+
+# Routes
+Client routes in routes/client.php
+Admin routes in routes/web.php
+API routes in routes/api.php
+
+# Models
+Store models in app/Models
+Use proper relationships
+Implement proper validation
+Use Laravel's model factories for testing
+
+# Controllers
+Organize by client/admin namespace
+Follow single responsibility principle
+Use form requests for validation
+Return proper response codes
+
+# Views
+Use blade templates
+Organize by section (client/admin)
+Use layouts and components
+Follow BEM naming convention for CSS
+
+# Testing
+Write unit tests for models
+Write feature tests for controllers
+Use factories for test data
+Follow TDD when possible
