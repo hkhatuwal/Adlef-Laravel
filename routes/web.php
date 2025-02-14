@@ -28,13 +28,11 @@ Route::group(['prefix' => 'client', 'as' => 'client.', 'middleware' => ['auth:cl
 });
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
-    Route::middleware('guest')->group(function () {
-        Route::get('/login', [\App\Http\Controllers\Admin\AuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [AuthController::class, 'login']);
-    });
+    Route::get('/login', [\App\Http\Controllers\Admin\AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 
 
-    Route::middleware('auth:web')->group(function () {
+    Route::middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
         Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });

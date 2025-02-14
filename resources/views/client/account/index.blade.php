@@ -51,6 +51,7 @@
             </a>
         </div>
 
+
         <div id="bank-accounts-view">
             <!-- Account Sections -->
             <div class="space-y-10">

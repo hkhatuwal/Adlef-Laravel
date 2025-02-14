@@ -5,6 +5,10 @@
         <div class="max-w-3xl mx-auto">
             <!-- Success Message -->
             <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+                <a href="{{route('client.transfer.show',$transfer->id)}}">
+                    <i class="fa-sharp fa-light fa-circle-info"></i>
+
+                </a>
                 <div class="text-center">
                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

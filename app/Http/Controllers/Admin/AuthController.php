@@ -18,10 +18,10 @@ class AuthController extends Controller
     {
         $result = Auth::attempt([
             "email" => $request->get('email'),
-            "password" => $request->get('password')
+            "password" => $request->get('password'),
         ]);
-        if (!$result) {
-            return back()->withErrors(['error' => 'Invalid Credentials']);
+        if (!$result || !\auth()->user()->hasRole('admin')) {
+            return redirect()->back()->with('error',"Invalid login details");
         }
         return redirect()->route('admin.posts.index');
     }

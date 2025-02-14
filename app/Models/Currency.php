@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Currency extends Model
 {
-    protected $fillable=["name","symbol","conversion_rate","icon"];
+
+    const TYPE_FIAT="fiat";
+    const TYPE_CRYPTO="crypto";
+    protected $fillable=["name","symbol","conversion_rate","icon","type"];
+
+    protected $casts=[
+        'conversion_rate'=>'double'
+    ];
 
 
     public function commission(): HasMany
@@ -16,5 +23,8 @@ class Currency extends Model
     }
     public function isUSD():bool{
         return  $this->symbol === "USD";
+    }
+    public function getMyAssetAccount(){
+        return AssetAccount::where(["user_id"=>auth()->user()->id,"currency_id"=>$this->id])->first();
     }
 }

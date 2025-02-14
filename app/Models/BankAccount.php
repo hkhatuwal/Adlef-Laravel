@@ -34,4 +34,6 @@ class BankAccount extends Model
     {
         return $this->hasOne(ThirdPartyAccount::class);
     }
+
+
 }

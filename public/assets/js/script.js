@@ -1,4 +1,6 @@
 // Initialize AOS library if needed (assuming AOS is a library for animations)
+// noinspection JSJQueryEfficiency
+
 AOS.init();
 
 // Tablet detection and sidebar handling
@@ -63,6 +65,12 @@ $(function () {
         resizeTimer = setTimeout(handleTabletView, 250);
     });
 });
+
+
+
+
+
+
 
 // Check tablet size and handle sidebar
 function handleTabletView() {
@@ -473,5 +481,172 @@ $(document).ready(function () {
                 console.error('Error calculating fee:', error);
             });
     }
+
+});
+
+// Currency Exchange Functionality
+$(document).ready(function() {
+    // Initially hide currency dialogs
+    $('.currency-dialog').hide();
+
+    // Toggle currency dialogs
+    $('.pay-currency-btn').on('click', function(e) {
+        e.stopPropagation();
+        const $dialog = $('.pay-currency-dialog');
+        const isVisible = $dialog.is(':visible');
+        $dialog.toggle();
+        $('.receive-currency-dialog').hide();
+    });
+
+    $('.receive-currency-btn').on('click', function(e) {
+        e.stopPropagation();
+        const $dialog = $('.receive-currency-dialog');
+        const isVisible = $dialog.is(':visible');
+        $dialog.toggle();
+        $('.pay-currency-dialog').hide();
+    });
+
+    // Handle search functionality
+    $('.currency-search').on('input', function() {
+        const searchTerm = $(this).val().toLowerCase();
+        const $currencyList = $(this).closest('.currency-dialog').find('.currency-item');
+
+        $currencyList.each(function() {
+            const currencyName = $(this).find('.currency-name').text().toLowerCase();
+            $(this).toggle(currencyName.includes(searchTerm));
+        });
+    });
+
+    // Close dialogs when clicking outside
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.currency-selector, .currency-dialog').length) {
+            $('.currency-dialog').hide();
+        }
+    });
+
+    // Handle currency selection
+    $('.currency-item').on('click', function() {
+        const $item = $(this);
+        const selectedCurrency = $item.find('.currency-name').text();
+        const selectedCurrencyId = $item.data('value');
+        const selectCurrencyBalance = $item.data('balance');
+        const selectedIcon = $item.find('.currency-icon').attr('src');
+        const $dialog = $item.closest('.currency-dialog');
+        const $button = $dialog.hasClass('pay-currency-dialog') ?
+            $('.pay-currency-btn') : $('.receive-currency-btn');
+
+        // Update button content
+        $button.find('.currency-icon').attr('src', selectedIcon);
+        $button.find('.currency-code').text(selectedCurrency);
+        $button.find('.currency').val(selectedCurrencyId)
+        $button.find('.currency').val(selectedCurrencyId)
+
+        if (selectCurrencyBalance){
+            $('#availableBalance').text(`${selectedCurrency} ${selectCurrencyBalance}`)
+        }
+
+
+        // Hide dialog
+        $dialog.hide();
+
+        // Trigger exchange rate calculation
+        calculateExchangeRate();
+    });
+
+    // Handle amount input
+    $('#fromAmount').on('input', function() {
+        calculateExchangeRate();
+    });
+
+    // Switch currencies
+    $('.switch-currencies-btn').on('click', function() {
+        swapPayReceiveValues();
+    });
+
+    function swapPayReceiveValues() {
+        // Get current values for currencies
+        const payIcon = $('.pay-currency-btn .currency-icon').attr('src');
+        const payCurrency = $('.pay-currency-btn .currency-code').text();
+        const payCurrencyId = $('.pay-currency-btn .currency').val();
+        const receiveIcon = $('.receive-currency-btn .currency-icon').attr('src');
+        const receiveCurrency = $('.receive-currency-btn .currency-code').text();
+        const receiveCurrencyId = $('.receive-currency-btn .currency').val();
+
+        // Get current amounts
+        const payAmount = $('#fromAmount').val();
+        const receiveAmount = $('#toAmount').val();
+
+        // Swap currencies
+        $('.pay-currency-btn .currency-icon').attr('src', receiveIcon);
+        $('.pay-currency-btn .currency-code').text(receiveCurrency);
+        $('.pay-currency-btn .currency').val(receiveCurrencyId);
+        $('.receive-currency-btn .currency-icon').attr('src', payIcon);
+        $('.receive-currency-btn .currency-code').text(payCurrency);
+        $('.receive-currency-btn .currency').val(payCurrencyId);
+
+        // Swap amounts
+        $('#fromAmount').val(receiveAmount);
+        $('#toAmount').val(payAmount);
+
+        // Recalculate exchange rate with new values
+        calculateExchangeRate();
+    }
+
+    // Handle terms checkbox
+    $('.terms-checkbox').on('change', function() {
+        $('.confirm-exchange-btn').prop('disabled', !$(this).is(':checked'));
+    });
+
+    // Calculate exchange rate
+    function calculateExchangeRate() {
+        const fromAmount = parseFloat($('#fromAmount').val()) || 0;
+        const fromCurrency = $('#from-currency').val();
+        const toCurrency = $('#to-currency').val();
+
+        if (fromAmount > 0 && fromCurrency && toCurrency) {
+            // First get the current rate
+            $.ajax({
+                url: route('client.otc.calculate'),
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    from_amount: fromAmount,
+                    from_currency: fromCurrency,
+                    to_currency: toCurrency
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const rate = response.data.rate;
+                        const fromSymbol = response.data.from.symbol;
+                        const toSymbol = response.data.to.symbol;
+
+                        // Update the exchange rate display
+                        $('.exchange-rate').text(`1 ${fromSymbol} = ${rate.toFixed(6)} ${toSymbol}`);
+                        $('#toAmount').val(response.data.converted_amount.toFixed(6));
+                        $('.network-fee').text(`${response.data.fee.toFixed(6)} ${fromSymbol}`);
+                        // Calculate the exchange
+
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error fetching rate:', xhr);
+                    toastr.error('Failed to fetch exchange rate');
+                }
+            });
+        } else {
+            $('#toAmount').val('');
+            $('.exchange-rate').text('-');
+            $('.network-fee').text('N/A');
+        }
+    }
+
+    // Initialize exchange rate calculation
+    calculateExchangeRate();
+    // Select default currencies
+    $('.currency-item:first').click();
+    $('.receive-currency-list li').eq(3).click();
+
 
 });

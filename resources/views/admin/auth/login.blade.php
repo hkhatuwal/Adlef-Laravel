@@ -3,49 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Admin Login - Dashboard</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
+    @include('admin._partials.styles')
+
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-<div class="w-full ">
-    <section class="bg-gray-50 dark:bg-gray-900">
-        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                <img class="h-20 mr-2" src="{{asset('assets/images/logo.svg')}}" alt="logo">
-            </a>
-            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                        Sign in to your account
-                    </h1>
-                    <form class="space-y-4 md:space-y-6" action="{{route('admin.login')}}" method="post">
-                        @csrf
-                        <div>
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
-                        </div>
-                        <div>
-                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                            <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
-                                    <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="">
-                                </div>
-                                <div class="ml-3 text-sm">
-                                    <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
-                                </div>
-                            </div>
+<body class="bg-gradient-to-br from-slate-800 to-slate-900 min-h-screen">
+    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <!-- Admin Badge -->
+        <div class="fixed top-0 w-full bg-red-600 text-white text-center py-2 font-semibold tracking-wide shadow-lg">
+            <i class="fas fa-shield-alt mr-2"></i> ADMIN CONTROL PANEL
+        </div>
 
-                        </div>
-                        <button type="submit" class="btn btn-primary w-full">Sign in</button>
-
-                    </form>
+        <div class="max-w-md w-full space-y-8 bg-white rounded-2xl shadow-2xl p-8 relative">
+            <!-- Admin Icon -->
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                <div class="bg-slate-900 rounded-full p-4 shadow-lg">
+                    <i class="fas fa-user-shield text-3xl text-white"></i>
                 </div>
             </div>
+
+            <!-- Header -->
+            <div class="text-center pt-6">
+                <img class="mx-auto h-16 w-auto mb-4" src="{{asset('assets/images/logo.svg')}}" alt="Logo">
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">
+                    Administrator Access
+                </h2>
+                <p class="mt-2 text-sm text-slate-600">
+                    Secure login portal for authorized personnel only
+                </p>
+            </div>
+
+            <!-- Login Form -->
+            <form class="mt-8 space-y-6" action="{{route('admin.login')}}" method="post">
+                @csrf
+
+                <!-- Email Field -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-700">
+                        <i class="fas fa-envelope mr-2 text-slate-400"></i>Admin Email
+                    </label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" required
+                            class="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-lg
+                            placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                            transition duration-150 ease-in-out"
+                            placeholder="admin@example.com">
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-700">
+                        <i class="fas fa-lock mr-2 text-slate-400"></i>Password
+                    </label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required
+                            class="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-lg
+                            placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+                            transition duration-150 ease-in-out"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center">
+                    <input id="remember" name="remember" type="checkbox"
+                        class="h-4 w-4 text-red-600 focus:ring-red-500 border-slate-300 rounded
+                        transition duration-150 ease-in-out">
+                    <label for="remember" class="ml-2 block text-sm text-slate-700">
+                        Keep me signed in
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent
+                        text-sm font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
+                        transition duration-150 ease-in-out">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-sign-in-alt text-red-300 group-hover:text-red-200
+                            transition duration-150 ease-in-out"></i>
+                        </span>
+                        Sign in to Dashboard
+                    </button>
+                </div>
+            </form>
+
+            <!-- Security Notice -->
+            <div class="mt-6 text-center text-xs text-slate-600 border-t border-slate-200 pt-4">
+                <i class="fas fa-shield-alt text-red-500 mr-1"></i>
+                This is a secure area. Unauthorized access is prohibited.
+            </div>
         </div>
-    </section>
-</div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm text-slate-400">
+            <i class="fas fa-clock mr-1"></i>
+            {{ now()->format('Y') }} &copy; All rights reserved
+        </div>
+    </div>
 </body>
+@include('admin._partials.scripts')
+
 </html>

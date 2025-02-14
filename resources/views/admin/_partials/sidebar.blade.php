@@ -1,6 +1,6 @@
 <button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
         type="button"
-        class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+        class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-slate-500 rounded-lg sm:hidden hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-200">
     <span class="sr-only">Open sidebar</span>
     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
         <path clip-rule="evenodd" fill-rule="evenodd"
@@ -9,71 +9,84 @@
 </button>
 
 <aside id="default-sidebar"
-       class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+       class="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full sm:translate-x-0"
        aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 flex flex-col justify-between">
-        <div class="top">
-            <img src="{{asset('assets/images/logo.svg')}}" class="h-20" alt="">
-            <ul class="space-y-2 font-medium">
-                <li>
-                    <a href="#"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <svg
-                            class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 22 21">
-                            <path
-                                d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
-                            <path
-                                d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
-                        </svg>
-                        <span class="ms-3">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('admin.posts.create')}}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="material-symbols-outlined">
-                            add
-                        </i>
-                        <span class="ms-3">Create Post</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('admin.posts.index')}}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <span class="ms-3">All Posts</span>
-                    </a>
-                </li>
-            </ul>
+    <div class="h-full bg-white dark:bg-slate-800 flex flex-col shadow-xl">
+        <!-- Logo Section -->
+        <div class="p-5 border-b border-slate-200 dark:border-slate-700">
+            <img src="{{asset('assets/images/logo.svg')}}" class="h-12 mx-auto" alt="Logo">
         </div>
 
-        <div class="bottom">
+        <!-- Navigation Section -->
+        <div class="flex-1 overflow-y-auto px-4 py-5">
+            <!-- Admin Info -->
+            <div class="mb-6 pb-6 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white">
+                            <i class="material-symbols-outlined">admin_panel_settings</i>
+                        </div>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">Administrator</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Super Admin</p>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Main Navigation -->
+            <nav class="space-y-1">
+                <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
+                
+                <!-- Dashboard -->
+                <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 mr-3 transition-transform group-hover:scale-110">
+                        <i class="material-symbols-outlined text-[20px]">dashboard</i>
+                    </span>
+                    Dashboard
+                </a>
+
+                <!-- Posts Section -->
+                <div class="mt-4">
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Content Management</p>
+                    
+                    <a href="{{route('admin.posts.create')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 mr-3 transition-transform group-hover:scale-110">
+                            <i class="material-symbols-outlined text-[20px]">post_add</i>
+                        </span>
+                        Create Post
+                    </a>
+
+                    <a href="{{route('admin.posts.index')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 dark:bg-slate-700 text-purple-600 dark:text-purple-400 mr-3 transition-transform group-hover:scale-110">
+                            <i class="material-symbols-outlined text-[20px]">article</i>
+                        </span>
+                        All Posts
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
             <form action="{{route('admin.logout')}}" method="post" id="logout-form">
                 @csrf
-            <button type="button" class="btn btn-danger flex justify-center items-center w-full border-red-500" onclick="logout()">
-                Logout
-                <i class="material-symbols-outlined ml-1">
-                    exit_to_app
-                </i>
-            </button>
+                <button type="button" onclick="logout()" 
+                    class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                    <i class="material-symbols-outlined mr-2">logout</i>
+                    Sign Out
+                </button>
             </form>
         </div>
-
     </div>
 </aside>
 
-
 <script>
-
-    function  logout() {
-        var result=confirm("Do you want to log out?");
-        if(result){
-            document.getElementById('logout-form').submit();
-        }
+function logout() {
+    if (confirm("Are you sure you want to sign out?")) {
+        document.getElementById('logout-form').submit();
     }
-
+}
 </script>
 
 

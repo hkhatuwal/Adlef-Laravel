@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssetAccount;
 use App\Models\AssetTransfer;
+use App\Models\BankAccount;
+use App\Models\CryptoWallet;
 use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -98,11 +101,14 @@ class AssetTransferController extends Controller
 
         $transfer = AssetTransfer::create([
             'from_account_id' => $request->input('from_account'),
+            'from_account_type'=>$isUSD?BankAccount::class:null,
+            'to_account_type'=>AssetAccount::class,
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),
             'currency_id' => $request->input('currency_id'),
             'reference_number' => Str::uuid(),
             'status' => 'pending',
+            'fee'=>0,
             'transfer_type' => AssetTransfer::TYPE_IN,
         ]);
 
@@ -134,7 +140,6 @@ class AssetTransferController extends Controller
         ]);
 
         if ($validator->fails()) {
-            dd($validator->messages());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
@@ -142,6 +147,8 @@ class AssetTransferController extends Controller
         }
 
         $transfer = AssetTransfer::create([
+            'from_account_type'=>AssetAccount::class,
+            'to_account_type'=>$isUSD?BankAccount::class:CryptoWallet::class,
             'from_account_id' => $request->input('from_account'),
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),
@@ -180,5 +187,12 @@ class AssetTransferController extends Controller
             'success' => true,
             'data' => $feeDetails
         ]);
+    }
+
+    public function show(Request $request,$id)
+    {
+        $transfer=AssetTransfer::find($id);
+        $transfer->load(['currency','from_account','to_account']);
+        return view('client.transfer.show', compact('transfer'));
     }
 }

@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @vite(['resources/css/app.css','resources/js/app.js'])
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{asset('assets/css/aos.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/swiper.min.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
+
+    @include('admin._partials.styles')
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{isset($description) ? $description : env('APP_NAME')}}">
@@ -42,8 +43,7 @@
 <div class="w-screen" data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0">
     @include('admin._partials.sidebar')
     <div class="p-4 sm:ml-64">
-        <div class="w-full p-8 bg-white shadow-xl rounded-lg">
-
+        <div class="w-full p-8 bg-white  rounded-lg">
         @if ($errors->any())
             <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
                 <ul>
@@ -66,8 +66,7 @@
 
 </body>
 @yield('pre-script')
-<script src="{{asset('common/js/jquery.min.js')}}"></script>
-<script src="{{asset("admin/js/script.js")}}"></script>
+@include('admin._partials.scripts')
 @yield('post-script')
 
 </html>

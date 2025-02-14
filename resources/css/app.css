@@ -31,6 +31,7 @@
     src: url('../fonts/VisueltPro-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
+    font-style: normal;
 }
 
 input[type="text"],
@@ -135,6 +136,36 @@ body{
 
 
 /* Bank Account */
-input[type="radio"]:checked + div {
-    @apply border border-[#3B82F6] bg-[#F3F4F6];
+
+
+
+
+
+/*Otc*/
+.currency-selector{
+    @apply text-black rounded-full card p-2 mr-3 flex items-center justify-between cursor-pointer;
+}
+
+.currency-code{
+    @apply font-semibold tracking-widest;
+}
+
+.available-balance{
+    @apply tracking-wider;
+}
+
+.currency-search{
+    @apply h-10 border-none outline-0 !shadow-none focus:border-none focus:outline-0 focus:ring-0 focus-visible:border-none  ;
+}
+.currency-item{
+    @apply space-y-1.5;
+}
+
+
+
+
+/*Activities*/
+
+.filter-status input[type="radio"]{
+    @apply border-none focus-visible:!border-none ;
 }

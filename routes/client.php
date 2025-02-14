@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Client\DashboardController;
+use App\Http\Controllers\Client\OtcController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Client\ActivityController;
 
 /*Client Auth Routes*/
 
@@ -24,9 +26,19 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         Route::get('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'index'])->name('transfer');
         Route::get('/transfer/in', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferIn'])->name('transfer.in');
         Route::get('/transfer/out', [\App\Http\Controllers\Client\AssetTransferController::class, 'transferOut'])->name('transfer.out');
+        Route::get('/transfer/show/{transfer}', [\App\Http\Controllers\Client\AssetTransferController::class, 'show'])->name('transfer.show');
         Route::post('/transfer/transfer/in', [\App\Http\Controllers\Client\AssetTransferController::class, 'storeTransferIn'])->name('transfer.in.post');
         Route::post('/transfer/transfer/out', [\App\Http\Controllers\Client\AssetTransferController::class, 'storeTransferOut'])->name('transfer.out.post');
         Route::post('/transfer/calculate-fee', [\App\Http\Controllers\Client\AssetTransferController::class, 'calculateFee'])->name('client.transfer.calculate-fee');
+
+        // OTC Exchange Routes
+        Route::prefix('otc')->name('otc.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Client\OtcController::class, 'index'])->name('index');
+            Route::post('/calculate', [\App\Http\Controllers\Client\OtcController::class, 'calculate'])->name('calculate');
+            Route::post('/confirm', [\App\Http\Controllers\Client\OtcController::class, 'confirmExchange'])->name('confirm');
+            Route::get('/success/{id}', [OtcController::class, 'showSuccess'])->name('success');
+            Route::get('/show/{id}', [OtcController::class, 'show'])->name('show');
+        });
 
         // Account Management Routes
         Route::get('/account', [\App\Http\Controllers\Client\AccountController::class, 'index'])->name('account.index');
@@ -58,5 +70,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
     // Document upload route
     Route::post('/document/upload-document', [\App\Http\Controllers\Client\DocumentController::class, 'uploadDocument'])->name('document.upload-document');
 
+    // Activity Routes
+    Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
 
 });
