@@ -38,8 +38,8 @@
                             <div class="space-y-4">
                                 <div class="relative from-account">
                                     <select name="to_account" id="to_account" class="select2">
-                                        <option value="">Select From Whitelisted Account</option>
-                                        @foreach($fromAccounts as $account)
+                                        <option value="">Select Account</option>
+                                        @foreach($toAccounts as $account)
                                             <option value="{{ $account->id }}" @selected($loop->index==0)>
                                                 {{ $account->bank_name }} - {{ $account->account_number }}
                                             </option>
@@ -54,7 +54,7 @@
                                 <div class="relative from-wallet">
                                     <select name="to_account" id="to_wallet"  class="select2">
                                         <option value="">Select Your Wallet</option>
-                                        @foreach($fromAccounts as $account)
+                                        @foreach($toAccounts as $account)
                                             <option value="{{ $account->id }}" @selected($loop->index==0)>
                                                 {{ $account->alias }} - {{ $account->formattedAddress() }}
                                             </option>

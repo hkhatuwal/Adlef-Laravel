@@ -55,32 +55,24 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Account Holder Name</label>
-                            <input type="text" name="account_holder" id="account_holder"
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                   required>
+                            <input type="text" name="account_holder" id="account_holder" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Bank Name</label>
-                            <input type="text" name="bank_name" id="bank_name"
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                   required>
+                            <input type="text" name="bank_name" id="bank_name" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Account Number</label>
-                            <input type="number" name="account_number" id="account_number"
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                   required>
+                            <input type="number" name="account_number" id="account_number" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">SWIFT Code</label>
-                            <input type="text" name="swift_code" id="swift_code"
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                   required>
+                            <input type="text" name="swift_code" id="swift_code" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
                     </div>
@@ -95,16 +87,12 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">First Name</label>
-                                        <input type="text" name="first_name" id="first_name"
-                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                               required>
+                                        <input type="text" name="first_name" id="first_name" required>
                                         <p class="mt-1 text-sm text-red-600 hidden"></p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
-                                        <input type="text" name="last_name" id="last_name"
-                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                               required>
+                                        <input type="text" name="last_name" id="last_name" required>
                                         <p class="mt-1 text-sm text-red-600 hidden"></p>
                                     </div>
                                 </div>
@@ -112,16 +100,12 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Date of Birth</label>
-                                        <input type="date" name="date_of_birth" id="date_of_birth"
-                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                               required>
+                                        <input type="date" name="date_of_birth" id="date_of_birth" required>
                                         <p class="mt-1 text-sm text-red-600 hidden"></p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Gender</label>
-                                        <select name="gender" id="gender"
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                                required>
+                                        <select name="gender" id="gender" class="select2" required>
                                             <option value="">Select Gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
@@ -135,10 +119,8 @@
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Country of
                                             Birth/Origin</label>
-                                        <select name="country_of_birth" id="country_of_birth"
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                                required>
-                                            <option value="">Select Country</option>
+                                        <select name="country_of_birth" id="country_of_birth" class="select2" required>
+                                            <option >Select Country</option>
                                             @foreach(config('constants.country_code_with_name') as $code=>$country)
                                                 <option
                                                     value="{{$country}}" @selected(old('phone_country') == $code)>{{$country}}</option>
@@ -149,9 +131,7 @@
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Counterparty
                                             Relationship</label>
-                                        <select name="counterparty_relationship" id="counterparty_relationship"
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                                required>
+                                        <select name="counterparty_relationship" id="counterparty_relationship" class="select2" required>
                                             <option value="">Select Relationship</option>
                                             <option value="family">Family</option>
                                             <option value="friend">Friend</option>
@@ -166,17 +146,13 @@
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Document
                                             Number</label>
-                                        <input type="text" name="document_number" id="document_number"
-                                               class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                               required>
+                                        <input type="text" name="document_number" id="document_number" required>
                                         <p class="mt-1 text-sm text-red-600 hidden"></p>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-bold text-gray-700 mb-2">Document
                                             Country</label>
-                                        <select name="document_country" id="document_country"
-                                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                                required>
+                                        <select name="document_country" id="document_country" class="select2" required>
                                             <option value="">Select Country</option>
                                             @foreach(config('constants.country_code_with_name') as $code=>$country)
                                                 <option
@@ -196,18 +172,14 @@
                             <div class="space-y-6">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Company Name</label>
-                                    <input type="text" name="company_name" id="company_name"
-                                           class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                           required>
+                                    <input type="text" name="company_name" id="company_name" required>
                                     <p class="mt-1 text-sm text-red-600 hidden"></p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Registration
                                         Country</label>
-                                    <select name="registration_country" id="registration_country"
-                                            class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                            required>
+                                    <select name="registration_country" id="registration_country" class="select2" required>
                                         <option value="">Select Country</option>
                                         <option value="US">United States</option>
                                         <option value="UK">United Kingdom</option>
@@ -216,24 +188,17 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2"> Registration Date</label>
-                                    <input type="date" name="registration_date" id="registration_date"
-                                           class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                           required>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Registration Date</label>
+                                    <input type="date" name="registration_date" id="registration_date" required>
                                     <p class="mt-1 text-sm text-red-600 hidden"></p>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Registration
                                         Number</label>
-                                    <input type="text" name="registration_number" id="registration_number"
-                                           class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                           required>
+                                    <input type="text" name="registration_number" id="registration_number" required>
                                     <p class="mt-1 text-sm text-red-600 hidden"></p>
                                 </div>
-
-
-
 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Company Registration
@@ -244,40 +209,30 @@
                         @endif
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Contact</label>
-                            <div class="flex gap-4 flex-wrap">
-                                <select name="country_code" id="country_code"
-                                        class="w-1/4 px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                        required>
-                                    <option value="">Code</option>
-                                    <option value="+93">🇦🇫 +93</option>
-                                </select>
-                                <input type="tel" name="phone" id="phone"
-                                       class="flex-1 px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium block"
-                                       required>
-                                <p class="mt-1 text-sm text-red-600 block w-full "></p>
+                            <div class="flex gap-4 flex-row w-full">
+                                <div class="w-3/6">
+                                    <select name="country_code" id="country_code" class="select2 w-full" required>
+                                        <option value="">Country Code</option>
+                                        @foreach(config('constants.country_code_with_name') as $code=>$country)
+                                            <option
+                                                value="{{$code}}" @selected(old('phone_country') == $code)>({{$code}} ) {{$country}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="w-full">
+                                    <input type="tel" name="phone" id="phone" class="w-full" required>
 
+                                </div>
                             </div>
+                            <p class="mt-1 text-sm text-red-600 block w-full"></p>
 
                         </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                                <input type="email" name="email" id="email"
-                                       class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                       required>
+                                <input type="email" name="email" id="email" required>
                                 <p class="mt-1 text-sm text-red-600 hidden"></p>
                             </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Counterparty Relationship</label>
-                            <select name="counterparty_relationship" id="counterparty_relationship"
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                    required>
-                                <option value="">Select Relationship</option>
-                                @foreach(config('constants.relationship') as $relationshiop)
-                                    <option value="{{$relationshiop}}">{{$relationshiop}}</option>
-                                @endforeach
-                            </select>
-                            <p class="mt-1 text-sm text-red-600 hidden"></p>
-                        </div>
+
 
 
                     </div>
@@ -289,25 +244,19 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Street Address</label>
-                            <input type="text" name="street_address" id="street_address"
-                                   class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                   required>
+                            <input type="text" name="street_address" id="street_address" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">City</label>
-                                <input type="text" name="city" id="city"
-                                       class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                       required>
+                                <input type="text" name="city" id="city" required>
                                 <p class="mt-1 text-sm text-red-600 hidden"></p>
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">State</label>
-                                <input type="text" name="state" id="state"
-                                       class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                       required>
+                                <input type="text" name="state" id="state" required>
                                 <p class="mt-1 text-sm text-red-600 hidden"></p>
                             </div>
                         </div>
@@ -315,9 +264,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2" for="country">Country</label>
-                                <select name="country" id="country"
-                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                        required>
+                                <select name="country" id="country" class="select2" required>
                                     <option value="">Select Country</option>
                                     @foreach(config('constants.country_code_with_name') as $code=>$country)
                                         <option
@@ -330,9 +277,7 @@
 
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Postal Code</label>
-                                <input type="text" name="postal_code" id="postal_code"
-                                       class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-gray-600 focus:ring-2 focus:ring-gray-200 outline-none transition-all text-gray-700 font-medium"
-                                       required>
+                                <input type="text" name="postal_code" id="postal_code" required>
                                 <p class="mt-1 text-sm text-red-600 hidden"></p>
                             </div>
                         </div>

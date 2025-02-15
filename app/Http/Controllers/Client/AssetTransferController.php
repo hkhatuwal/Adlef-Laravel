@@ -58,14 +58,23 @@ class AssetTransferController extends Controller
             ->with('currency')
             ->firstOrFail();
 
+        $isThirdParty=$request->has('third-party');
         if ($assetAccount->currency->isUSD()) {
-            $fromAccounts = auth()->user()->bankAccounts;
+            $toAccounts = auth()->user()->bankAccounts();
+            if ($isThirdParty){
+                $toAccounts=$toAccounts->where('account_type',BankAccount::TYPE_THIRD_PARTY);
+            }
         } else {
-            $fromAccounts = auth()->user()->cryptoWallets()->where('currency_id', $currencyId)->get();
+            $toAccounts = auth()->user()->cryptoWallets()->where('currency_id', $currencyId);
         }
+
+
+
+
+        $toAccounts=$toAccounts->get();
         $sourceOptions = config('constants.source_funds');
 
-        return view('client.transfer.transfer-out', compact('fromAccounts', 'assetAccount', 'sourceOptions'));
+        return view('client.transfer.transfer-out', compact('toAccounts', 'assetAccount', 'sourceOptions'));
     }
 
 

@@ -212,7 +212,8 @@ $(document).ready(function () {
         {
             templateResult: showIcon,
             templateSelection: showIcon,
-            minimumResultsForSearch: -1
+            minimumResultsForSearch: 0,
+            width: '100%'
         }
     );
 

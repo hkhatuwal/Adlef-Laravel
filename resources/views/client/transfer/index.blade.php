@@ -12,7 +12,6 @@
                 <div class="max-w-md mx-auto">
                     <div class="relative">
                         <select id="currency_select" name="currency_id" class="select2">
-
                             @foreach(\App\Models\Currency::all() as $currency)
                                 <option value="{{ $currency->id }}" data-icon="{{ asset('storage/' . $currency->icon) }}">
                                     {{ $currency->name }} ({{ $currency->symbol }})
@@ -62,7 +61,7 @@
                 <!-- Transfer Out to Third Party -->
                 <div class="group">
                     <div class="transfer-option h-full bg-white border-2 border-gray-100 rounded-2xl p-8 text-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl hover:border-black cursor-pointer"
-                         data-type="third-party" data-url="{{route('client.account.add')}}">
+                         data-type="third-party" data-url="{{route('client.transfer.out',["third-party"=>true])}}">
                         <div class="mb-6 relative">
                             <div class="w-16 h-16 mx-auto bg-purple-50 rounded-2xl flex items-center justify-center group-hover:bg-purple-100 transition-colors duration-300">
                                 <img src="{{ asset('assets/images/third-party.svg') }}" alt="Third Party Transfer" class="w-8 h-8">

@@ -40,8 +40,10 @@ input[type="number"],input[type="email"],input[type="password"],input[type="sear
 }
 
 select {
-    @apply focus:ring-green-500 focus:border-green-500 block w-full bg-white p-4 rounded-lg border-2 shadow-sm sm:text-lg border-gray-300 cursor-pointer    font-semibold ;
+    @apply focus:ring-green-500 focus:border-green-500 block w-full bg-white p-3 rounded-md border shadow-sm  border-gray-300 cursor-pointer text-gray-500  ;
 }
+
+
 
 
 .card {
