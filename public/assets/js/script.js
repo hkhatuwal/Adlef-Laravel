@@ -25,13 +25,13 @@ function toggleSidebar(hide = false) {
 
     if (hide) {
         $sidebar.css('transform', 'translateX(-100%)');
-        $mainContent.removeClass('ml-64');
-        $topNav.removeClass('left-64').addClass('left-0');
+        $mainContent.removeClass('ml-72');
+        $topNav.removeClass('left-72').addClass('left-0');
         console.log('Sidebar hidden');
     } else {
         $sidebar.css('transform', 'translateX(0)');
-        $mainContent.addClass('ml-64');
-        $topNav.addClass('left-64').removeClass('left-0');
+        $mainContent.addClass('ml-72');
+        $topNav.addClass('left-72').removeClass('left-0');
         console.log('Sidebar shown');
     }
 }

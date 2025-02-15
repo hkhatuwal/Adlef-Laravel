@@ -6,8 +6,8 @@
         <img src="{{asset('/assets/images/texcture1.avif')}}"
              class="absolute inset-0 w-full h-full object-cover z-0 opacity-20">
     </section>
-    <div class="progress-bar bg-gray-200 h-5 w-full">
-        <div class="progress bg-lime-300 w-1/4 h-full"></div>
+    <div class="progress-bar1 bg-gray-200 h-5 w-full">
+        <div class="progress1 bg-lime-300 w-1/4 h-full"></div>
     </div>
     <section class="container mx-auto px-4 md:p-10 mt-10">
         <div class="flex  flex-col-reverse md:flex-row justify-start items-start gap-8">

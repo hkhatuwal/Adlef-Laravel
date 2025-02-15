@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('client._layouts.app')
 
 @section('content')
     <div class="container mx-auto px-4 py-8">
@@ -39,7 +39,8 @@
                         <!-- Crypto Wallet Option -->
                         <label class="cursor-pointer">
                             <input type="radio" name="account_type" value="crypto_wallet"
-                                   class="hidden account-type-radio" @checked(request()->get('type')=="crypto_wallet") required>
+                                   class="hidden account-type-radio"
+                                   @checked(request()->get('type')=="crypto_wallet") required>
                             <div class="border rounded-lg p-4 hover:border-blue-500 transition-colors">
                                 <div class="flex justify-center mb-2">
                                     <img src="{{ asset('assets/images/crypto.png') }}" alt="Crypto Wallet"

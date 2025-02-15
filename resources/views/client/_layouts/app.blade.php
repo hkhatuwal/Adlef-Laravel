@@ -60,9 +60,9 @@
         @include('client._partials.sidebar')
     @endif
     <!-- Main Content -->
-    <div class="{{!$hideSidebar?"ml-64":""}} main">
+    <div class="{{!$hideSidebar?"ml-72":""}} main">
         <!-- Top Navigation -->
-        <div class="top-nav bg-white h-16 fixed right-0 {{!$hideSidebar?"left-64":"left-0"}}  top-0 border-b border-gray-200 z-10">
+        <div class="top-nav bg-white h-16 fixed right-0 {{!$hideSidebar?"left-72":"left-0"}}  top-0 border-b border-gray-200 z-10">
             <div class="flex items-center justify-between h-full px-6">
                 <div class="flex items-center">
                     <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-gray-100 mr-2 relative z-40">
