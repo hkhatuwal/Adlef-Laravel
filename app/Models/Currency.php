@@ -10,7 +10,7 @@ class Currency extends Model
 
     const TYPE_FIAT="fiat";
     const TYPE_CRYPTO="crypto";
-    protected $fillable=["name","symbol","conversion_rate","icon","type"];
+    protected $fillable=["name","symbol","conversion_rate","icon","type","price_usd"];
 
     protected $casts=[
         'conversion_rate'=>'double'

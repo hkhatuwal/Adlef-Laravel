@@ -21,6 +21,7 @@ class AssetTransfer extends Model
         'status',
         'fee',
         'transfer_type',
+        'user_id',
 
     ];
 
@@ -109,8 +110,8 @@ class AssetTransfer extends Model
         $amount = number_format($this->amount, 8) . ' ' . $this->currency->symbol;
 
 
-        $fromModel= app($this->from_account_type);
-        $toModel= app($this->to_account_type);
+        $fromModel= app($this->from_account_type)->find($this->from_account_id);
+        $toModel= app($this->to_account_type)->find($this->to_account_id);
         $currency=Currency::find($this->currency_id);
 
         if ($this->transfer_type === self::TYPE_IN) {
@@ -185,6 +186,12 @@ class AssetTransfer extends Model
                 'transfer_type' => $this->transfer_type
             ]
         ]);
+    }
+
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     //

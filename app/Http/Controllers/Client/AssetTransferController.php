@@ -8,17 +8,21 @@ use App\Models\AssetTransfer;
 use App\Models\BankAccount;
 use App\Models\CryptoWallet;
 use App\Models\Currency;
+use App\Utils\AssetOperations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Account;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Utils\FeeCalculator;
-
-// Added this line
 
 class AssetTransferController extends Controller
 {
+    private AssetOperations $assetOperations;
+
+    public function __construct(AssetOperations $assetOperations)
+    {
+        $this->assetOperations = $assetOperations;
+    }
+
     public function index()
     {
         $currencies = Currency::all();
@@ -37,9 +41,9 @@ class AssetTransferController extends Controller
         $currencyId = $request->query('currency_id');
 
         // Get the asset account for the current user and selected currency
-        $fromAccounts = auth()->user()->bankAccounts;
+        $fromAccounts = $request->user()->bankAccounts;
 
-        $assetAccount = auth()->user()->assetAccounts()
+        $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
             ->with('currency')
             ->firstOrFail();
@@ -53,30 +57,26 @@ class AssetTransferController extends Controller
     {
         // Get user's bank accounts for the from account selection
         $currencyId = $request->query('currency_id');
-        $assetAccount = auth()->user()->assetAccounts()
+        $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
             ->with('currency')
             ->firstOrFail();
 
-        $isThirdParty=$request->has('third-party');
+        $isThirdParty = $request->has('third-party');
         if ($assetAccount->currency->isUSD()) {
-            $toAccounts = auth()->user()->bankAccounts();
-            if ($isThirdParty){
-                $toAccounts=$toAccounts->where('account_type',BankAccount::TYPE_THIRD_PARTY);
+            $toAccounts = $request->user()->bankAccounts();
+            if ($isThirdParty) {
+                $toAccounts = $toAccounts->where('account_type', BankAccount::TYPE_THIRD_PARTY);
             }
         } else {
-            $toAccounts = auth()->user()->cryptoWallets()->where('currency_id', $currencyId);
+            $toAccounts = $request->user()->cryptoWallets()->where('currency_id', $currencyId);
         }
 
-
-
-
-        $toAccounts=$toAccounts->get();
+        $toAccounts = $toAccounts->get();
         $sourceOptions = config('constants.source_funds');
 
         return view('client.transfer.transfer-out', compact('toAccounts', 'assetAccount', 'sourceOptions'));
     }
-
 
     public function storeTransferIn(Request $request)
     {
@@ -108,20 +108,27 @@ class AssetTransferController extends Controller
                 ->with('error', 'Validation failed. Please check your inputs.');
         }
 
+        $currency = Currency::findOrFail($request->input('currency_id'));
+        $transferDetails = $this->assetOperations->calculateTransferDetails(
+            amount: $request->input('amount'),
+            from: $currency,
+            to: $currency,
+            user: $request->user()
+        );
+
         $transfer = AssetTransfer::create([
             'from_account_id' => $request->input('from_account'),
-            'from_account_type'=>$isUSD?BankAccount::class:null,
-            'to_account_type'=>AssetAccount::class,
+            'from_account_type' => $isUSD ? BankAccount::class : null,
+            'to_account_type' => AssetAccount::class,
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),
             'currency_id' => $request->input('currency_id'),
             'reference_number' => Str::uuid(),
             'status' => 'pending',
-            'fee'=>0,
+            'fee' => $transferDetails['fee'],
             'transfer_type' => AssetTransfer::TYPE_IN,
+            'user_id' => $request->user()->id,
         ]);
-
-        // Load the currency relationship for the view
 
         return view('client.transfer.transfer-in-success', compact('transfer'));
     }
@@ -131,12 +138,10 @@ class AssetTransferController extends Controller
         $isUSD = $request->boolean('isUSD');
         $rules = [
             'from_account' => 'required|exists:asset_accounts,id',
-            'to_account' =>  $isUSD ? 'required|exists:bank_accounts,id':'required|exists:crypto_wallets,id',
+            'to_account' => $isUSD ? 'required|exists:bank_accounts,id' : 'required|exists:crypto_wallets,id',
             'amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id',
         ];
-
-
 
         $validator = Validator::make($request->all(), $rules, [
             'from_account.required' => 'The from account is required for transfers.',
@@ -155,20 +160,28 @@ class AssetTransferController extends Controller
                 ->with('error', 'Validation failed. Please check your inputs.');
         }
 
+        $currency = Currency::findOrFail($request->input('currency_id'));
+        $transferDetails = $this->assetOperations->calculateTransferDetails(
+            amount: $request->input('amount'),
+            from: $currency,
+            to: $currency,
+            user: $request->user()
+        );
+
         $transfer = AssetTransfer::create([
-            'from_account_type'=>AssetAccount::class,
-            'to_account_type'=>$isUSD?BankAccount::class:CryptoWallet::class,
+            'from_account_type' => AssetAccount::class,
+            'to_account_type' => $isUSD ? BankAccount::class : CryptoWallet::class,
             'from_account_id' => $request->input('from_account'),
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),
             'currency_id' => $request->input('currency_id'),
             'reference_number' => Str::uuid(),
             'status' => 'pending',
-            'fee' => $request->input('fee'),
+            'fee' => $transferDetails['fee'],
             'transfer_type' => AssetTransfer::TYPE_OUT,
+            'user_id' => $request->user()->id,
         ]);
 
-        // Return the transfer-out-success view with the transfer data
         return view('client.transfer.transfer-out-success', compact('transfer'));
     }
 
@@ -186,22 +199,29 @@ class AssetTransferController extends Controller
             ], 422);
         }
 
-        $currency = Currency::find($request->currency_id);
-        $feeDetails = FeeCalculator::calculateTransferFee(
-            $request->amount,
-            $currency->symbol
+        $currency = Currency::findOrFail($request->currency_id);
+        $transferDetails = $this->assetOperations->calculateTransferDetails(
+            amount: $request->amount,
+            from: $currency,
+            to: $currency,
+            user: $request->user()
         );
 
         return response()->json([
             'success' => true,
-            'data' => $feeDetails
+            'data' => [
+                'amount' => $transferDetails['original_amount'],
+                'fee' => $transferDetails['fee'],
+                'total' => $transferDetails['total'],
+                'currency' => $currency->symbol
+            ]
         ]);
     }
 
-    public function show(Request $request,$id)
+    public function show(Request $request, $id)
     {
-        $transfer=AssetTransfer::find($id);
-        $transfer->load(['currency','from_account','to_account']);
+        $transfer = AssetTransfer::find($id);
+        $transfer->load(['currency', 'from_account', 'to_account']);
         return view('client.transfer.show', compact('transfer'));
     }
 }

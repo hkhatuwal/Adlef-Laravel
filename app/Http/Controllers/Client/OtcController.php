@@ -5,13 +5,20 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Currency;
 use App\Models\OtcRequest;
-use App\Utils\FeeCalculator;
+use App\Utils\AssetOperations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class OtcController extends Controller
 {
+    private AssetOperations $assetOperations;
+
+    public function __construct(AssetOperations $assetOperations)
+    {
+        $this->assetOperations = $assetOperations;
+    }
+
     public function index()
     {
         $currencies = Currency::all();
@@ -31,7 +38,12 @@ class OtcController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => FeeCalculator::calculateExchangeRateAndFee($request->get('from_amount'), $fromCurrency, $toCurrency)
+            'data' => $this->assetOperations->calculateTransferDetails(
+                amount: $request->get('from_amount'),
+                from: $fromCurrency,
+                to: $toCurrency,
+                user: $request->user()
+            )
         ]);
     }
 
@@ -47,8 +59,13 @@ class OtcController extends Controller
         $fromCurrency = Currency::find($request->get('from_currency'));
         $toCurrency = Currency::find($request->get('to_currency'));
 
-        // Calculate exchange rate and fee
-        $calculation = FeeCalculator::calculateExchangeRateAndFee($request->get('from_amount'), $fromCurrency, $toCurrency);
+        // Calculate exchange details using new AssetOperations
+        $calculation = $this->assetOperations->calculateTransferDetails(
+            amount: $request->get('from_amount'),
+            from: $fromCurrency,
+            to: $toCurrency,
+            user: $request->user()
+        );
 
         try {
             DB::beginTransaction();
@@ -106,7 +123,8 @@ class OtcController extends Controller
         return view('client.otc.success', compact('otcRequest'));
     }
 
-    public function isExchangePossible(Request $request){
+    public function isExchangePossible(Request $request)
+    {
         $request->validate([
             'from_currency' => 'required|exists:currencies,id',
             'to_currency' => 'required|exists:currencies,id'
@@ -114,13 +132,13 @@ class OtcController extends Controller
 
         $fromCurrency = Currency::find($request->get('from_currency'));
         $toCurrency = Currency::find($request->get('to_currency'));
-        if ($fromCurrency->type=="fiat" && $fromCurrency->symbol !='USD' && $toCurrency->type!="fiat") {
+        if ($fromCurrency->type == "fiat" && $fromCurrency->symbol != 'USD' && $toCurrency->type != "fiat") {
             return response()->json([
                 'success' => false,
                 'message' => "You cannot convert Fiat Currency Directly"
-            ],403);
+            ], 403);
         }
 
-        return  response()->json();
+        return response()->json(['success' => true]);
     }
 }

@@ -26,5 +26,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('users/{bankAccount}/verify-bank-account', [UserController::class, 'unverifyBankAccount'])->name('users.verify-bank-account');
         Route::post('users/{userProfile}/verify-document', [UserController::class, 'verifyDocument'])->name('users.verify-document');
         Route::delete('users/{userProfile}/verify-document', [UserController::class, 'unverifyDocument'])->name('users.verify-document');
+
+        // Asset Transfer Routes
+        Route::get('transfers', [\App\Http\Controllers\Admin\AssetTransferController::class, 'index'])->name('transfers.index');
+        Route::get('transfers/{transfer}', [\App\Http\Controllers\Admin\AssetTransferController::class, 'show'])->name('transfers.show');
+        Route::post('transfers/{transfer}/verify', [\App\Http\Controllers\Admin\AssetTransferController::class, 'verify'])->name('transfers.verify');
+        Route::post('transfers/{transfer}/reject', [\App\Http\Controllers\Admin\AssetTransferController::class, 'reject'])->name('transfers.reject');
     });
 });

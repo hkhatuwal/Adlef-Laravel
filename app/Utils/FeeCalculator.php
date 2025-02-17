@@ -8,26 +8,58 @@ use App\Models\User;
 
 class FeeCalculator
 {
-    public static function calculateTransferFee(float $amount, string $currency = 'USD'): array
+    /**
+     * Calculate basic transfer fee
+     *
+     * @param float $amount Amount to calculate fee for
+     * @param float $feePercentage Fee percentage (default: 1%)
+     * @param float $minimumFee Minimum fee amount
+     * @return float
+     */
+    public function calculateTransferFee(float $amount, float $feePercentage = 1.0, float $minimumFee = 1.0): float
     {
-        // Base fee calculation (1% with minimum $1)
-        $feePercentage = 0.01; // 1%
-        $minimumFee = 1.00;
-
-        // Calculate fee
-        $calculatedFee = $amount * $feePercentage;
-        $fee = max($calculatedFee, $minimumFee);
-
-        // Calculate total
-        $total = $amount + $fee;
-
-        return [
-            'amount' => round($amount, 2),
-            'fee' => round($fee, 2),
-            'total' => round($total, 2),
-            'currency' => $currency
-        ];
+        $calculatedFee = $amount * ($feePercentage / 100);
+        return max($calculatedFee, $minimumFee);
     }
+
+    /**
+     * Calculate commission for a user and currency
+     *
+     * @param float $amount Amount to calculate commission for
+     * @param User|null $user User to calculate commission for
+     * @param Currency $currency Currency for commission calculation
+     * @return float
+     */
+    public function calculateCommission(float $amount, ?User $user, Currency $currency): float
+    {
+        if (!$user) {
+            return 0.0;
+        }
+
+        $commission = Commission::where('user_id', $user->id)
+            ->where('currency_id', $currency->id)
+            ->first();
+
+        if (!$commission) {
+            return 0.0;
+        }
+
+        return $amount * ($commission->commission_rate / 100);
+    }
+
+    /**
+     * Calculate total amount including fees and commission
+     *
+     * @param float $amount Base amount
+     * @param float $fee Fee amount
+     * @param float $commission Commission amount
+     * @return float
+     */
+    public function calculateTotal(float $amount, float $fee, float $commission): float
+    {
+        return $amount + $fee + $commission;
+    }
+
     /**
      * Calculate exchange rate, fees, and commission for currency conversion.
      *
