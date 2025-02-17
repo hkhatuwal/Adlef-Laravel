@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             AdminSeeder::class,
             AssetAccountSeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }

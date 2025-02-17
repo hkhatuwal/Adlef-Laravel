@@ -27,3 +27,5 @@ Route::group(['prefix' => 'client', 'as' => 'client.', 'middleware' => ['auth:cl
     Route::post('/crypto-wallet', [\App\Http\Controllers\Client\CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
 });
 
+
+

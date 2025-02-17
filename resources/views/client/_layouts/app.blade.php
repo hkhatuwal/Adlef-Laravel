@@ -1,6 +1,7 @@
 @php
    $hideSidebar = (!empty($hideSidebar) && $hideSidebar);
-   $anyAlert=true;
+   $showGlobalNotification = \App\Models\Setting::get('global_notification') === 'on';
+   $globalNotificationText = \App\Models\Setting::get('global_notification_text');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -89,8 +90,11 @@
         </div>
 
         <!-- Global Notification Alert -->
-        @if($anyAlert) <!-- Replace with actual notification check logic -->
+        @if($showGlobalNotification && $globalNotificationText)
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 fixed w-full z-10" style="top: 64px;">
+{{--            <button type="button" class="close-notification text-blue-500 hover:text-blue-700 absolute top-0 left-5">--}}
+{{--                <i class="fas fa-times"></i>--}}
+{{--            </button>--}}
             <div class="flex items-center justify-between max-w-7xl mx-auto">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -98,19 +102,17 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-blue-700">
-                            Important: System maintenance scheduled for tomorrow at 2 PM EST. Please save your work accordingly.
+                            {{ $globalNotificationText }}
                         </p>
                     </div>
                 </div>
-                <button type="button" class="close-notification text-blue-500 hover:text-blue-700">
-                    <i class="fas fa-times"></i>
-                </button>
+
             </div>
         </div>
         @endif
 
         <!-- Page Content -->
-        <div class=" px-6 py-6 bg-gradient-to-b from-gray-50 to-white {{$anyAlert?'pt-32':'pt-16'}}">
+        <div class="px-6 py-6 bg-gradient-to-b from-gray-50 to-white {{$showGlobalNotification && $globalNotificationText ? 'pt-32':'pt-16'}}">
             @yield('content')
         </div>
     </div>

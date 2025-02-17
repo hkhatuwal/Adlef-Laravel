@@ -40,5 +40,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('otc/{otc}/process', [OtcController::class, 'process'])->name('otc.process');
         Route::post('otc/{otc}/complete', [OtcController::class, 'complete'])->name('otc.complete');
         Route::post('otc/{otc}/reject', [OtcController::class, 'reject'])->name('otc.reject');
+
+        // Settings Routes
+        Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
+        Route::post('settings/create', [\App\Http\Controllers\Admin\SettingController::class, 'createSetting'])->name('settings.create');
     });
 });
