@@ -27,14 +27,3 @@ Route::group(['prefix' => 'client', 'as' => 'client.', 'middleware' => ['auth:cl
     Route::post('/crypto-wallet', [\App\Http\Controllers\Client\CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
 });
 
-Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
-    Route::get('/login', [\App\Http\Controllers\Admin\AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-
-
-    Route::middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
-        Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
-        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    });
-
-});

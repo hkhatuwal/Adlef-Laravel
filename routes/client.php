@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\OtcController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\ActivityController;
+use App\Http\Controllers\Client\NotificationController;
 
 /*Client Auth Routes*/
 
@@ -35,6 +36,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         Route::prefix('otc')->name('otc.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Client\OtcController::class, 'index'])->name('index');
             Route::post('/calculate', [\App\Http\Controllers\Client\OtcController::class, 'calculate'])->name('calculate');
+            Route::post('/is-exchange-possible', [\App\Http\Controllers\Client\OtcController::class, 'isExchangePossible'])->name('is-exchange-possible');
             Route::post('/confirm', [\App\Http\Controllers\Client\OtcController::class, 'confirmExchange'])->name('confirm');
             Route::get('/success/{id}', [OtcController::class, 'showSuccess'])->name('success');
             Route::get('/show/{id}', [OtcController::class, 'show'])->name('show');
@@ -72,5 +74,8 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
 
     // Activity Routes
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+
+    // Notification Routes
+    Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
 
 });

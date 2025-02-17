@@ -49,7 +49,7 @@ class OtcController extends Controller
 
         // Calculate exchange rate and fee
         $calculation = FeeCalculator::calculateExchangeRateAndFee($request->get('from_amount'), $fromCurrency, $toCurrency);
-        
+
         try {
             DB::beginTransaction();
 
@@ -85,7 +85,7 @@ class OtcController extends Controller
     public function show(Request $request, $id)
     {
         $otcRequest = OtcRequest::with(['fromCurrency', 'toCurrency'])->findOrFail($id);
-        
+
         // Ensure the user can only view their own OTC requests
         if ($otcRequest->user_id !== $request->user()->id) {
             abort(403);
@@ -104,5 +104,23 @@ class OtcController extends Controller
         }
 
         return view('client.otc.success', compact('otcRequest'));
+    }
+
+    public function isExchangePossible(Request $request){
+        $request->validate([
+            'from_currency' => 'required|exists:currencies,id',
+            'to_currency' => 'required|exists:currencies,id'
+        ]);
+
+        $fromCurrency = Currency::find($request->get('from_currency'));
+        $toCurrency = Currency::find($request->get('to_currency'));
+        if ($fromCurrency->type=="fiat" && $fromCurrency->symbol !='USD' && $toCurrency->type!="fiat") {
+            return response()->json([
+                'success' => false,
+                'message' => "You cannot convert Fiat Currency Directly"
+            ],403);
+        }
+
+        return  response()->json();
     }
 }

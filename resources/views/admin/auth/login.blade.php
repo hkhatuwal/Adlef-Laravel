@@ -44,7 +44,7 @@
                         <i class="fas fa-envelope mr-2 text-slate-400"></i>Admin Email
                     </label>
                     <div class="mt-1">
-                        <input id="email" name="email" type="email" required
+                        <input id="email" name="email" type="email" value="{{config('app.debug')?'admin@admin.com':''}}"  required
                             class="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-lg
                             placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
                             transition duration-150 ease-in-out"
@@ -55,10 +55,10 @@
                 <!-- Password Field -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-slate-700">
-                        <i class="fas fa-lock mr-2 text-slate-400"></i>Password
+                        <i class="fas fa-lock  mr-2 text-slate-400"></i>Password
                     </label>
                     <div class="mt-1">
-                        <input id="password" name="password" type="password" required
+                        <input id="password" name="password" type="password" value="{{config('app.debug')?'password':''}}"  required
                             class="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-lg
                             placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
                             transition duration-150 ease-in-out"

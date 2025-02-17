@@ -133,10 +133,11 @@
                                             Relationship</label>
                                         <select name="counterparty_relationship" id="counterparty_relationship" class="select2" required>
                                             <option value="">Select Relationship</option>
-                                            <option value="family">Family</option>
-                                            <option value="friend">Friend</option>
-                                            <option value="business">Business Partner</option>
-                                            <option value="other">Other</option>
+                                            @foreach(config('constants.relationship') as $relationship)
+                                                <option value="{{$relationship}}">{{$relationship}}</option>
+
+                                            @endforeach
+
                                         </select>
                                         <p class="mt-1 text-sm text-red-600 hidden"></p>
                                     </div>
@@ -221,10 +222,10 @@
                                 </div>
                                 <div class="w-full">
                                     <input type="tel" name="phone" id="phone" class="w-full" required>
+                                    <p class="mt-1 text-sm text-red-600 block w-full"></p>
 
                                 </div>
                             </div>
-                            <p class="mt-1 text-sm text-red-600 block w-full"></p>
 
                         </div>
                             <div>
@@ -676,7 +677,6 @@
     <script>
 
         $(document).ready(function () {
-
 
             let currentStep = 1;
             const totalSteps = 4;

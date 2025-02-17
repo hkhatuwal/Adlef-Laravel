@@ -2,6 +2,8 @@
 $menuItems = config('constants.menu_items');
 
 $instructionItems = config('constants.instruction_items');
+
+$notifications = auth()->user()->unreadNotifications()->take(5)->get();
 ?>
 
 <nav class="sidebar fixed top-0 left-0 h-full w-72 bg-white border-r border-gray-100 z-20 transition-transform duration-300 ease-in-out shadow-sm">
@@ -9,19 +11,78 @@ $instructionItems = config('constants.instruction_items');
         <!-- Header -->
         <div class="flex items-center justify-between h-20 px-6 border-b border-gray-100">
             <div class="text-xl font-bold">
-                <img src="{{asset('assets/images/logo.svg')}}" alt="Logo" class="h-8">
+                <img src="{{asset('assets/images/logo.svg')}}" alt="Logo" class="h-12">
             </div>
             <div class="flex items-center space-x-4">
-                <!-- Theme Toggle -->
-                <button class="theme-toggle w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all">
-                    <i class="fa-regular fa-sun text-gray-600 dark:text-gray-400 text-lg"></i>
-                </button>
                 <!-- Notification -->
-                <div class="relative">
+                <div class="relative group">
                     <button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all">
-                        <i class="fa-solid fa-bell text-gray-600 text-lg"></i>
-                        <span class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">3</span>
+                        <i class="fa-solid fa-bell text-gray-600 text-lg group-hover:text-gray-800"></i>
+                        <span class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">{{auth()->user()->unreadNotifications()->count()}}</span>
                     </button>
+
+                    <!-- Notification Popup -->
+                    <div class="absolute left-0  mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <div class="relative">
+                            <!-- Arrow -->
+                            <div class="absolute top-0 right-[45%] -translate-y-2">
+                                <div class="border-8 border-transparent border-b-white filter drop-shadow-sm"></div>
+                            </div>
+
+                            <div class="p-4 border-b border-gray-100">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-semibold text-gray-800">Notifications</h3>
+                                    <span class="px-2 py-1 bg-gray-100 text-xs font-medium rounded-full text-gray-600">{{auth()->user()->unreadNotifications()->count()}} new</span>
+                                </div>
+                            </div>
+
+                            <div class="max-h-[400px] overflow-y-auto">
+                                @forelse($notifications as $notification)
+                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors cursor-pointer"
+                                         onclick="markNotificationAsRead('{{ $notification->id }}')">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="flex-shrink-0">
+                                                @if($notification->type === 'success')
+                                                    <span class="w-8 h-8 bg-green-100 text-green-500 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </span>
+                                                @elseif($notification->type === 'warning')
+                                                    <span class="w-8 h-8 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                    </span>
+                                                @elseif($notification->type === 'error')
+                                                    <span class="w-8 h-8 bg-red-100 text-red-500 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-times-circle"></i>
+                                                    </span>
+                                                @else
+                                                    <span class="w-8 h-8 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center">
+                                                        <i class="fas fa-info-circle"></i>
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900">
+                                                    {{$notification->title}}
+                                                </p>
+                                                <p class="text-sm text-gray-500 line-clamp-2">
+                                                    {{$notification->message}}
+                                                </p>
+                                                <p class="text-xs text-gray-400 mt-1">
+                                                    {{$notification->created_at->diffForHumans()}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="p-4 text-center text-gray-500">
+                                        No new notifications
+                                    </div>
+                                @endforelse
+                            </div>
+
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,20 +185,4 @@ $instructionItems = config('constants.instruction_items');
     </div>
 </nav>
 
-@push('scripts')
-<script>
-    // Theme Toggle Functionality
-    document.querySelector('.theme-toggle').addEventListener('click', function() {
-        const icon = this.querySelector('i');
-        if(icon.classList.contains('fa-sun')) {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-            document.documentElement.classList.add('dark');
-        } else {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-            document.documentElement.classList.remove('dark');
-        }
-    });
-</script>
-@endpush
+

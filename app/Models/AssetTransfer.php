@@ -29,12 +29,14 @@ class AssetTransfer extends Model
         // Create activity record when transfer is created
         static::created(function ($transfer) {
             $transfer->recordActivity();
+            $transfer->createNotification();
         });
 
         // Update activity record when transfer status changes
         static::updated(function ($transfer) {
             if ($transfer->isDirty('status')) {
                 $transfer->updateActivity();
+                $transfer->updateNotification();
             }
         });
     }
@@ -123,6 +125,66 @@ class AssetTransfer extends Model
             }
             return "Transfer out {$amount} from {$fromModel->name} to {$toModel->bank_name}";
         }
+    }
+
+    protected function createNotification(): void
+    {
+        $amount = number_format($this->amount, 8) . ' ' . $this->currency->symbol;
+
+        Notification::create([
+            'user_id' => auth()->id(),
+            'type' => Notification::TYPE_INFO,
+            'title' => 'Transfer Initiated',
+            'message' => "Your transfer of {$amount} has been initiated and is being processed.",
+            'notifiable_type' => self::class,
+            'notifiable_id' => $this->id,
+            'metadata' => [
+                'amount' => $this->amount,
+                'currency' => $this->currency->symbol,
+                'status' => $this->status,
+                'transfer_type' => $this->transfer_type
+            ]
+        ]);
+    }
+
+    protected function updateNotification(): void
+    {
+        $amount = number_format($this->amount, 8) . ' ' . $this->currency->symbol;
+
+        $type = match($this->status) {
+            'completed' => Notification::TYPE_SUCCESS,
+            'failed' => Notification::TYPE_ERROR,
+            default => Notification::TYPE_INFO
+        };
+
+        $title = match($this->status) {
+            'completed' => 'Transfer Completed',
+            'failed' => 'Transfer Failed',
+            'processing' => 'Transfer Processing',
+            default => 'Transfer Status Updated'
+        };
+
+        $message = match($this->status) {
+            'completed' => "Your transfer of {$amount} has been completed successfully.",
+            'failed' => "Your transfer of {$amount} has failed. Please contact support.",
+            'processing' => "Your transfer of {$amount} is being processed.",
+            default => "Your transfer of {$amount} status has been updated to {$this->status}."
+        };
+
+        Notification::create([
+            'user_id' => auth()->id(),
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'notifiable_type' => self::class,
+            'notifiable_id' => $this->id,
+            'metadata' => [
+                'amount' => $this->amount,
+                'currency' => $this->currency->symbol,
+                'status' => $this->status,
+                'transfer_type' => $this->transfer_type
+            ]
+        ]);
     }
 
     //

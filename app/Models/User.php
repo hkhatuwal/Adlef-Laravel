@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\HasLoginNotifications;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasLoginNotifications;
 
     /**
      * The attributes that are mass assignable.
@@ -106,5 +107,15 @@ class User extends Authenticatable
     public function assetAccounts()
     {
         return $this->hasMany(AssetAccount::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->latest();
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->unread();
     }
 }

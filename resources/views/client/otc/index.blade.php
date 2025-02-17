@@ -12,7 +12,7 @@
         </div>
 
         <form action="{{ route('client.otc.confirm') }}" method="POST"
-              class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden" id="exchange-form">
+              class="bg-white rounded-lg shadow-sm border border-gray-100 " id="exchange-form">
             @csrf
             <div class="p-4">
                 <!-- You Pay Section -->
@@ -39,6 +39,8 @@
                                     @foreach($currencies as $currency)
                                         <li class="currency-item flex items-center p-1.5 hover:bg-gray-100 cursor-pointer text-sm"
                                             data-balance="{{$currency->getMyAssetAccount()->balance}}"
+                                            data-type="pay-currency"
+                                            data-currency_type="{{$currency->type}}"
                                             data-value="{{$currency->id}}">
                                             <img src="{{ asset('storage/'.$currency->icon) }}"
                                                  class="currency-icon w-5 h-5 mr-2">
@@ -96,7 +98,7 @@
                                 <ul class="currency-list receive-currency-list max-h-48 overflow-y-auto">
                                     @foreach($currencies as $currency)
                                         <li class="currency-item flex items-center p-1.5 hover:bg-gray-100 cursor-pointer text-sm"
-                                            data-value="{{$currency->id}}">
+                                            data-value="{{$currency->id}}"  data-type="receive">
                                             <img src="{{ asset('storage/'.$currency->icon) }}"
                                                  class="currency-icon w-5 h-5 mr-2">
                                             <span class="currency-name">{{$currency->symbol}}</span>

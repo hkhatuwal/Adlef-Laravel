@@ -64,6 +64,30 @@
                         All Posts
                     </a>
                 </div>
+
+                <!-- Client Management Section -->
+                <div class="mt-4">
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Client Management</p>
+                    
+                    <a href="{{route('admin.currencies.index')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 dark:bg-slate-700 text-amber-600 dark:text-amber-400 mr-3 transition-transform group-hover:scale-110">
+                            <i class="material-symbols-outlined text-[20px]">currency_exchange</i>
+                        </span>
+                        Currencies
+                    </a>
+                </div>
+
+                <!-- User Management -->
+                <div class="space-y-1">
+                    <h3 class="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        User Management
+                    </h3>
+                    <a href="{{ route('admin.users.index') }}" 
+                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.users.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
+                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">group</i>
+                        <span class="truncate">Users</span>
+                    </a>
+                </div>
             </nav>
         </div>
 
