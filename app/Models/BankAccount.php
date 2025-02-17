@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BankAccount extends Model
 {
@@ -10,14 +11,14 @@ class BankAccount extends Model
     const  TYPE_OWN="Own";
     const  TYPE_THIRD_PARTY="ThirdParty";
     protected $fillable = [
+        'user_id',
         'account_type',
         'account_holder_name',
+        'account_number',
         'bank_name',
         'swift',
-        'account_number',
-        'shortcode',
         'branch_code',
-        'user_id',
+        'shortcode',
         'is_verified'
     ];
 
@@ -25,14 +26,14 @@ class BankAccount extends Model
         'is_verified' => 'boolean'
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function thirdPartyAccount(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function thirdPartyAccount(): BelongsTo
     {
-        return $this->hasOne(ThirdPartyAccount::class);
+        return $this->belongsTo(ThirdPartyAccount::class);
     }
 
 

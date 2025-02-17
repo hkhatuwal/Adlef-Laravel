@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Services;
+
+use App\Contracts\NotificationChannel;
+use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Support\Collection;
+
+class NotificationService
+{
+    protected Collection $channels;
+
+    public function __construct()
+    {
+        $this->channels = collect([]);
+    }
+
+    public function addChannel(NotificationChannel $channel): self
+    {
+        $this->channels->push($channel);
+        return $this;
+    }
+
+    public function notify(User $user, array $data, array $channels = ['database']): void
+    {
+        // Always create database notification
+        $this->createDatabaseNotification($user, $data);
+
+        // Send through additional channels if specified
+        foreach ($channels as $channel) {
+            $this->sendThroughChannel($channel, array_merge($data, ['user' => $user]));
+        }
+    }
+
+    protected function createDatabaseNotification(User $user, array $data): void
+    {
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => $data['type'] ?? Notification::TYPE_INFO,
+            'title' => $data['title'],
+            'message' => $data['message'],
+            'icon' => $data['icon'] ?? null,
+            'notifiable_type' => $data['notifiable_type'] ?? null,
+            'notifiable_id' => $data['notifiable_id'] ?? null,
+            'metadata' => $data['metadata'] ?? null,
+        ]);
+    }
+
+    protected function sendThroughChannel(string $channel, array $data): void
+    {
+        $this->channels
+            ->filter(fn (NotificationChannel $notificationChannel) => 
+                $notificationChannel->supports($channel))
+            ->each(fn (NotificationChannel $notificationChannel) => 
+                $notificationChannel->send($data));
+    }
+} 

@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Providers;
+
+use App\Notifications\Channels\EmailChannel;
+use App\Notifications\Channels\SmsChannel;
+use App\Services\NotificationService;
+use Illuminate\Support\ServiceProvider;
+
+class NotificationServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->singleton(NotificationService::class, function ($app) {
+            $service = new NotificationService();
+            
+            // Register notification channels
+            $service->addChannel(new EmailChannel())
+                   ->addChannel(new SmsChannel());
+            
+            return $service;
+        });
+    }
+} 

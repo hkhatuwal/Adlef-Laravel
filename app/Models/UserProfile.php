@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserProfile extends Model
 {
@@ -40,7 +41,9 @@ class UserProfile extends Model
         'secondary_tax_country_id',
         'document_path',
         'document_verified',
-        'agreement_accepted'
+        'agreement_accepted',
+        'document_type',
+        'avatar'
     ];
 
     protected $casts = [
@@ -49,9 +52,10 @@ class UserProfile extends Model
         'third_party_contributions' => 'boolean',
         'is_hong_kong_tax_resident' => 'boolean',
         'agreement_accepted' => 'boolean',
+        'document_verified' => 'boolean'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
