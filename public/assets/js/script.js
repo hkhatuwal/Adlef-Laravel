@@ -57,6 +57,14 @@ function markNotificationAsRead(id) {
 $(function () {
     console.log('Document ready');
 
+    // Close notifications
+    $(document).ready(function() {
+        $('.close-notification').click(function() {
+            $(this).closest('.bg-blue-50').hide();
+        });
+    });
+
+
     // Handle sidebar toggle button click
     $(document).on('click', '#sidebar-toggle', function (e) {
         e.preventDefault();

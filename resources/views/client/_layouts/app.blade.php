@@ -1,5 +1,6 @@
 @php
    $hideSidebar = (!empty($hideSidebar) && $hideSidebar);
+   $anyAlert=true;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -87,8 +88,29 @@
             </div>
         </div>
 
+        <!-- Global Notification Alert -->
+        @if($anyAlert) <!-- Replace with actual notification check logic -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 fixed w-full z-10" style="top: 64px;">
+            <div class="flex items-center justify-between max-w-7xl mx-auto">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bell text-blue-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            Important: System maintenance scheduled for tomorrow at 2 PM EST. Please save your work accordingly.
+                        </p>
+                    </div>
+                </div>
+                <button type="button" class="close-notification text-blue-500 hover:text-blue-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        @endif
+
         <!-- Page Content -->
-        <div class="pt-16 px-6 py-6 bg-gradient-to-b from-gray-50 to-white">
+        <div class=" px-6 py-6 bg-gradient-to-b from-gray-50 to-white {{$anyAlert?'pt-32':'pt-16'}}">
             @yield('content')
         </div>
     </div>
@@ -107,5 +129,6 @@
 {{--<script src="https://kit.fontawesome.com/6494bc34f7.js" crossorigin="anonymous"></script>--}}
 
 @yield('post-script')
+
 
 </html>
