@@ -462,6 +462,7 @@ $(document).ready(function () {
     showStep(currentStep);
 
     $('#transfer-out #amount').change(function (e) {
+
         calculateFee(e.target.value);
     })
 
@@ -487,11 +488,18 @@ $(document).ready(function () {
                     document.getElementById('fee-amount').textContent = '$' + feeDetails.fee.toFixed(2);
                     document.getElementById('total-amount').textContent = '$' + feeDetails.total.toFixed(2);
                     document.getElementById('fee-input').value = feeDetails.fee.toFixed(2);
+                    $('#submitButton').prop("disabled",false);
+
                 } else {
-                    console.error('Fee calculation failed:', data.errors);
+                    if(!data.success && data.message){
+                        $('#submitButton').prop("disabled",true);
+                        toastr.error(data.message)
+                    }
+                    console.error('Fee calculation failed:', data);
                 }
             })
             .catch(error => {
+
                 console.error('Error calculating fee:', error);
             });
     }

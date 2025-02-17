@@ -96,7 +96,7 @@
                                     <div class="flex flex-col items-end">
                                         <span class="text-sm font-medium text-gray-700">Balance:</span>
                                         <span
-                                            class="text-lg font-semibold text-green-600">${{ $assetAccount->balance }}</span>
+                                            class="text-lg font-semibold text-green-600">{{$assetAccount->currency->symbol}}{{ $assetAccount->balance }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Transfer Amount</h2>
                                 <div class="text-sm text-gray-500">
-                                    Available: <span id="available-balance" class="font-medium"></span>
+                                    Available: <span id="available-balance" class="font-medium">{{$assetAccount->currency->symbol}}{{ $assetAccount->balance }}</span>
                                 </div>
                             </div>
                             <div class="space-y-4">
@@ -208,7 +208,7 @@
                         </button>
 
                         <button type="submit" id="submitButton"
-                                class=" flex flex-row items-center px-6 sm:px-8 py-2 sm:py-3 border-2 border-black text-base font-medium rounded-full text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                class=" flex flex-row items-center px-6 sm:px-8 py-2 sm:py-3 border-2 border-black text-base font-medium rounded-full text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                             <span class="submit-text">Continue to Review </span>
                             <span class="loading-text hidden flex items-center">
                             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -230,8 +230,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-    </script>
 
 @endsection

@@ -168,19 +168,36 @@ class AssetTransferController extends Controller
             user: $request->user()
         );
 
-        $transfer = AssetTransfer::create([
-            'from_account_type' => AssetAccount::class,
-            'to_account_type' => $isUSD ? BankAccount::class : CryptoWallet::class,
-            'from_account_id' => $request->input('from_account'),
-            'to_account_id' => $request->input('to_account'),
-            'amount' => $request->input('amount'),
-            'currency_id' => $request->input('currency_id'),
-            'reference_number' => Str::uuid(),
-            'status' => 'pending',
-            'fee' => $transferDetails['fee'],
-            'transfer_type' => AssetTransfer::TYPE_OUT,
-            'user_id' => $request->user()->id,
-        ]);
+        DB::beginTransaction();
+        try {
+            $transfer = AssetTransfer::create([
+                'from_account_type' => AssetAccount::class,
+                'to_account_type' => $isUSD ? BankAccount::class : CryptoWallet::class,
+                'from_account_id' => $request->input('from_account'),
+                'to_account_id' => $request->input('to_account'),
+                'amount' => $request->input('amount'),
+                'currency_id' => $request->input('currency_id'),
+                'reference_number' => Str::uuid(),
+                'status' => 'pending',
+                'fee' => $transferDetails['fee'],
+                'transfer_type' => AssetTransfer::TYPE_OUT,
+                'user_id' => $request->user()->id,
+            ]);
+
+            $fromAccount = AssetAccount::find($request->input('from_account'));
+            $fromAccount->balance -= $transferDetails['total'];
+            $fromAccount->save();
+
+            DB::commit();
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()
+                ->withErrors(['error' => 'An error occurred while processing your transfer. Please try again later.'])
+                ->withInput()
+                ->with('error', 'Validation failed. Please check your inputs.');
+        }
+
+
 
         return view('client.transfer.transfer-out-success', compact('transfer'));
     }
@@ -191,6 +208,7 @@ class AssetTransferController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id'
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([
@@ -206,6 +224,13 @@ class AssetTransferController extends Controller
             to: $currency,
             user: $request->user()
         );
+        $assetAccount=AssetAccount::where('user_id', $request->user()->id)->where('currency_id', $request->currency_id)->first();
+        if ($transferDetails['total']>$assetAccount->balance){
+            return  response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance'
+            ],403);
+        }
 
         return response()->json([
             'success' => true,

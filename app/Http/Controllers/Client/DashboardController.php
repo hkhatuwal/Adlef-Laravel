@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\AssetAccount;
 use App\Models\UserActivity;
+use App\Utils\AssetOperations;
 use App\Utils\CurrencyCalculator;
 use App\Utils\FeeCalculator;
 use Illuminate\Http\Request;
@@ -12,6 +13,12 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    private AssetOperations $assetOperations;
+
+    public function __construct(AssetOperations $assetOperations)
+    {
+        $this->assetOperations = $assetOperations;
+    }
     public function index()
     {
         $user = Auth::user();
@@ -118,11 +125,11 @@ class DashboardController extends Controller
                 // Balance column
                 '<div class="font-medium">'.number_format($account->balance, $currency->type === 'crypto' ? 8 : 2).' '.$currency->symbol.'</div>',
                 // Value column
-                '<div class="font-medium">$'.number_format(CurrencyCalculator::convertToUSD($account->balance,$currency)['converted_amount']).'</div>',
+                '<div class="font-medium">$'.number_format($this->assetOperations->convertToUSD($account->balance,$currency)['converted_amount']).'</div>',
                 // 24h Change column - You would calculate this based on historical data
                 '<div class="flex items-center text-slate-600">
                     <i class="material-symbols-outlined text-base mr-1">trending_flat</i>
-                    <span>0.00%</span>
+                    <span>'.$currency->usd_change_percent_24_hour.'%</span>
                 </div>'
             ];
         })->toArray();

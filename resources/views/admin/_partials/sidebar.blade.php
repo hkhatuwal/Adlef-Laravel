@@ -99,6 +99,11 @@
                         <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">swap_horiz</i>
                         <span class="truncate">Asset Transfers</span>
                     </a>
+                    <a href="{{ route('admin.otc.index') }}" 
+                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.otc.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
+                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">currency_exchange</i>
+                        <span class="truncate">OTC Trades</span>
+                    </a>
                 </div>
             </nav>
         </div>

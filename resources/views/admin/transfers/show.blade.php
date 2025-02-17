@@ -17,14 +17,15 @@
         <div class="flex items-center gap-4">
             @if($transfer->status === 'pending')
                 <div class="flex items-center gap-2">
-                    <form action="{{ route('admin.transfers.verify', $transfer) }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
-                            <i class="material-symbols-outlined text-[20px] mr-2">verified</i>
-                            Verify Payment
-                        </button>
-                    </form>
+                    <button type="button"
+                            @if($transfer->transfer_type === 'out')
+                                id="verify_transfer"
+                            @endif
+                            onclick="@if($transfer->transfer_type === 'in') document.getElementById('direct-verify-form').submit(); @endif"
+                            class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <i class="material-symbols-outlined text-[20px] mr-2">verified</i>
+                        Verify Payment
+                    </button>
                     <form action="{{ route('admin.transfers.reject', $transfer) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"
@@ -231,7 +232,7 @@
                         </h4>
                         @if($transfer->to_account)
                             <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
-                                {{ $transfer->to_account->name ?? $transfer->to_account->bank_name ?? 'N/A' }}
+                                {{ $transfer->to_account->name ?? $transfer->to_account->bank_name ?? $transfer->to_account->alias ?? 'N/A' }}
                             </p>
                             @if($transfer->to_account_type === 'App\\Models\\BankAccount')
                                 <div class="text-sm text-slate-500 dark:text-slate-400">
@@ -294,4 +295,181 @@
         </div>
     </div>
 </div>
+
+<!-- Verify Transfer Modal -->
+<div id="verifyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white">
+                            Verify Transfer
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            Reference: {{ $transfer->reference_number }}
+                        </p>
+                    </div>
+                    <button type="button"
+                            id="close-verify-modal"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <i class="material-symbols-outlined text-2xl">close</i>
+                    </button>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.transfers.verify', $transfer) }}" method="POST" id="verifyForm">
+                @csrf
+                <div class="p-6">
+                    <!-- Transfer Summary -->
+                    <div class="mb-8">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-4">
+                                <div class="text-sm text-slate-500 dark:text-slate-400">From</div>
+                                <div class="mt-1 font-medium text-slate-900 dark:text-white">
+                                    {{ $transfer->from_account ? ($transfer->from_account->name ?? $transfer->from_account->bank_name) : 'N/A' }}
+                                </div>
+                                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $transfer->from_account ? $transfer->from_account->account_number : '' }}
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-4">
+                                <div class="text-sm text-slate-500 dark:text-slate-400">To</div>
+                                <div class="mt-1 font-medium text-slate-900 dark:text-white">
+                                    {{ $transfer->to_account ? ($transfer->to_account->name ?? $transfer->to_account->bank_name ?? $transfer->to_account->alias ) : 'N/A' }}
+                                </div>
+                                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $transfer->to_account ? $transfer->to_account->account_number ?? $transfer->to_account->wallet_address : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Adjustment -->
+                    <div class="mb-8">
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="feePercentage" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fee Percentage</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">%</span>
+                                    </div>
+                                    <input type="number"
+                                           id="feePercentage"
+                                           name="fee_percentage"
+                                           value="{{($transfer->fee/$transfer->amount)*100}}"
+                                           step="0.1"
+                                           min="0"
+                                           max="100"
+                                           data-amount="{{ $transfer->amount }}"
+                                           data-currency="{{ $transfer->currency->symbol }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="feeValue" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fee Value</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                    <input type="number"
+                                           id="feeValue"
+                                           step="0.00000001"
+                                           min="0"
+                                           value="{{ $transfer->fee }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Presets -->
+                        <div class="flex gap-2 mb-6">
+                            <button type="button"
+                                    onclick="setFeePreset(0.5)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                0.5%
+                            </button>
+                            <button type="button"
+                                    onclick="setFeePreset(1.0)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                1.0%
+                            </button>
+                            <button type="button"
+                                    onclick="setFeePreset(2.0)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                2.0%
+                            </button>
+                        </div>
+
+                        <!-- Calculations Display -->
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700/50 rounded-xl p-6">
+                            <div class="grid grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Original Amount</div>
+                                    <div class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                        {{ number_format($transfer->amount, 8) }}
+                                        <span class="text-sm font-medium text-slate-500">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Fee Amount</div>
+                                    <div id="feeAmount" class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                        {{ number_format($transfer->fee, 8) }}
+                                        <span class="text-sm font-medium text-slate-500">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-200 dark:border-slate-600 pt-4">
+                                <div class="flex justify-between items-baseline">
+                                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount</div>
+                                    <div id="finalAmount" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                                        {{ number_format($transfer->amount + $transfer->fee, 8) }}
+                                        <span class="text-base font-medium ml-1">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Message -->
+                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg p-4">
+                        <div class="flex gap-3">
+                            <i class="material-symbols-outlined text-amber-500">warning</i>
+                            <div class="text-sm text-amber-800 dark:text-amber-300">
+                                Please review all details carefully. This action cannot be undone after verification.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-200 dark:border-slate-700 rounded-b-xl flex justify-end gap-3">
+                    <button type="button"
+                            id="cancel-verify"
+                            class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 inline-flex items-center gap-2">
+                        <i class="material-symbols-outlined text-[20px]">verified</i>
+                        Confirm Verification
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add this form for direct verification of incoming transfers -->
+<form id="direct-verify-form" action="{{ route('admin.transfers.verify', $transfer) }}" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="fee_percentage" value="1.0">
+</form>
+
+@push('scripts')
+<script src="{{ asset('admin/js/script.js') }}"></script>
+@endpush
 @endsection
+
+

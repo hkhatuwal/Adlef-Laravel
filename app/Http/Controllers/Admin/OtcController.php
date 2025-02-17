@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\AssetAccount;
+use App\Models\OtcRequest;
+use Illuminate\Http\Request;
+
+class OtcController extends Controller
+{
+    /**
+     * Display a listing of OTC requests.
+     */
+    public function index()
+    {
+        $otcRequests = OtcRequest::with(['user', 'fromCurrency', 'toCurrency'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.otc.index', compact('otcRequests'));
+    }
+
+    /**
+     * Display the specified OTC request.
+     */
+    public function show(OtcRequest $otc)
+    {
+        $otc->load(['user', 'fromCurrency', 'toCurrency', 'activities']);
+
+        return view('admin.otc.show', compact('otc'));
+    }
+
+    /**
+     * Process the OTC request.
+     */
+    public function process(OtcRequest $otc)
+    {
+        $otc->status = 'completed';
+        $otc->save();
+        $toAccount=AssetAccount::query()->where('user_id', $otc->user_id)->where('currency_id', $otc->to_currency_id)->first();
+
+
+        $toAccount->balance=$toAccount->balance+$otc->to_amount;
+        $toAccount->save();
+
+
+
+        return redirect()->route('admin.otc.show', $otc)
+            ->with('success', 'OTC trade is now being processed.');
+    }
+
+
+    /**
+     * Reject the OTC request.
+     */
+    public function reject(OtcRequest $otc, Request $request)
+    {
+        $otc->status = 'failed';
+        $otc->failure_reason = $request->reason;
+        $otc->save();
+
+        return redirect()->route('admin.otc.show', $otc)
+            ->with('success', 'OTC trade has been rejected.');
+    }
+}

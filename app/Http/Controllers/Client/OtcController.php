@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\AssetAccount;
 use App\Models\Currency;
 use App\Models\OtcRequest;
 use App\Utils\AssetOperations;
@@ -66,7 +67,12 @@ class OtcController extends Controller
             to: $toCurrency,
             user: $request->user()
         );
+        $fromAccount=AssetAccount::query()->where('user_id', auth()->user()->id)->where('currency_id', $fromCurrency->id)->first();
 
+        if ($fromAccount->balance<$request->get('from_amount')+$calculation['fee']) {
+            // Check if user has sufficient balance
+            return redirect()->back()->with('error', 'Insufficient balance');
+        }
         try {
             DB::beginTransaction();
 
@@ -83,6 +89,8 @@ class OtcController extends Controller
                 'reference_number' => Str::uuid()
             ]);
 
+            $fromAccount->balance=$fromAccount->balance-($request->get('from_amount')+$calculation['fee']);
+            $fromAccount->save();
             // Here you would typically:
             // 1. Check if user has sufficient balance
             // 2. Lock the required amount

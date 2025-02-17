@@ -106,7 +106,7 @@ class OtcRequest extends Model
     {
         $fromAmount = number_format($this->from_amount, 8) . ' ' . $this->fromCurrency->symbol;
         $toAmount = number_format($this->to_amount, 8) . ' ' . $this->toCurrency->symbol;
-        $rate = number_format($this->exchange_rate, 4);
+        $rate = number_format($this->exchange_rate, 8);
 
         return "Exchange {$fromAmount} to {$toAmount} at rate {$rate}";
     }

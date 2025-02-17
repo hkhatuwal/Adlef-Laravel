@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\OtcController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -32,5 +33,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('transfers/{transfer}', [\App\Http\Controllers\Admin\AssetTransferController::class, 'show'])->name('transfers.show');
         Route::post('transfers/{transfer}/verify', [\App\Http\Controllers\Admin\AssetTransferController::class, 'verify'])->name('transfers.verify');
         Route::post('transfers/{transfer}/reject', [\App\Http\Controllers\Admin\AssetTransferController::class, 'reject'])->name('transfers.reject');
+
+        // OTC Routes
+        Route::get('otc', [OtcController::class, 'index'])->name('otc.index');
+        Route::get('otc/{otc}', [OtcController::class, 'show'])->name('otc.show');
+        Route::post('otc/{otc}/process', [OtcController::class, 'process'])->name('otc.process');
+        Route::post('otc/{otc}/complete', [OtcController::class, 'complete'])->name('otc.complete');
+        Route::post('otc/{otc}/reject', [OtcController::class, 'reject'])->name('otc.reject');
     });
 });

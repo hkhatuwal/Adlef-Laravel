@@ -29,6 +29,24 @@ class AssetOperations
      * @param float $minimumFee Minimum fee amount
      * @return array Transfer details
      */
+    /**
+     * Calculate complete transfer details including conversion, fees, and commission
+     *
+     * Example output:
+     * [
+     *     'original_amount' => 100.00,
+     *     'converted_amount' => 80.00,
+     *     'fee' => 5.00,
+     *     'commission_rate' => 0.05,
+     *     'commission_amount' => 4.00,
+     *     'rate' => 0.8,
+     *     'total' => 89.00,
+     *     'from' => CurrencyObject,
+     *     'to' => CurrencyObject
+     * ]
+     *
+
+     */
     public function calculateTransferDetails(
         float $amount,
         Currency $from,
@@ -39,16 +57,16 @@ class AssetOperations
     ): array {
         // Convert amount
         $convertedAmount = $this->currencyConverter->convert($amount, $from, $to);
-        
+
         // Calculate fee
         $fee = $this->feeCalculator->calculateTransferFee($convertedAmount, $feePercentage, $minimumFee);
-        
+
         // Calculate commission
         $commission = $this->feeCalculator->calculateCommission($convertedAmount, $user, $to);
-        
+
         // Get exchange rate
         $rate = $this->currencyConverter->getExchangeRate($from, $to);
-        
+
         // Calculate total
         $total = $this->feeCalculator->calculateTotal($convertedAmount, $fee, $commission);
 
@@ -93,4 +111,4 @@ class AssetOperations
 
         return $commission ? $commission->commission_rate : 0;
     }
-} 
+}
