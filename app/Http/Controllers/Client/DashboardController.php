@@ -129,7 +129,7 @@ class DashboardController extends Controller
                 // 24h Change column - You would calculate this based on historical data
                 '<div class="flex items-center text-slate-600">
                     <i class="material-symbols-outlined text-base mr-1">trending_flat</i>
-                    <span>'.$currency->usd_change_percent_24_hour.'%</span>
+                    <span>'.($currency->type=="fiat"?"N/A":$currency->usd_change_percent_24_hour.'%').'</span>
                 </div>'
             ];
         })->toArray();

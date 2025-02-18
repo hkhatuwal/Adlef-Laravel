@@ -51,7 +51,15 @@ class AssetTransferController extends Controller
 
             // Calculate new fee
             $feeCalculator = new \App\Utils\FeeCalculator();
+            $oldFee=$transfer->fee;
             $newFee = $feeCalculator->calculateTransferFee($transfer->amount, $feePercentage);
+            $feeDifference=$newFee-$oldFee;
+            if ($feeDifference>0){
+                $transfer->from_account->update([
+                    'balance' => $transfer->from_account->balance - $feeDifference
+                ]);
+            }
+
 
             // Update transfer with new fee and status
             $transfer->update([

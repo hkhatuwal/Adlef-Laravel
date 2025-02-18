@@ -1,4 +1,12 @@
 $(document).ready(function () {
+
+
+
+
+
+
+
+
     // Verify Transfer Modal Functionality
     const $verifyModal = $('#verifyModal');
     const $verifyForm = $('#verifyForm');
@@ -6,6 +14,8 @@ $(document).ready(function () {
     const $feeValue = $('#feeValue');
     const $feeAmount = $('#feeAmount');
     const $finalAmount = $('#finalAmount');
+    const $transactionCostPercentage = $('#transactionCostPercentage');
+    const $transactionCostValue = $('#transactionCostValue');
 
     // Network Fee Modal Functionality
     const $networkFeeModal = $('#networkFeeModal');
@@ -14,6 +24,9 @@ $(document).ready(function () {
     const $networkFeePercentage = $('#networkFeePercentage');
     const $displayNetworkFee = $('#displayNetworkFee');
     const $displayFinalAmount = $('#displayFinalAmount');
+    const $transactionCostPercentageOtc = $('#transactionCostPercentage');
+    const $transactionCostAmountOtc = $('#transactionCostAmount');
+    const $displayTransactionCost = $('#displayTransactionCost');
 
     // Button Event Handlers for Verify Transfer
     $('#verify_transfer').click(function () {
@@ -51,7 +64,7 @@ $(document).ready(function () {
         const percentage = parseFloat($(this).val());
         const amount = parseFloat($(this).data('amount'));
         const feeAmount = (percentage * amount) / 100;
-        
+
         $feeValue.val(feeAmount.toFixed(8));
         updateCalculations();
     });
@@ -60,8 +73,26 @@ $(document).ready(function () {
         const feeAmount = parseFloat($(this).val());
         const totalAmount = parseFloat($feePercentage.data('amount'));
         const percentage = (feeAmount / totalAmount) * 100;
-        
+
         $feePercentage.val(percentage.toFixed(2));
+        updateCalculations();
+    });
+
+    // Transaction Cost Input Events
+    $transactionCostPercentage.on('input', function () {
+        const percentage = parseFloat($(this).val());
+        const amount = parseFloat($(this).data('amount'));
+        const costAmount = (percentage * amount) / 100;
+
+        $transactionCostValue.val(costAmount.toFixed(8));
+        updateCalculations();
+    });
+
+    $transactionCostValue.on('input', function () {
+        const costAmount = parseFloat($(this).val());
+        const totalAmount = parseFloat($transactionCostPercentage.data('amount'));
+        const percentage = (costAmount / totalAmount) * 100;
+        $transactionCostPercentage.val(percentage.toFixed(2));
         updateCalculations();
     });
 
@@ -70,7 +101,7 @@ $(document).ready(function () {
         const amount = parseFloat($(this).val());
         const totalAmount = parseFloat($(this).data('amount'));
         const percentage = (amount / totalAmount) * 100;
-        
+
         $networkFeePercentage.val(percentage.toFixed(2));
         updateNetworkFeeCalculations();
     });
@@ -79,8 +110,27 @@ $(document).ready(function () {
         const percentage = parseFloat($(this).val());
         const totalAmount = parseFloat($networkFeeInput.data('amount'));
         const amount = (percentage * totalAmount) / 100;
-        
+
         $networkFeeInput.val(amount.toFixed(8));
+        updateNetworkFeeCalculations();
+    });
+
+    // Transaction Cost Input Events for OTC
+    $transactionCostPercentageOtc.on('input', function () {
+        const percentage = parseFloat($(this).val());
+        const totalAmount = parseFloat($networkFeeInput.data('amount'));
+        const amount = (percentage * totalAmount) / 100;
+
+        $transactionCostAmountOtc.val(amount.toFixed(8));
+        updateNetworkFeeCalculations();
+    });
+
+    $transactionCostAmountOtc.on('input', function () {
+        const amount = parseFloat($(this).val());
+        const totalAmount = parseFloat($networkFeeInput.data('amount'));
+        const percentage = (amount / totalAmount) * 100;
+
+        $transactionCostPercentageOtc.val(percentage.toFixed(2));
         updateNetworkFeeCalculations();
     });
 
@@ -88,11 +138,14 @@ $(document).ready(function () {
     $verifyForm.on('submit', function (e) {
         const fee = parseFloat($feePercentage.val());
         const feeAmount = parseFloat($feeValue.val());
+        const transactionCost = parseFloat($transactionCostPercentage.val());
+        const transactionCostAmount = parseFloat($transactionCostValue.val());
         const totalAmount = parseFloat($feePercentage.data('amount'));
-        
-        if (isNaN(fee) || fee < 0 || fee > 100 || isNaN(feeAmount) || feeAmount < 0 || feeAmount > totalAmount) {
+
+        if (isNaN(fee) || fee < 0 || isNaN(feeAmount) || feeAmount < 0  ||
+            isNaN(transactionCost) || transactionCost < 0 ||  isNaN(transactionCostAmount) || transactionCostAmount < 0 ) {
             e.preventDefault();
-            alert('Please enter valid fee values. Percentage should be between 0-100% and amount should not exceed the transfer amount.');
+            alert('Please enter valid fee and transaction cost values. Percentages should be between 0-100% and amounts should not exceed the transfer amount.');
         }
     });
 
@@ -100,10 +153,14 @@ $(document).ready(function () {
         const fee = parseFloat($networkFeeInput.val());
         const amount = parseFloat($networkFeeInput.data('amount'));
         const percentage = parseFloat($networkFeePercentage.val());
-        
-        if (isNaN(fee) || fee < 0 || fee > amount || isNaN(percentage) || percentage < 0 || percentage > 100) {
+        const transactionCost = parseFloat($transactionCostAmountOtc.val());
+        const transactionCostPercentage = parseFloat($transactionCostPercentageOtc.val());
+
+        if (isNaN(fee) || fee < 0 ||  isNaN(percentage) || percentage < 0  ||
+            isNaN(transactionCost) || transactionCost < 0  ||
+            isNaN(transactionCostPercentage) || transactionCostPercentage < 0 ) {
             e.preventDefault();
-            alert('Please enter valid fee values. Percentage should be between 0-100% and amount should not exceed the trade amount.');
+            alert('Please enter valid fee and transaction cost values. Percentages should be between 0-100% and amounts should not exceed the trade amount.');
         }
     });
 
@@ -130,7 +187,7 @@ $(document).ready(function () {
     window.setFeePreset = function(percentage) {
         const totalAmount = parseFloat($feePercentage.data('amount'));
         const feeAmount = (percentage * totalAmount) / 100;
-        
+
         $feePercentage.val(percentage.toFixed(2));
         $feeValue.val(feeAmount.toFixed(8));
         updateCalculations();
@@ -140,7 +197,7 @@ $(document).ready(function () {
     window.setNetworkFeePreset = function(percentage) {
         const totalAmount = parseFloat($networkFeeInput.data('amount'));
         const amount = (percentage * totalAmount) / 100;
-        
+
         $networkFeePercentage.val(percentage.toFixed(2));
         $networkFeeInput.val(amount.toFixed(8));
         updateNetworkFeeCalculations();
@@ -148,16 +205,16 @@ $(document).ready(function () {
 
     function updateCalculations() {
         const amount = parseFloat($feePercentage.data('amount'));
-        const fee = parseFloat($feeValue.val());
+        const fee = parseFloat($feeValue.val()) || 0;
         const currencySymbol = $feePercentage.data('currency');
-        
+
         if (isNaN(fee)) return;
-        
-        const finalAmount = amount + fee;
-        
+
+        const finalAmount = amount + fee ;
+
         // Update display with proper formatting
         $feeAmount.html(
-            `${formatNumber(fee, 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
+            `${formatNumber(fee , 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
         );
         $finalAmount.html(
             `${formatNumber(finalAmount, 8)} <span class="text-base font-medium ml-1">${currencySymbol}</span>`
@@ -166,16 +223,20 @@ $(document).ready(function () {
 
     function updateNetworkFeeCalculations() {
         const amount = parseFloat($networkFeeInput.data('amount'));
-        const networkFee = parseFloat($networkFeeInput.val());
+        const networkFee = parseFloat($networkFeeInput.val()) || 0;
+        const transactionCost = parseFloat($transactionCostAmountOtc.val()) || 0;
         const currencySymbol = $networkFeeInput.data('currency');
-        
-        if (isNaN(networkFee)) return;
-        
-        const finalAmount = amount + networkFee;
-        
+
+        if (isNaN(networkFee) || isNaN(transactionCost)) return;
+
+        const finalAmount = amount + networkFee + transactionCost;
+
         // Update display with proper formatting
         $displayNetworkFee.html(
             `${formatNumber(networkFee, 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
+        );
+        $displayTransactionCost.html(
+            `${formatNumber(transactionCost, 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
         );
         $displayFinalAmount.html(
             `${formatNumber(finalAmount, 8)} <span class="text-base font-medium ml-1">${currencySymbol}</span>`
@@ -189,3 +250,4 @@ $(document).ready(function () {
         });
     }
 });
+

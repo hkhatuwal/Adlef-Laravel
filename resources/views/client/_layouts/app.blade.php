@@ -127,6 +127,7 @@
 <script src="{{asset('common/js/fontawesome.js')}}"></script>
 <script src="{{asset('common/js/toastr.min.js')}}"></script>
 <script src="{{asset("assets/js/script.js")}}"></script>
+<script src="{{asset("common/js/script.js")}}"></script>
 
 {{--<script src="https://kit.fontawesome.com/6494bc34f7.js" crossorigin="anonymous"></script>--}}
 

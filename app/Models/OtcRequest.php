@@ -18,6 +18,7 @@ class OtcRequest extends Model
         'to_amount',
         'exchange_rate',
         'network_fee',
+        'transaction_cost',
         'status',
         'failure_reason',
     ];
@@ -27,6 +28,7 @@ class OtcRequest extends Model
         'to_amount' => 'decimal:8',
         'exchange_rate' => 'decimal:8',
         'network_fee' => 'decimal:8',
+        'transaction_cost' => 'decimal:8',
     ];
 
     protected static function booted(): void

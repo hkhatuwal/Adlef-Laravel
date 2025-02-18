@@ -31,7 +31,39 @@ class SettingsSeeder extends Seeder
                 'label' => 'Global Notification Message',
                 'description' => 'The message to display in the global notification banner',
                 'is_active' => true
-            ]
+            ],
+            // OTC Transaction Cost Settings
+            [
+                'key' => 'otc_cost_type',
+                'value' => 'percentage',
+                'type' => 'string'
+            ],
+            [
+                'key' => 'otc_cost_percentage',
+                'value' => '0',
+                'type' => 'decimal'
+            ],
+            [
+                'key' => 'otc_cost_fixed',
+                'value' => '0',
+                'type' => 'decimal'
+            ],
+            // Asset Transfer Cost Settings
+            [
+                'key' => 'transfer_cost_type',
+                'value' => 'percentage',
+                'type' => 'string'
+            ],
+            [
+                'key' => 'transfer_cost_percentage',
+                'value' => '0',
+                'type' => 'decimal'
+            ],
+            [
+                'key' => 'transfer_cost_fixed',
+                'value' => '0',
+                'type' => 'decimal'
+            ],
         ];
 
         foreach ($settings as $setting) {

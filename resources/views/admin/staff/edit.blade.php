@@ -1,0 +1,173 @@
+@extends('admin._partials.admin_main')
+
+@section('title', 'Edit Staff Member')
+
+@section('content')
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-semibold text-slate-800 dark:text-white">Edit Staff Member</h1>
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Update staff member information</p>
+            </div>
+            <a href="{{ route('admin.staff.index') }}"
+               class="inline-flex items-center px-4 py-2 bg-slate-600 text-white text-sm font-medium rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors">
+                <i class="material-symbols-outlined mr-2">arrow_back</i>
+                Back to List
+            </a>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow">
+            <div class="p-6">
+                <form method="POST" action="{{ route('admin.staff.update', $staff->id) }}" class="space-y-8">
+                    @csrf
+                    @method('PUT')
+
+                    <!-- Personal Information Section -->
+                    <div class="border-b border-slate-200 dark:border-slate-700 pb-8">
+                        <h2 class="text-lg font-medium text-slate-900 dark:text-white mb-4 flex items-center">
+                            <i class="material-symbols-outlined mr-2">person</i>
+                            Personal Information
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                                    Full Name
+                                </label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="material-symbols-outlined text-slate-400">badge</i>
+                                    </div>
+                                    <input type="text"
+                                           class="!pl-10 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white sm:text-sm @error('name') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                           id="name"
+                                           name="name"
+                                           value="{{ old('name', $staff->name) }}"
+                                           required>
+                                </div>
+                                @error('name')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                                    Email Address
+                                </label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="material-symbols-outlined text-slate-400">mail</i>
+                                    </div>
+                                    <input type="email"
+                                           class="!pl-10 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white sm:text-sm @error('email') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                           id="email"
+                                           name="email"
+                                           value="{{ old('email', $staff->email) }}"
+                                           required>
+                                </div>
+                                @error('email')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="border-b border-slate-200 dark:border-slate-700 pb-8">
+                        <h2 class="text-lg font-medium text-slate-900 dark:text-white mb-4 flex items-center">
+                            <i class="material-symbols-outlined mr-2">security</i>
+                            Change Password
+                            <span class="ml-2 text-sm text-slate-500 dark:text-slate-400">(optional)</span>
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                                    New Password
+                                </label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="material-symbols-outlined text-slate-400">lock</i>
+                                    </div>
+                                    <input type="password"
+                                           class="!pl-10 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white sm:text-sm @error('password') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror"
+                                           id="password"
+                                           name="password"
+                                           placeholder="Leave blank to keep current password">
+                                </div>
+                                @error('password')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+                                    Confirm New Password
+                                </label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="material-symbols-outlined text-slate-400">lock_reset</i>
+                                    </div>
+                                    <input type="password"
+                                           class="!pl-10 block w-full rounded-md border-slate-300 dark:border-slate-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white sm:text-sm"
+                                           id="password_confirmation"
+                                           name="password_confirmation"
+                                           placeholder="Leave blank to keep current password">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Information -->
+                    <div class="pb-6">
+                        <h2 class="text-lg font-medium text-slate-900 dark:text-white mb-4 flex items-center">
+                            <i class="material-symbols-outlined mr-2">admin_panel_settings</i>
+                            Role & Permissions
+                        </h2>
+                        <div class="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
+                            <h3 class="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">Staff Role Includes:</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    View Asset Transfers
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    Verify Transfer Payments
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    View OTC Trades
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    Process Trades
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    View Users
+                                </div>
+                                <div class="flex items-center text-sm text-slate-600 dark:text-slate-300">
+                                    <i class="material-symbols-outlined mr-2 text-green-500">check_circle</i>
+                                    Verify Users
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-end space-x-4">
+                        <button type="button"
+                                onclick="window.location.href='{{ route('admin.staff.index') }}'"
+                                class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <i class="material-symbols-outlined mr-2">save</i>
+                            Update Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection 

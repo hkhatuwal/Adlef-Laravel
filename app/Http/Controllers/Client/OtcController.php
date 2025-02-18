@@ -39,7 +39,7 @@ class OtcController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $this->assetOperations->calculateTransferDetails(
+            'data' => $this->assetOperations->calculateOtcTransferDetails(
                 amount: $request->get('from_amount'),
                 from: $fromCurrency,
                 to: $toCurrency,
@@ -61,7 +61,7 @@ class OtcController extends Controller
         $toCurrency = Currency::find($request->get('to_currency'));
 
         // Calculate exchange details using new AssetOperations
-        $calculation = $this->assetOperations->calculateTransferDetails(
+        $calculation = $this->assetOperations->calculateOtcTransferDetails(
             amount: $request->get('from_amount'),
             from: $fromCurrency,
             to: $toCurrency,
@@ -84,6 +84,7 @@ class OtcController extends Controller
                 'from_amount' => $request->get('from_amount'),
                 'to_amount' => $calculation['converted_amount'],
                 'exchange_rate' => $calculation['rate'],
+                'transaction_cost' => $calculation['otc_cost'],
                 'network_fee' => $calculation['fee'],
                 'status' => 'pending',
                 'reference_number' => Str::uuid()

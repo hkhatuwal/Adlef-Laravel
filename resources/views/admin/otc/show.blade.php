@@ -265,7 +265,6 @@
                                            id="networkFeePercentage"
                                            step="0.01"
                                            min="0"
-                                           max="100"
                                            value="{{ ($otc->network_fee / $otc->from_amount) * 100 }}"
                                            class="block w-full rounded-lg border-slate-200 pr-8 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
                                 </div>
@@ -280,6 +279,41 @@
                                            id="networkFeeAmount"
                                            name="network_fee"
                                            value="{{ $otc->network_fee }}"
+                                           step="0.00000001"
+                                           min="0"
+                                           data-amount="{{ $otc->from_amount }}"
+                                           data-currency="{{ $otc->fromCurrency->symbol }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-12 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Cost -->
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div class="relative">
+                                <h4 class="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Percentage</h4>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">%</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostPercentage"
+                                           step="0.01"
+                                           min="0"
+                                           value="{{ ($otc->transaction_cost / $otc->from_amount) * 100 }}"
+                                           class="block w-full rounded-lg border-slate-200 pr-8 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <h4 class="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Amount</h4>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $otc->fromCurrency->symbol }}</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostAmount"
+                                           name="transaction_cost"
+                                           value="{{ $otc->transaction_cost }}"
                                            step="0.00000001"
                                            min="0"
                                            data-amount="{{ $otc->from_amount }}"
@@ -310,7 +344,7 @@
 
                         <!-- Calculations Display -->
                         <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700/50 rounded-xl p-6">
-                            <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div class="grid grid-cols-3 gap-6 mb-6">
                                 <div>
                                     <div class="text-sm text-slate-500 dark:text-slate-400">Initial Amount</div>
                                     <div class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
@@ -325,12 +359,19 @@
                                         <span class="text-sm font-medium text-slate-500">{{ $otc->fromCurrency->symbol }}</span>
                                     </div>
                                 </div>
+                                <div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Transaction Cost</div>
+                                    <div id="displayTransactionCost" class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                        {{ number_format($otc->transaction_cost, 8) }}
+                                        <span class="text-sm font-medium text-slate-500">{{ $otc->fromCurrency->symbol }}</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="border-t border-slate-200 dark:border-slate-600 pt-4">
                                 <div class="flex justify-between items-baseline">
                                     <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount</div>
                                     <div id="displayFinalAmount" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                                        {{ number_format($otc->from_amount + $otc->network_fee, 8) }}
+                                        {{ number_format($otc->from_amount + $otc->network_fee + $otc->transaction_cost, 8) }}
                                         <span class="text-base font-medium ml-1">{{ $otc->fromCurrency->symbol }}</span>
                                     </div>
                                 </div>

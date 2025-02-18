@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Models\Currency;
 use App\Models\Commission;
+use App\Models\Setting;
 use App\Models\User;
 
 class FeeCalculator
@@ -104,7 +105,7 @@ class FeeCalculator
             $commission = Commission::where('user_id', $user->id)
                 ->where('currency_id', $to->id)
                 ->first();
-            
+
             if ($commission) {
                 $commissionRate = $commission->commission_rate;
             }
@@ -112,7 +113,7 @@ class FeeCalculator
 
         // Calculate converted amount based on USD as base currency
         $convertedAmount = $amount;
-        
+
         // If converting from non-USD currency to USD
         if (!$from->isUSD() && $to->isUSD()) {
             $convertedAmount = $amount / $from->conversion_rate;
@@ -139,9 +140,10 @@ class FeeCalculator
         $total = $convertedAmount + $fee + $commissionAmount;
 
         // Calculate the effective exchange rate
-        $effectiveRate = $from->isUSD() ? $to->conversion_rate : 
-                        ($to->isUSD() ? (1 / $from->conversion_rate) : 
+        $effectiveRate = $from->isUSD() ? $to->conversion_rate :
+                        ($to->isUSD() ? (1 / $from->conversion_rate) :
                         ($to->conversion_rate / $from->conversion_rate));
+
 
         return [
             'original_amount' => round($amount, 2),
@@ -155,4 +157,34 @@ class FeeCalculator
             'to' => $to
         ];
     }
+
+    /**
+     * Calculate transaction cost based on settings and amount
+     *
+     * @param float $amount The amount to calculate cost for
+     * @param string $type The type of transaction ('otc' or 'transfer')
+     * @return float Returns an array containing cost details
+     */
+    public  function calculateTransactionCost(float $amount, string $type = 'transfer'):float
+    {
+        $settings = Setting::settings();
+        $costType = $type === 'otc' ? 'otc_cost_type' : 'transfer_cost_type';
+        $percentageKey = $type === 'otc' ? 'otc_cost_percentage' : 'transfer_cost_percentage';
+        $fixedKey = $type === 'otc' ? 'otc_cost_fixed' : 'transfer_cost_fixed';
+
+        $costMethod = $settings[$costType] ?? 'percentage';
+
+        if ($costMethod === 'percentage') {
+            $percentage = floatval($settings[$percentageKey] ?? 0);
+            $transactionCost = ($amount * $percentage) / 100;
+        } else {
+            $transactionCost = floatval($settings[$fixedKey] ?? 0);
+        }
+
+        return $transactionCost;
+    }
+
+
+
+
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OtcController;
+use App\Http\Controllers\Admin\StaffController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -13,6 +14,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
         Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+        // Staff Management Routes
+        Route::get('staff', [StaffController::class, 'index'])->name('staff.index');
+        Route::get('staff/create', [StaffController::class, 'create'])->name('staff.create');
+        Route::post('staff', [StaffController::class, 'store'])->name('staff.store');
+        Route::get('staff/{staff}/edit', [StaffController::class, 'edit'])->name('staff.edit');
+        Route::put('staff/{staff}', [StaffController::class, 'update'])->name('staff.update');
+        Route::delete('staff/{staff}', [StaffController::class, 'destroy'])->name('staff.destroy');
 
         // Currency Management Routes
         Route::resource('currencies', CurrencyController::class);

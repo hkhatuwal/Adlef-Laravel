@@ -20,7 +20,7 @@ class AuthController extends Controller
             "email" => $request->get('email'),
             "password" => $request->get('password'),
         ]);
-        if (!$result || !\auth()->user()->hasRole('admin')) {
+        if (!$result || (!\auth()->user()->hasRole('admin') &&  !\auth()->user()->hasRole('staff'))) {
             return redirect()->back()->with('error',"Invalid login details");
         }
         return redirect()->route('admin.posts.index');

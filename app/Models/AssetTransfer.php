@@ -20,6 +20,7 @@ class AssetTransfer extends Model
         'amount',
         'status',
         'fee',
+        'transaction_cost',
         'transfer_type',
         'user_id',
 
@@ -72,7 +73,7 @@ class AssetTransfer extends Model
         $description = $this->generateActivityDescription();
 
         UserActivity::create([
-            'user_id' => auth()->id(),
+            'user_id' => $this->user_id,
             'activity_type' => UserActivity::TYPE_ASSET_TRANSFER,
             'action' => $this->transfer_type === self::TYPE_IN ?
                 UserActivity::ACTION_TRANSFER_IN :
@@ -133,7 +134,7 @@ class AssetTransfer extends Model
         $amount = number_format($this->amount, 8) . ' ' . $this->currency->symbol;
 
         Notification::create([
-            'user_id' => auth()->id(),
+            'user_id' => $this->user_id,
             'type' => Notification::TYPE_INFO,
             'title' => 'Transfer Initiated',
             'message' => "Your transfer of {$amount} has been initiated and is being processed.",
@@ -173,7 +174,7 @@ class AssetTransfer extends Model
         };
 
         Notification::create([
-            'user_id' => auth()->id(),
+            'user_id' => $this->user_id,
             'type' => $type,
             'title' => $title,
             'message' => $message,

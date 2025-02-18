@@ -69,11 +69,52 @@ class AssetOperations
 
         // Calculate total
         $total = $this->feeCalculator->calculateTotal($convertedAmount, $fee, $commission);
+        $transferCost=$this->feeCalculator->calculateTransactionCost($amount,'transfer');
 
         return [
             'original_amount' => round($amount, 2),
             'converted_amount' => round($convertedAmount, 2),
             'fee' => round($fee, 2),
+            'transfer_cost'=>$transferCost,
+            'commission_rate' => $user ? $this->getCommissionRate($user, $to) : 0,
+            'commission_amount' => round($commission, 2),
+            'rate' => $rate,
+            'total' => round($total, 2),
+            'from' => $from,
+            'to' => $to
+        ];
+    }
+
+
+    public function calculateOtcTransferDetails(
+        float $amount,
+        Currency $from,
+        Currency $to,
+        ?User $user = null,
+        float $feePercentage = 1.0,
+        float $minimumFee = 5.0
+    ): array {
+        // Convert amount
+        $convertedAmount = $this->currencyConverter->convert($amount, $from, $to);
+
+        // Calculate fee
+        $fee = $this->feeCalculator->calculateTransferFee($convertedAmount, $feePercentage, $minimumFee);
+
+        // Calculate commission
+        $commission = $this->feeCalculator->calculateCommission($convertedAmount, $user, $to);
+
+        // Get exchange rate
+        $rate = $this->currencyConverter->getExchangeRate($from, $to);
+
+        // Calculate total
+        $total = $this->feeCalculator->calculateTotal($convertedAmount, $fee, $commission);
+        $transferCost=$this->feeCalculator->calculateTransactionCost($amount,'otc');
+
+        return [
+            'original_amount' => round($amount, 2),
+            'converted_amount' => round($convertedAmount, 2),
+            'fee' => round($fee, 2),
+            'otc_cost'=>$transferCost,
             'commission_rate' => $user ? $this->getCommissionRate($user, $to) : 0,
             'commission_amount' => round($commission, 2),
             'rate' => $rate,

@@ -36,4 +36,16 @@ class Setting extends Model
             ['value' => $value]
         );
     }
+
+    public static function settings()
+    {
+        return cache()->remember('settings.all', 60, function () {
+            $settings = Setting::all();
+            $settingsKeyValues = [];
+            foreach ($settings as $setting) {
+                $settingsKeyValues[$setting->key] = $setting->value;
+            }
+            return $settingsKeyValues;
+        });
+    }
 }

@@ -180,6 +180,7 @@ class AssetTransferController extends Controller
                 'reference_number' => Str::uuid(),
                 'status' => 'pending',
                 'fee' => $transferDetails['fee'],
+                'transaction_cost' => $transferDetails['transfer_cost'],
                 'transfer_type' => AssetTransfer::TYPE_OUT,
                 'user_id' => $request->user()->id,
             ]);
@@ -224,6 +225,7 @@ class AssetTransferController extends Controller
             to: $currency,
             user: $request->user()
         );
+
         $assetAccount=AssetAccount::where('user_id', $request->user()->id)->where('currency_id', $request->currency_id)->first();
         if ($transferDetails['total']>$assetAccount->balance){
             return  response()->json([

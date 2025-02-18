@@ -10,7 +10,7 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || !auth()->user()->hasRole('admin')) {
+        if (!auth()->check() || (!auth()->user()->hasRole('admin') && !auth()->user()->hasRole('staff'))) {
             return redirect()->route('admin.login');
         }
 

@@ -34,12 +34,27 @@ class OtcController extends Controller
     /**
      * Process the OTC request.
      */
-    public function process(OtcRequest $otc)
+    public function process(OtcRequest $otc,Request $request)
     {
+
+
+        $oldFee=$otc->network_fee;
+        $newFee=$request->network_fee;
+        $feeDifference=$newFee-$oldFee;
+
+
         $otc->status = 'completed';
+        $otc->network_fee = $newFee;
         $otc->save();
         $toAccount=AssetAccount::query()->where('user_id', $otc->user_id)->where('currency_id', $otc->to_currency_id)->first();
+        $fromAccount=AssetAccount::query()->where('user_id', $otc->user_id)->where('currency_id', $otc->from_currency_id)->first();
 
+
+        if ($feeDifference>0){
+            $fromAccount->update([
+                'balance' => $fromAccount->balance - $feeDifference
+            ]);
+        }
 
         $toAccount->balance=$toAccount->balance+$otc->to_amount;
         $toAccount->save();

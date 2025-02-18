@@ -24,107 +24,136 @@
                 <div class="flex items-center px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700/50">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white">
-                            <i class="material-symbols-outlined">admin_panel_settings</i>
+                            <i class="material-symbols-outlined">{{ auth()->user()->hasRole('admin') ? 'admin_panel_settings' : 'badge' }}</i>
                         </div>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm font-medium text-slate-900 dark:text-white">Administrator</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Super Admin</p>
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ ucfirst(auth()->user()->roles->first()->name) }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Main Navigation -->
-            <nav class="space-y-1">
-                <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
-                
-                <!-- Dashboard -->
-                <a href="#" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 mr-3 transition-transform group-hover:scale-110">
-                        <i class="material-symbols-outlined text-[20px]">dashboard</i>
-                    </span>
-                    Dashboard
-                </a>
+            <nav class="space-y-6">
+                <!-- Overview Section -->
+                <div>
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Overview</p>
+                    <a href="#"
+                       class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.dashboard') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 mr-3 transition-transform group-hover:scale-110">
+                            <i class="material-symbols-outlined text-[20px]">dashboard</i>
+                        </span>
+                        Dashboard
+                    </a>
+                </div>
 
-                <!-- Posts Section -->
-                <div class="mt-4">
+                @role('admin')
+                <!-- Content Management -->
+                <div>
                     <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Content Management</p>
-                    
-                    <a href="{{route('admin.posts.create')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 mr-3 transition-transform group-hover:scale-110">
-                            <i class="material-symbols-outlined text-[20px]">post_add</i>
-                        </span>
-                        Create Post
-                    </a>
-
-                    <a href="{{route('admin.posts.index')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 dark:bg-slate-700 text-purple-600 dark:text-purple-400 mr-3 transition-transform group-hover:scale-110">
-                            <i class="material-symbols-outlined text-[20px]">article</i>
-                        </span>
-                        All Posts
-                    </a>
+                    <div class="space-y-1">
+                        <a href="{{route('admin.posts.create')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.posts.create') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">post_add</i>
+                            </span>
+                            Create Post
+                        </a>
+                        <a href="{{route('admin.posts.index')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.posts.index') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 dark:bg-slate-700 text-purple-600 dark:text-purple-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">article</i>
+                            </span>
+                            All Posts
+                        </a>
+                    </div>
                 </div>
+                @endrole
 
-                <!-- Client Management Section -->
-                <div class="mt-4">
-                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Client Management</p>
-                    
-                    <a href="{{route('admin.currencies.index')}}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50 group transition-colors">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 dark:bg-slate-700 text-amber-600 dark:text-amber-400 mr-3 transition-transform group-hover:scale-110">
-                            <i class="material-symbols-outlined text-[20px]">currency_exchange</i>
-                        </span>
-                        Currencies
-                    </a>
-                </div>
+                <!-- User & Client Management -->
+                <div>
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">User Management</p>
+                    <div class="space-y-1">
+                        @role('admin')
+                        <a href="{{ route('admin.staff.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.staff.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-teal-50 dark:bg-slate-700 text-teal-600 dark:text-teal-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">badge</i>
+                            </span>
+                            Staff Members
+                        </a>
+                        @endrole
 
-                <!-- User Management -->
-                <div class="space-y-1">
-                    <h3 class="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        User Management
-                    </h3>
-                    <a href="{{ route('admin.users.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.users.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
-                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">group</i>
-                        <span class="truncate">Users</span>
-                    </a>
+                        @can('view users')
+                        <a href="{{ route('admin.users.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.users.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">group</i>
+                            </span>
+                            Users
+                        </a>
+                        @endcan
+
+                        @role('admin')
+                        <a href="{{route('admin.currencies.index')}}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.currencies.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 dark:bg-slate-700 text-amber-600 dark:text-amber-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">currency_exchange</i>
+                            </span>
+                            Currencies
+                        </a>
+                        @endrole
+                    </div>
                 </div>
 
                 <!-- Asset Management -->
-                <div class="space-y-1 mt-4">
-                    <h3 class="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        Asset Management
-                    </h3>
-                    <a href="{{ route('admin.transfers.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.transfers.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
-                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">swap_horiz</i>
-                        <span class="truncate">Asset Transfers</span>
-                    </a>
-                    <a href="{{ route('admin.otc.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.otc.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
-                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">currency_exchange</i>
-                        <span class="truncate">OTC Trades</span>
-                    </a>
+                <div>
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Asset Management</p>
+                    <div class="space-y-1">
+                        @can('view asset transfers')
+                        <a href="{{ route('admin.transfers.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.transfers.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-green-50 dark:bg-slate-700 text-green-600 dark:text-green-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">swap_horiz</i>
+                            </span>
+                            Asset Transfers
+                        </a>
+                        @endcan
+
+                        @can('view otc trades')
+                        <a href="{{ route('admin.otc.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.otc.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-50 dark:bg-slate-700 text-orange-600 dark:text-orange-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">currency_exchange</i>
+                            </span>
+                            OTC Trades
+                        </a>
+                        @endcan
+                    </div>
                 </div>
 
-                <!-- System Settings -->
-                <div class="space-y-1 mt-4">
-                    <h3 class="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        System
-                    </h3>
-                    <a href="{{ route('admin.settings.index') }}" 
-                       class="flex items-center px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.settings.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700' }}">
-                        <i class="material-symbols-outlined mr-3 flex-shrink-0 h-6 w-6">settings</i>
-                        <span class="truncate">Settings</span>
-                    </a>
+                @role('admin')
+                <!-- System -->
+                <div>
+                    <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">System</p>
+                    <div class="space-y-1">
+                        <a href="{{ route('admin.settings.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.settings.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">settings</i>
+                            </span>
+                            Settings
+                        </a>
+                    </div>
                 </div>
+                @endrole
             </nav>
         </div>
 
         <!-- Bottom Section -->
-        <div class="p-4 border-t border-slate-200 dark:border-slate-700">
+        <div class="p-4 mt-auto border-t border-slate-200 dark:border-slate-700">
             <form action="{{route('admin.logout')}}" method="post" id="logout-form">
                 @csrf
-                <button type="button" onclick="logout()" 
+                <button type="button" onclick="logout()"
                     class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
                     <i class="material-symbols-outlined mr-2">logout</i>
                     Sign Out

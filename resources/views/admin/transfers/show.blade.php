@@ -226,7 +226,7 @@
                             {{ $transfer->to_account_type === 'App\\Models\\BankAccount' ? 'account_balance' : 'account_balance_wallet' }}
                         </i>
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 w-full ">
                         <h4 class="text-lg font-medium text-slate-900 dark:text-white">
                             {{ class_basename($transfer->to_account_type) }}
                         </h4>
@@ -239,6 +239,17 @@
                                     Account Number: {{ $transfer->to_account->account_number }}<br>
                                     SWIFT: {{ $transfer->to_account->swift }}
                                 </div>
+                            @endif
+                            @if($transfer->to_account_type === \App\Models\CryptoWallet::class)
+                                <div class="text-sm text-slate-500 dark:text-slate-400 flex ">
+                                    Wallet Address: <span id="wallet-address" class="inline">{{ \Illuminate\Support\Str::trim($transfer->to_account->wallet_address) }}</span>
+                                    <span class="text-blue-600 cursor-pointer ml-3" onclick="copyToClipboard('wallet-address')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    </span>
+                                </div>
+
                             @endif
                         @else
                             <p class="text-sm text-slate-500 dark:text-slate-400">Account details not available</p>
@@ -361,7 +372,6 @@
                                            value="{{($transfer->fee/$transfer->amount)*100}}"
                                            step="0.1"
                                            min="0"
-                                           max="100"
                                            data-amount="{{ $transfer->amount }}"
                                            data-currency="{{ $transfer->currency->symbol }}"
                                            class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
@@ -378,6 +388,42 @@
                                            step="0.00000001"
                                            min="0"
                                            value="{{ $transfer->fee }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Cost -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="transactionCostPercentage" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Percentage</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">%</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostPercentage"
+                                           name="transaction_cost_percentage"
+                                           value="{{( $transfer->transaction_cost/$transfer->amount)*100 }}"
+                                           step="0.1"
+                                           min="0"
+                                           data-amount="{{ $transfer->amount }}"
+                                           data-currency="{{ $transfer->currency->symbol }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="transactionCostValue" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Value</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostValue"
+                                           name="transaction_cost_value"
+                                           step="0.00000001"
+                                           min="0"
+                                           value="{{ $transfer->transaction_cost }}"
                                            class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
                                 </div>
                             </div>

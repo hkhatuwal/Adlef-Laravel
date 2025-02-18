@@ -8,6 +8,93 @@
         <form action="{{ route('admin.settings.store') }}" method="POST">
             @csrf
 
+            <!-- Transaction Costs Settings Group -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">Transaction Costs</h2>
+                
+                <!-- OTC Transaction Cost Settings -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">OTC Transaction Cost</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Cost Type Selection -->
+                        <div class="flex items-center space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="settings[otc_cost_type]" value="percentage" 
+                                    class="form-radio" 
+                                    {{ ($settingsKeyValues['otc_cost_type'] ?? 'percentage') == 'percentage' ? 'checked' : '' }}>
+                                <span class="ml-2">Percentage</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="settings[otc_cost_type]" value="fixed" 
+                                    class="form-radio"
+                                    {{ ($settingsKeyValues['otc_cost_type'] ?? '') == 'fixed' ? 'checked' : '' }}>
+                                <span class="ml-2">Fixed Value</span>
+                            </label>
+                        </div>
+
+                        <!-- Percentage Value -->
+                        <div class="percentage-input {{ ($settingsKeyValues['otc_cost_type'] ?? 'percentage') == 'percentage' ? '' : 'hidden' }}">
+                            <label class="block text-sm font-medium text-gray-700">Percentage Value (%)</label>
+                            <input type="number" name="settings[otc_cost_percentage]" 
+                                value="{{ $settingsKeyValues['otc_cost_percentage'] ?? '0' }}"
+                                step="0.01" min="0" max="100"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+
+                        <!-- Fixed Value -->
+                        <div class="fixed-input {{ ($settingsKeyValues['otc_cost_type'] ?? 'percentage') == 'fixed' ? '' : 'hidden' }}">
+                            <label class="block text-sm font-medium text-gray-700">Fixed Value</label>
+                            <input type="number" name="settings[otc_cost_fixed]" 
+                                value="{{ $settingsKeyValues['otc_cost_fixed'] ?? '0' }}"
+                                step="0.00000001" min="0"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asset Transfer Cost Settings -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Asset Transfer Cost</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Cost Type Selection -->
+                        <div class="flex items-center space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="settings[transfer_cost_type]" value="percentage" 
+                                    class="form-radio"
+                                    {{ ($settingsKeyValues['transfer_cost_type'] ?? 'percentage') == 'percentage' ? 'checked' : '' }}>
+                                <span class="ml-2">Percentage</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="settings[transfer_cost_type]" value="fixed" 
+                                    class="form-radio"
+                                    {{ ($settingsKeyValues['transfer_cost_type'] ?? '') == 'fixed' ? 'checked' : '' }}>
+                                <span class="ml-2">Fixed Value</span>
+                            </label>
+                        </div>
+
+                        <!-- Percentage Value -->
+                        <div class="percentage-input {{ ($settingsKeyValues['transfer_cost_type'] ?? 'percentage') == 'percentage' ? '' : 'hidden' }}">
+                            <label class="block text-sm font-medium text-gray-700">Percentage Value (%)</label>
+                            <input type="number" name="settings[transfer_cost_percentage]" 
+                                value="{{ $settingsKeyValues['transfer_cost_percentage'] ?? '0' }}"
+                                step="0.01" min="0" max="100"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+
+                        <!-- Fixed Value -->
+                        <div class="fixed-input {{ ($settingsKeyValues['transfer_cost_type'] ?? 'percentage') == 'fixed' ? '' : 'hidden' }}">
+                            <label class="block text-sm font-medium text-gray-700">Fixed Value</label>
+                            <input type="number" name="settings[transfer_cost_fixed]" 
+                                value="{{ $settingsKeyValues['transfer_cost_fixed'] ?? '0' }}"
+                                step="0.00000001" min="0"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Notifications Settings Group -->
             <div class="mb-8">
                 <h2 class="text-2xl font-bold mb-4">Notifications</h2>
@@ -46,7 +133,6 @@
                 </div>
             </div>
 
-
             <div class="mt-6">
                 <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     Save Settings
@@ -55,4 +141,30 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // OTC Cost Type Toggle
+        const otcCostTypeInputs = document.querySelectorAll('input[name="settings[otc_cost_type]"]');
+        otcCostTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const container = this.closest('.mb-6');
+                container.querySelector('.percentage-input').classList.toggle('hidden', this.value !== 'percentage');
+                container.querySelector('.fixed-input').classList.toggle('hidden', this.value !== 'fixed');
+            });
+        });
+
+        // Transfer Cost Type Toggle
+        const transferCostTypeInputs = document.querySelectorAll('input[name="settings[transfer_cost_type]"]');
+        transferCostTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const container = this.closest('.mb-6');
+                container.querySelector('.percentage-input').classList.toggle('hidden', this.value !== 'percentage');
+                container.querySelector('.fixed-input').classList.toggle('hidden', this.value !== 'fixed');
+            });
+        });
+    });
+</script>
+@endpush
 @endsection
