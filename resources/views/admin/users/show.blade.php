@@ -17,6 +17,11 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
+            <a href="{{ route('admin.users.commissions', $user) }}" 
+               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/50 dark:text-purple-400 dark:hover:bg-purple-900 transition-colors group">
+                <i class="material-symbols-outlined text-lg mr-2">percent</i>
+                Manage Commissions
+            </a>
             <a href="{{ route('admin.users.accounts', $user) }}" 
                class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/50 dark:text-indigo-400 dark:hover:bg-indigo-900 transition-colors group">
                 <i class="material-symbols-outlined text-lg mr-2">account_balance</i>

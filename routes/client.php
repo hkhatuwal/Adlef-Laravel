@@ -74,6 +74,9 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
 
     // Activity Routes
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+    Route::get('/activities/export/pdf', [ActivityController::class, 'exportPdf'])->name('activities.export.pdf');
+    Route::get('/activities/export/excel', [ActivityController::class, 'exportExcel'])->name('activities.export.excel');
+    Route::get('/activities/export/csv', [ActivityController::class, 'exportCsv'])->name('activities.export.csv');
 
     // Notification Routes
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');

@@ -1,0 +1,521 @@
+@extends('admin._partials.admin_main')
+
+@section('content')
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.transfers.index') }}"
+               class="flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-all hover:scale-105">
+                <i class="material-symbols-outlined text-2xl">arrow_back</i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Transfer Details</h1>
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Reference: {{ $transfer->reference_number }}</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            @if($transfer->status === 'pending')
+                <div class="flex items-center gap-2">
+                    <button type="button"
+                            @if($transfer->transfer_type === 'out')
+                                id="verify_transfer"
+                            @endif
+                            onclick="@if($transfer->transfer_type === 'in') document.getElementById('direct-verify-form').submit(); @endif"
+                            class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <i class="material-symbols-outlined text-[20px] mr-2">verified</i>
+                        Verify Payment
+                    </button>
+                    <form action="{{ route('admin.transfers.reject', $transfer) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                            <i class="material-symbols-outlined text-[20px] mr-2">cancel</i>
+                            Reject Transfer
+                        </button>
+                    </form>
+                </div>
+            @endif
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
+                {{ $transfer->status === 'completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' :
+                   ($transfer->status === 'failed' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' :
+                   'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400') }}">
+                <i class="material-symbols-outlined text-[20px] mr-2">
+                    {{ $transfer->status === 'completed' ? 'check_circle' :
+                       ($transfer->status === 'failed' ? 'error' : 'pending') }}
+                </i>
+                {{ ucfirst($transfer->status) }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Action Messages -->
+    @if(session('success'))
+        <div class="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+            <div class="flex items-center">
+                <i class="material-symbols-outlined text-emerald-500 mr-2">check_circle</i>
+                <p class="text-emerald-600 dark:text-emerald-400">{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg">
+            <div class="flex items-center">
+                <i class="material-symbols-outlined text-red-500 mr-2">error</i>
+                <p class="text-red-600 dark:text-red-400">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    <div class="grid grid-cols-3 gap-6 mb-6">
+        <!-- Amount Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Amount</h3>
+                <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center">
+                    <i class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">payments</i>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <div class="text-2xl font-bold text-slate-900 dark:text-white">
+                    {{ number_format($transfer->amount, 8) }} {{ $transfer->currency->symbol }}
+                </div>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    Fee: {{ number_format($transfer->fee, 8) }} {{ $transfer->currency->symbol }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Type Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Transfer Type</h3>
+                <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/50 flex items-center justify-center">
+                    <i class="material-symbols-outlined text-purple-600 dark:text-purple-400">swap_horiz</i>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                    {{ $transfer->transfer_type === 'in' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' :
+                       ($transfer->transfer_type === 'out' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400' :
+                       'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-400') }}">
+                    <i class="material-symbols-outlined text-[20px] mr-2">
+                        {{ $transfer->transfer_type === 'in' ? 'arrow_downward' :
+                           ($transfer->transfer_type === 'out' ? 'arrow_upward' : 'swap_horiz') }}
+                    </i>
+                    {{ ucfirst($transfer->transfer_type) }} Transfer
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-slate-500 dark:text-slate-400">Date & Time</h3>
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/50 flex items-center justify-center">
+                    <i class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">calendar_today</i>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <div class="text-lg font-semibold text-slate-900 dark:text-white">
+                    {{ $transfer->created_at->format('M d, Y') }}
+                </div>
+                <div class="text-sm text-slate-500 dark:text-slate-400">
+                    {{ $transfer->created_at->format('H:i:s') }} UTC
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-6">
+        <!-- User Information -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-medium text-slate-900 dark:text-white">User Information</h3>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-12 w-12 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                        <span class="text-lg font-medium text-indigo-600 dark:text-indigo-400">
+                            {{ strtoupper(substr($transfer->user->name, 0, 1)) }}
+                        </span>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ $transfer->user->name }}
+                        </h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">
+                            {{ $transfer->user->email }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency Information -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-medium text-slate-900 dark:text-white">Currency Information</h3>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center">
+                    @if($transfer->currency->icon)
+                        <img src="{{ asset('storage/' . $transfer->currency->icon) }}"
+                             alt="{{ $transfer->currency->name }}"
+                             class="h-12 w-12 rounded-lg object-contain bg-slate-100 dark:bg-slate-700 p-1">
+                    @endif
+                    <div class="ml-4">
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ $transfer->currency->name }}
+                        </h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">
+                            Symbol: {{ $transfer->currency->symbol }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+        <!-- From Account -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-medium text-slate-900 dark:text-white">From Account</h3>
+            </div>
+            <div class="p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                        <i class="material-symbols-outlined text-slate-500 dark:text-slate-400">
+                            {{ $transfer->from_account_type === 'App\\Models\\BankAccount' ? 'account_balance' : 'account_balance_wallet' }}
+                        </i>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ class_basename($transfer->from_account_type) }}
+                        </h4>
+                        @if($transfer->from_account)
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                {{ $transfer->from_account->name ?? $transfer->from_account->bank_name ?? 'N/A' }}
+                            </p>
+                            @if($transfer->from_account_type === 'App\\Models\\BankAccount')
+                                <div class="text-sm text-slate-500 dark:text-slate-400">
+                                    Account Number: {{ $transfer->from_account->account_number }}<br>
+                                    SWIFT: {{ $transfer->from_account->swift }}
+                                </div>
+                            @endif
+                        @else
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Account details not available</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- To Account -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="text-lg font-medium text-slate-900 dark:text-white">To Account</h3>
+            </div>
+            <div class="p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                        <i class="material-symbols-outlined text-slate-500 dark:text-slate-400">
+                            {{ $transfer->to_account_type === 'App\\Models\\BankAccount' ? 'account_balance' : 'account_balance_wallet' }}
+                        </i>
+                    </div>
+                    <div class="ml-4 w-full 0">
+                        <h4 class="text-lg font-medium text-slate-900 dark:text-white">
+                            {{ class_basename($transfer->to_account_type) }}
+                        </h4>
+                        @if($transfer->to_account)
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                {{ $transfer->to_account->name ?? $transfer->to_account->bank_name ?? $transfer->to_account->alias ?? 'N/A' }}
+                            </p>
+                            @if($transfer->to_account_type === 'App\\Models\\BankAccount')
+                                <div class="text-sm text-slate-500 dark:text-slate-400">
+                                    Account Number: {{ $transfer->to_account->account_number }}<br>
+                                    SWIFT: {{ $transfer->to_account->swift }}
+                                </div>
+                            @endif
+                            @if($transfer->to_account_type === \App\Models\CryptoWallet::class)
+                                <div class="text-sm text-slate-500 dark:text-slate-400 flex ">
+                                    Wallet Address: <span id="wallet-address" class="inline">{{ \Illuminate\Support\Str::trim($transfer->to_account->wallet_address) }}</span>
+                                    <span class="text-blue-600 cursor-pointer ml-3" onclick="copyToClipboard('wallet-address')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    </span>
+                                </div>
+
+                            @endif
+                        @else
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Account details not available</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity History -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+            <h3 class="text-lg font-medium text-slate-900 dark:text-white">Activity History</h3>
+        </div>
+        <div class="p-6">
+            <div class="flow-root">
+                <ul role="list" class="-mb-8">
+                    @foreach($transfer->activities as $activity)
+                        <li>
+                            <div class="relative pb-8">
+                                @if(!$loop->last)
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
+                                @endif
+                                <div class="relative flex space-x-3">
+                                    <div>
+                                        <span class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white dark:ring-slate-800
+                                            {{ $activity->status === 'completed' ? 'bg-emerald-100 dark:bg-emerald-900/50' :
+                                               ($activity->status === 'failed' ? 'bg-red-100 dark:bg-red-900/50' :
+                                               'bg-blue-100 dark:bg-blue-900/50') }}">
+                                            <i class="material-symbols-outlined text-lg
+                                                {{ $activity->status === 'completed' ? 'text-emerald-600 dark:text-emerald-400' :
+                                                   ($activity->status === 'failed' ? 'text-red-600 dark:text-red-400' :
+                                                   'text-blue-600 dark:text-blue-400') }}">
+                                                {{ $activity->status === 'completed' ? 'check_circle' :
+                                                   ($activity->status === 'failed' ? 'error' : 'pending') }}
+                                            </i>
+                                        </span>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="text-sm font-medium text-slate-900 dark:text-white">
+                                            {{ $activity->description }}
+                                        </div>
+                                        <div class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                            {{ $activity->created_at->format('M d, Y H:i:s') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Verify Transfer Modal -->
+<div id="verifyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white">
+                            Verify Transfer
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            Reference: {{ $transfer->reference_number }}
+                        </p>
+                    </div>
+                    <button type="button"
+                            id="close-verify-modal"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <i class="material-symbols-outlined text-2xl">close</i>
+                    </button>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.transfers.verify', $transfer) }}" method="POST" id="verifyForm">
+                @csrf
+                <div class="p-6">
+                    <!-- Transfer Summary -->
+                    <div class="mb-8">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-4">
+                                <div class="text-sm text-slate-500 dark:text-slate-400">From</div>
+                                <div class="mt-1 font-medium text-slate-900 dark:text-white">
+                                    {{ $transfer->from_account ? ($transfer->from_account->name ?? $transfer->from_account->bank_name) : 'N/A' }}
+                                </div>
+                                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $transfer->from_account ? $transfer->from_account->account_number : '' }}
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-4">
+                                <div class="text-sm text-slate-500 dark:text-slate-400">To</div>
+                                <div class="mt-1 font-medium text-slate-900 dark:text-white">
+                                    {{ $transfer->to_account ? ($transfer->to_account->name ?? $transfer->to_account->bank_name ?? $transfer->to_account->alias ) : 'N/A' }}
+                                </div>
+                                <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $transfer->to_account ? $transfer->to_account->account_number ?? $transfer->to_account->wallet_address : '' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Adjustment -->
+                    <div class="mb-8">
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="feePercentage" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fee Percentage</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">%</span>
+                                    </div>
+                                    <input type="number"
+                                           id="feePercentage"
+                                           name="fee_percentage"
+                                           value="{{($transfer->fee/$transfer->amount)*100}}"
+                                           step="0.1"
+                                           min="0"
+                                           data-amount="{{ $transfer->amount }}"
+                                           data-currency="{{ $transfer->currency->symbol }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="feeValue" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fee Value</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                    <input type="number"
+                                           id="feeValue"
+                                           step="0.00000001"
+                                           min="0"
+                                           value="{{ $transfer->fee }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Cost -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="transactionCostPercentage" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Percentage</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">%</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostPercentage"
+                                           name="transaction_cost_percentage"
+                                           value="{{( $transfer->transaction_cost/$transfer->amount)*100 }}"
+                                           step="0.1"
+                                           min="0"
+                                           data-amount="{{ $transfer->amount }}"
+                                           data-currency="{{ $transfer->currency->symbol }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="transactionCostValue" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Transaction Cost Value</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                    <input type="number"
+                                           id="transactionCostValue"
+                                           name="transaction_cost_value"
+                                           step="0.00000001"
+                                           min="0"
+                                           value="{{ $transfer->transaction_cost }}"
+                                           class="block w-full rounded-lg border-slate-200 !pr-6 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Presets -->
+                        <div class="flex gap-2 mb-6">
+                            <button type="button"
+                                    onclick="setFeePreset(0.5)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                0.5%
+                            </button>
+                            <button type="button"
+                                    onclick="setFeePreset(1.0)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                1.0%
+                            </button>
+                            <button type="button"
+                                    onclick="setFeePreset(2.0)"
+                                    class="px-3 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                2.0%
+                            </button>
+                        </div>
+
+                        <!-- Calculations Display -->
+                        <div class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700/50 rounded-xl p-6">
+                            <div class="grid grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Original Amount</div>
+                                    <div class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                        {{ number_format($transfer->amount, 8) }}
+                                        <span class="text-sm font-medium text-slate-500">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">Fee Amount</div>
+                                    <div id="feeAmount" class="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
+                                        {{ number_format($transfer->fee, 8) }}
+                                        <span class="text-sm font-medium text-slate-500">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-200 dark:border-slate-600 pt-4">
+                                <div class="flex justify-between items-baseline">
+                                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount</div>
+                                    <div id="finalAmount" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                                        {{ number_format($transfer->amount + $transfer->fee, 8) }}
+                                        <span class="text-base font-medium ml-1">{{ $transfer->currency->symbol }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Message -->
+                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg p-4">
+                        <div class="flex gap-3">
+                            <i class="material-symbols-outlined text-amber-500">warning</i>
+                            <div class="text-sm text-amber-800 dark:text-amber-300">
+                                Please review all details carefully. This action cannot be undone after verification.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-200 dark:border-slate-700 rounded-b-xl flex justify-end gap-3">
+                    <button type="button"
+                            id="cancel-verify"
+                            class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 inline-flex items-center gap-2">
+                        <i class="material-symbols-outlined text-[20px]">verified</i>
+                        Confirm Verification
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add this form for direct verification of incoming transfers -->
+<form id="direct-verify-form" action="{{ route('admin.transfers.verify', $transfer) }}" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="fee_percentage" value="1.0">
+</form>
+
+@push('scripts')
+<script src="{{ asset('admin/js/script.js') }}"></script>
+@endpush
+@endsection
+
+

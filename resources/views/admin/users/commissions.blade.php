@@ -1,0 +1,107 @@
+@extends('admin._partials.admin_main')
+
+@section('title', 'Manage User Commissions')
+
+@section('content')
+<div class="container mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.users.show', $user) }}"
+                   class="flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-transform transform hover:scale-110">
+                    <i class="material-symbols-outlined text-2xl">arrow_back</i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-800 dark:text-white">Manage Commissions</h1>
+                    <p class="mt-1 text-base text-slate-600 dark:text-slate-400">Set commission rates for {{ $user->name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(session('success'))
+        <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-xl shadow-md">
+            <div class="flex items-center">
+                <i class="material-symbols-outlined text-green-600 dark:text-green-400 mr-2">check_circle</i>
+                <span class="text-green-700 dark:text-green-300">{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+        <form action="{{ route('admin.users.update-commissions', $user) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="p-6">
+                <div class="space-y-6">
+                    @foreach($currencies as $currency)
+                        @php
+                            $commission = $userCommissions->firstWhere('currency_id', $currency->id);
+                        @endphp
+                        <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600">
+                                        @if($currency->icon)
+                                            <img src="{{ asset('storage/' . $currency->icon) }}" alt="{{ $currency->name }}" class="w-8 h-8">
+                                        @else
+                                            <span class="text-lg font-semibold text-slate-700 dark:text-slate-300">
+                                                {{ strtoupper($currency->symbol) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-medium text-slate-900 dark:text-white">{{ $currency->name }}</h3>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400">{{ strtoupper($currency->symbol) }}</p>
+                                    </div>
+                                </div>
+                                <div class="w-64">
+                                    <label for="commission_{{ $currency->id }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                        Commission Rate (%)
+                                    </label>
+                                    <div class="relative rounded-lg shadow-sm">
+                                        <input type="hidden"
+                                               name="commissions[{{ $currency->id }}][currency_id]"
+                                               value="{{ $currency->id }}"
+                                               >
+                                        <input type="number"
+                                               name="commissions[{{ $currency->id }}][commission_rate]"
+                                               id="commission_{{ $currency->id }}"
+                                               value="{{ old("commissions.{$currency->id}.commission_rate", $commission ? $commission->commission_rate : 0) }}"
+                                               step="0.01"
+                                               min="0"
+                                               max="100"
+                                               class="block w-full rounded-lg border-slate-300 dark:border-slate-600 pr-10 focus:border-indigo-500 focus:ring-indigo-500 dark:bg-slate-700 dark:text-white sm:text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <span class="text-slate-500 dark:text-slate-400 sm:text-sm">%</span>
+                                        </div>
+                                    </div>
+                                    @error("commissions.{$currency->id}.commission_rate")
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700/50 border-t border-slate-200 dark:border-slate-600">
+                <div class="flex justify-end space-x-3">
+                    <a href="{{ route('admin.users.show', $user) }}"
+                       class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-lg text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                        <i class="material-symbols-outlined text-lg mr-2">save</i>
+                        Save Commission Rates
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection

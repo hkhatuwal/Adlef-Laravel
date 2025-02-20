@@ -1,0 +1,11 @@
+we are using laravel 11
+admin routes to be in admin.php file
+client routes to be in client.php file
+use jquery 
+@section('post-script') @section to inject script to that page
+
+
+
+
+
+

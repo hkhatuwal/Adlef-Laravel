@@ -39,7 +39,7 @@
                 <!-- Overview Section -->
                 <div>
                     <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Overview</p>
-                    <a href="#"
+                    <a href="{{route('admin.dashboard')}}"
                        class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.dashboard') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
                         <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 mr-3 transition-transform group-hover:scale-110">
                             <i class="material-symbols-outlined text-[20px]">dashboard</i>

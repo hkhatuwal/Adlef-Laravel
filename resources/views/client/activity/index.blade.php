@@ -12,11 +12,46 @@
                             place</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button type="button" id="refreshBtn"
-                                class="inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <i class="fa-solid fa-arrows-rotate mr-2"></i>
-                            Refresh
-                        </button>
+                        <div class="flex items-center space-x-2">
+                            <div class="relative" x-data="{ open: false }">
+                                <button type="button" @click="open = !open"
+                                        class="inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <i class="fa-solid fa-download mr-2 text-blue-500"></i>
+                                    Export
+                                    <i class="fa-solid fa-chevron-down ml-2"></i>
+                                </button>
+
+                                <!-- Export Dropdown -->
+                                <div x-show="open" @click.away="open = false"
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="opacity-100 scale-100"
+                                     x-transition:leave-end="opacity-0 scale-95"
+                                     class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 focus:outline-none z-50">
+                                    <div class="py-1">
+                                        <a href="{{ route('client.activities.export.pdf', request()->query()) }}" target="_blank"
+                                           class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                                            <i class="fa-solid fa-file-pdf mr-3 text-red-500 group-hover:text-red-600"></i>
+                                            Export as PDF
+                                        </a>
+                                    </div>
+                                    <div class="py-1">
+                                        <a href="{{ route('client.activities.export.excel', request()->query()) }}"
+                                           class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                                            <i class="fa-solid fa-file-excel mr-3 text-green-500 group-hover:text-green-600"></i>
+                                            Export as Excel
+                                        </a>
+                                        <a href="{{ route('client.activities.export.csv', request()->query()) }}"
+                                           class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900">
+                                            <i class="fa-solid fa-file-csv mr-3 text-blue-500 group-hover:text-blue-600"></i>
+                                            Export as CSV
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative">
                             <button type="button" id="filterBtn"
                                     class="inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">

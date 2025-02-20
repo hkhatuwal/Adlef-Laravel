@@ -8,6 +8,7 @@ use App\Models\UserProfile;
 use App\Models\BankAccount;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use App\Models\Currency;
 
 class UserController extends Controller
 {
@@ -20,8 +21,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with(['profile', 'contactDetails'])
-            ->where('is_admin', false)
+        $users = User::with(['profile', 'contactDetails'])->role('client')
             ->latest()
             ->get();
 
@@ -114,11 +114,11 @@ class UserController extends Controller
         }
 
         $bankAccount->load([
-            'user', 
+            'user',
             'thirdPartyAccount.individual.address',
             'thirdPartyAccount.company.address'
         ]);
-        
+
         return view('admin.users.bank-account-details', compact('user', 'bankAccount'));
     }
 
@@ -177,4 +177,31 @@ class UserController extends Controller
 
         return back()->with('success', 'Bank account verification has been revoked.');
     }
-} 
+
+    public function commissions(User $user)
+    {
+        $currencies = Currency::all();
+        $userCommissions = $user->commissions()->with('currency')->get();
+
+        return view('admin.users.commissions', compact('user', 'currencies', 'userCommissions'));
+    }
+
+    public function updateCommissions(Request $request, User $user)
+    {
+        $request->validate([
+            'commissions' => ['required', 'array'],
+            'commissions.*.currency_id' => ['required', 'exists:currencies,id'],
+            'commissions.*.commission_rate' => ['required', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        foreach ($request->commissions as $commission) {
+            $user->commissions()->updateOrCreate(
+                ['currency_id' => $commission['currency_id']],
+                ['commission_rate' => $commission['commission_rate']]
+            );
+        }
+
+        return redirect()->route('admin.users.commissions', $user)
+            ->with('success', 'Commission rates updated successfully');
+    }
+}

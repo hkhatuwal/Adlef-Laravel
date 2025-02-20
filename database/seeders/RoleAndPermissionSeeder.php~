@@ -1,0 +1,101 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+class RoleAndPermissionSeeder extends Seeder
+{
+    public function run()
+    {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // Create Permissions by Section
+        // Content Management
+        $contentPermissions = [
+            'manage posts',
+            'create post',
+            'edit post',
+            'delete post',
+            'view posts'
+        ];
+
+        // User Management
+        $userPermissions = [
+            'manage staff',
+            'create staff',
+            'edit staff',
+            'delete staff',
+            'view staff',
+            'view users',
+            'verify user',
+            'manage currencies',
+            'create currency',
+            'edit currency',
+            'delete currency',
+            'view currencies'
+        ];
+
+        // Asset Management
+        $assetPermissions = [
+            'view asset transfers',
+            'verify transfer payment',
+            'reject transfer',
+            'view otc trades',
+            'process trade',
+            'complete trade',
+            'reject trade'
+        ];
+
+        // System Management
+        $systemPermissions = [
+            'manage settings',
+            'edit settings',
+            'view settings'
+        ];
+
+        // Combine all permissions
+        $allPermissions = array_merge(
+            $contentPermissions,
+            $userPermissions,
+            $assetPermissions,
+            $systemPermissions
+        );
+
+        // Create permissions
+        foreach ($allPermissions as $permission) {
+            if (Permission::query()->where('name', $permission)->first() !== null) {
+                continue;
+            }
+            Permission::create(['name' => $permission]);
+        }
+
+        // Create roles and assign permissions
+        // Admin Role - Gets all permissions
+        $adminRole = Role::where(['name' => 'admin'])->first();
+        $adminRole->givePermissionTo($allPermissions);
+
+        // Staff Role - Gets specific permissions as per StaffRoleAndPermissionSeeder
+        $staffRole = Role::where(['name' => 'staff'])->first();
+        $staffPermissions = [
+            'view asset transfers',
+            'verify transfer payment',
+            'view otc trades',
+            'process trade',
+            'view users',
+            'verify user'
+        ];
+        $staffRole->givePermissionTo($staffPermissions);
+
+        // Create default admin user
+//        $admin = \App\Models\User::create([
+//            'name' => 'Admin',
+//            'email' => 'admin@admin.com',
+//            'password' => bcrypt('password'),
+//        ]);
+        $admin->assignRole('admin');
+    }
+}

@@ -118,4 +118,9 @@ class User extends Authenticatable
     {
         return $this->notifications()->unread();
     }
+
+    public function commissions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Commission::class);
+    }
 }
