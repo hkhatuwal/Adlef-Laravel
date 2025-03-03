@@ -131,8 +131,6 @@ $(document).ready(function () {
 });
 
 
-// Make copyToClipboard function globally accessible
-window.copyToClipboard = copyToClipboard;
 
 const swiper = new Swiper('.swiper', {
     // Optional parameters

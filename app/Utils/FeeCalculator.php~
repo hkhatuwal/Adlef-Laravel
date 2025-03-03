@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Models\AssetTransfer;
 use App\Models\Currency;
 use App\Models\Commission;
 use App\Models\Setting;
@@ -31,15 +32,16 @@ class FeeCalculator
      * @param Currency $currency Currency for commission calculation
      * @return float
      */
-    public function calculateCommission(float $amount, ?User $user, Currency $currency): float
+    public function calculateCommission(float $amount, ?User $user, Currency $currency,$type="otc"): float
     {
         if (!$user) {
             return 0.0;
         }
-
         $commission = Commission::where('user_id', $user->id)
             ->where('currency_id', $currency->id)
+            ->where('type', $type)
             ->first();
+        dd([$amount,$type,$commission]);
 
         if (!$commission) {
             return 0.0;
@@ -163,9 +165,9 @@ class FeeCalculator
      *
      * @param float $amount The amount to calculate cost for
      * @param string $type The type of transaction ('otc' or 'transfer')
-     * @return array Returns an array containing cost details
+     * @return float Returns an array containing cost details
      */
-    public  function calculateTransactionCost(float $amount, string $type = 'transfer')
+    public  function calculateTransactionCost(float $amount, string $type = 'transfer'):float
     {
         $settings = Setting::settings();
         $costType = $type === 'otc' ? 'otc_cost_type' : 'transfer_cost_type';

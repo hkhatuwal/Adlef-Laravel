@@ -30,6 +30,3 @@ function copyToClipboard(elementId) {
                 `);
     });
 }
-
-// Make copyToClipboard function globally accessible
-window.copyToClipboard = copyToClipboard;

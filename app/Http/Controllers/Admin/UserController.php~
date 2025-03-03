@@ -190,6 +190,7 @@ class UserController extends Controller
     public function updateCommissions(Request $request, User $user)
     {
 
+        dd($request->all());
         $request->validate([
             'commissions' => ['required', 'array'],
             'commissions.*.*.currency_id' => ['required', 'exists:currencies,id'],

@@ -2,7 +2,6 @@
 
 namespace App\Utils;
 
-use App\Models\Commission;
 use App\Models\Currency;
 use App\Models\User;
 
@@ -63,7 +62,7 @@ class AssetOperations
 //        $fee = $this->feeCalculator->calculateTransferFee($convertedAmount, $feePercentage, $minimumFee);
 
         // Calculate commission
-        $commission = $this->feeCalculator->calculateCommission($convertedAmount, $user, $to,Commission::TYPE_ASSET_TRANSFER);
+        $commission = $this->feeCalculator->calculateCommission($convertedAmount, $user, $to,'asset_transfer');
 
         // Get exchange rate
         $rate = $this->currencyConverter->getExchangeRate($from, $to);
