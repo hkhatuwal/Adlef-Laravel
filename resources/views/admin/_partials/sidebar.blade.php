@@ -109,6 +109,16 @@
                 <div>
                     <p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Asset Management</p>
                     <div class="space-y-1">
+                        @role('admin')
+                        <a href="{{ route('admin.deposit-accounts.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.deposit-accounts.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-cyan-50 dark:bg-slate-700 text-cyan-600 dark:text-cyan-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">account_balance</i>
+                            </span>
+                            Deposit Accounts
+                        </a>
+                        @endrole
+
                         @can('view asset transfers')
                         <a href="{{ route('admin.transfers.index') }}"
                            class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.transfers.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">

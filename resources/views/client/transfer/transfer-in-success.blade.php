@@ -37,92 +37,132 @@
                     @if($transfer->currency->isUSD())
                         <!-- Bank Account Details for USD -->
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Bank Details</label>
-                                <div class="bg-gray-50 rounded-lg p-4 space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600">Bank Name:</span>
-                                        <div class="flex items-center">
-                                            <span class="text-gray-900" id="bank-name">Chase Bank</span>
-                                            <button onclick="copyToClipboard('Chase Bank', 'Bank name')"
-                                                    class="ml-2 text-blue-600 hover:text-blue-700">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                                </svg>
-                                            </button>
+                            @php
+                                $bankAccounts = auth()->user()->adminDepositAccounts()->where('account_type', \App\Models\AdminDepositAccount::TYPE_BANK)->get();
+                            @endphp
+                            
+                            @if($bankAccounts->isNotEmpty())
+                                @foreach($bankAccounts as $depositAccount)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ $depositAccount->name }}</label>
+                                        <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                                            @foreach($depositAccount->fields as $field)
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-gray-600">{{ $field->field_name }}:</span>
+                                                    <div class="flex items-center">
+                                                        <span class="text-gray-900" id="{{ Str::slug($depositAccount->name . '-' . $field->field_name) }}">{{ $field->field_value }}</span>
+                                                        <button onclick="copyToClipboard('{{ $field->field_value }}', '{{ $field->field_name }}')"
+                                                                class="ml-2 text-blue-600 hover:text-blue-700">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-gray-600">Reference Number:</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-gray-900" id="reference-number-{{ $depositAccount->id }}">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600">Account Number:</span>
-                                        <div class="flex items-center">
-                                            <span class="text-gray-900" id="account-number">1234567890</span>
-                                            <button onclick="copyToClipboard('1234567890', 'Account number')"
-                                                    class="ml-2 text-blue-600 hover:text-blue-700">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                                </svg>
-                                            </button>
+                                @endforeach
+                            @else
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
                                         </div>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600">Routing Number:</span>
-                                        <div class="flex items-center">
-                                            <span class="text-gray-900" id="routing-number">021000021</span>
-                                            <button onclick="copyToClipboard('021000021', 'Routing number')"
-                                                    class="ml-2 text-blue-600 hover:text-blue-700">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                                </svg>
-                                            </button>
+                                        <h3 class="text-lg font-medium text-yellow-800 mb-2">No Bank Accounts Available</h3>
+                                        <p class="text-yellow-700 mb-4">Please contact the administrator to set up your bank account details for transfers.</p>
+                                        <div class="bg-white rounded-lg p-4 w-full max-w-md">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-gray-600">Reference Number:</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-gray-900 font-medium">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-gray-600">Reference Number:</span>
-                                        <div class="flex items-center">
-                                            <span class="text-gray-900"
-                                                  id="reference-number">{{ $transfer->reference_number }}</span>
-                                            <button
-                                                onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
-                                                class="ml-2 text-blue-600 hover:text-blue-700">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
+                                        <p class="text-sm text-yellow-600 mt-2">Please keep this reference number for your records.</p>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     @else
                         <!-- Wallet Address for other currencies -->
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Wallet Address</label>
-                                <div class="flex items-center">
-                                    <input type="text" value="0xffsdfdsf23232sdfe2d23" readonly
-                                           class="flex-1 block w-full px-4 py-3 text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                                    <button onclick="copyToClipboard('0xffsdfdsf23232sdfe2d23', 'Wallet address')"
-                                            class="ml-2 inline-flex items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                                        </svg>
-                                        Copy
-                                    </button>
+                            @php
+                                $walletAccounts = auth()->user()->adminDepositAccounts()->where('account_type', \App\Models\AdminDepositAccount::TYPE_WALLET)->get();
+                            @endphp
+
+                            @if($walletAccounts->isNotEmpty())
+                                @foreach($walletAccounts as $depositAccount)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ $depositAccount->name }}</label>
+                                        @foreach($depositAccount->fields as $field)
+                                            <div class="flex items-center mb-3">
+                                                <input type="text" value="{{ $field->field_value }}" readonly
+                                                       class="flex-1 block w-full px-4 py-3 text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                                <button onclick="copyToClipboard('{{ $field->field_value }}', '{{ $field->field_name }}')"
+                                                        class="ml-2 inline-flex items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                    </svg>
+                                                    Copy
+                                                </button>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-lg font-medium text-yellow-800 mb-2">No Wallet Addresses Available</h3>
+                                        <p class="text-yellow-700 mb-4">Please contact the administrator to set up your wallet addresses for transfers.</p>
+                                        <div class="bg-white rounded-lg p-4 w-full max-w-md">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-gray-600">Reference Number:</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-gray-900 font-medium">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-yellow-600 mt-2">Please keep this reference number for your records.</p>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     @endif
 

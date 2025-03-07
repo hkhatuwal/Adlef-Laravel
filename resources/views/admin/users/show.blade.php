@@ -22,6 +22,11 @@
                 <i class="material-symbols-outlined text-lg mr-2">percent</i>
                 Manage Commissions
             </a>
+            <a href="{{ route('admin.users.deposit-accounts', $user) }}" 
+               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400 dark:hover:bg-blue-900 transition-colors group">
+                <i class="material-symbols-outlined text-lg mr-2">savings</i>
+                Manage Deposit Accounts
+            </a>
             <a href="{{ route('admin.users.accounts', $user) }}" 
                class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/50 dark:text-indigo-400 dark:hover:bg-indigo-900 transition-colors group">
                 <i class="material-symbols-outlined text-lg mr-2">account_balance</i>

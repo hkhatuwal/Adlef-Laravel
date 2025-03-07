@@ -10,6 +10,7 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Currency;
 use App\Models\Commission;
+use App\Models\AdminDepositAccount;
 
 class UserController extends Controller
 {
@@ -225,5 +226,36 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.commissions', $user)
             ->with('success', 'Commission rates updated successfully');
+    }
+
+    public function depositAccounts(User $user)
+    {
+        $availableAccounts = AdminDepositAccount::where('is_active', true)
+            ->whereNotIn('id', $user->adminDepositAccounts->pluck('id'))
+            ->get();
+
+        return view('admin.users.deposit-accounts', compact('user', 'availableAccounts'));
+    }
+
+    public function assignDepositAccount(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'admin_deposit_account_id' => 'required|exists:admin_deposit_accounts,id'
+        ]);
+
+        $user->adminDepositAccounts()->attach($validated['admin_deposit_account_id']);
+
+        return redirect()
+            ->route('admin.users.deposit-accounts', $user)
+            ->with('success', 'Deposit account assigned successfully.');
+    }
+
+    public function removeDepositAccount(User $user, AdminDepositAccount $account)
+    {
+        $user->adminDepositAccounts()->detach($account->id);
+
+        return redirect()
+            ->route('admin.users.deposit-accounts', $user)
+            ->with('success', 'Deposit account removed successfully.');
     }
 }

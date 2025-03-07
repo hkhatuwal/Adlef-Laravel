@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\AdminDepositAccount;
+use App\Models\AdminDepositAccountField;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class DepositAccountController extends Controller
+{
+    public function index()
+    {
+        $accounts = AdminDepositAccount::with('fields')->get();
+        return view('admin.deposit-accounts.index', compact('accounts'));
+    }
+
+    public function create()
+    {
+        return view('admin.deposit-accounts.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+            'account_type' => 'required|in:Bank,CryptoWallet',
+            'fields' => 'required|array',
+            'fields.*.field_name' => 'required|string|max:255',
+            'fields.*.field_value' => 'required|string|max:255',
+            'fields.*.field_type' => 'required|string|in:text,number,date,email,tel',
+            'fields.*.is_required' => 'boolean',
+            'fields.*.display_order' => 'integer'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $account = AdminDepositAccount::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'is_active' => $request->is_active ?? true,
+                'account_type' => $request->account_type
+            ]);
+
+            foreach ($request->fields as $field) {
+                $account->fields()->create([
+                    'field_name' => $field['field_name'],
+                    'field_value' => $field['field_value'],
+                    'field_type' => $field['field_type'],
+                    'is_required' => $field['is_required'] ?? false,
+                    'display_order' => $field['display_order'] ?? 0
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.deposit-accounts.index')
+                           ->with('success', 'Deposit account created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to create deposit account. ' . $e->getMessage())
+                        ->withInput();
+        }
+    }
+
+    public function edit(AdminDepositAccount $depositAccount)
+    {
+        $depositAccount->load('fields');
+        return view('admin.deposit-accounts.edit', compact('depositAccount'));
+    }
+
+    public function update(Request $request, AdminDepositAccount $depositAccount)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+            'account_type' => 'required|in:Bank,CryptoWallet',
+            'fields' => 'required|array',
+            'fields.*.field_name' => 'required|string|max:255',
+            'fields.*.field_value' => 'required|string|max:255',
+            'fields.*.field_type' => 'required|string|in:text,number,date,email,tel',
+            'fields.*.is_required' => 'boolean',
+            'fields.*.display_order' => 'integer'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $depositAccount->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'is_active' => $request->is_active ?? true,
+                'account_type' => $request->account_type
+
+            ]);
+
+            // Delete existing fields
+            $depositAccount->fields()->delete();
+
+            // Create new fields
+            foreach ($request->fields as $field) {
+                $depositAccount->fields()->create([
+                    'field_name' => $field['field_name'],
+                    'field_value' => $field['field_value'],
+                    'field_type' => $field['field_type'],
+                    'is_required' => $field['is_required'] ?? false,
+                    'display_order' => $field['display_order'] ?? 0
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.deposit-accounts.index')
+                           ->with('success', 'Deposit account updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update deposit account. ' . $e->getMessage())
+                        ->withInput();
+        }
+    }
+
+    public function destroy(AdminDepositAccount $depositAccount)
+    {
+        try {
+            $depositAccount->delete();
+            return redirect()->route('admin.deposit-accounts.index')
+                           ->with('success', 'Deposit account deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to delete deposit account.');
+        }
+    }
+}

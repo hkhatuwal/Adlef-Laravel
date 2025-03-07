@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Client\ClientLoginController;
 use App\Http\Controllers\Client\CryptoWalletController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('install', function () {
     \Illuminate\Support\Facades\Artisan::call('migrate');
@@ -26,6 +27,11 @@ Route::group(['as' => 'frontend.'], function () {
 Route::group(['prefix' => 'client', 'as' => 'client.', 'middleware' => ['auth:client']], function () {
     Route::post('/crypto-wallet', [\App\Http\Controllers\Client\CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
 });
+
+Route::get('/users/{user}/commissions', [UserController::class, 'commissions'])->name('users.commissions');
+Route::post('/users/{user}/commissions', [UserController::class, 'updateCommissions'])->name('users.commissions.update');
+
+Route::get('/users/{user}/accounts', [UserController::class, 'accounts'])->name('users.accounts');
 
 
 

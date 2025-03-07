@@ -41,12 +41,13 @@ class AssetTransferController extends Controller
 
     public function verify(AssetTransfer $transfer, Request $request)
     {
+
         try {
             if ($transfer->status !== 'pending') {
                 return back()->with('error', 'This transfer cannot be verified because it is not in pending state.');
             }
 
-            if ($transfer->type==AssetTransfer::TYPE_OUT){
+            if ($transfer->transfer_type==AssetTransfer::TYPE_OUT){
                 $this->verifyTransferOut($transfer,$request);
             }
             else{
@@ -83,6 +84,7 @@ class AssetTransferController extends Controller
         // Update transfer with new fee and status
         $transfer->update([
             'fee' => $newFee,
+            'transaction_cost' => $request->transaction_cost_value,
             'status' => 'completed'
         ]);
 

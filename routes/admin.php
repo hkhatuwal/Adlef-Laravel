@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OtcController;
 use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\DepositAccountController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,6 +32,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Currency Management Routes
         Route::resource('currencies', CurrencyController::class);
 
+        // Deposit Account Routes
+        Route::resource('deposit-accounts', DepositAccountController::class);
+
         // User Management Routes
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
@@ -43,6 +47,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('users/{bankAccount}/verify-bank-account', [UserController::class, 'unverifyBankAccount'])->name('users.verify-bank-account');
         Route::post('users/{userProfile}/verify-document', [UserController::class, 'verifyDocument'])->name('users.verify-document');
         Route::delete('users/{userProfile}/verify-document', [UserController::class, 'unverifyDocument'])->name('users.verify-document');
+
+        // Deposit Account Management Routes
+        Route::get('users/{user}/deposit-accounts', [UserController::class, 'depositAccounts'])->name('users.deposit-accounts');
+        Route::post('users/{user}/deposit-accounts', [UserController::class, 'assignDepositAccount'])->name('users.deposit-accounts.assign');
+        Route::delete('users/{user}/deposit-accounts/{account}', [UserController::class, 'removeDepositAccount'])->name('users.deposit-accounts.remove');
 
         // Asset Transfer Routes
         Route::get('transfers', [\App\Http\Controllers\Admin\AssetTransferController::class, 'index'])->name('transfers.index');

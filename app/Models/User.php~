@@ -127,6 +127,7 @@ class User extends Authenticatable
     public function adminDepositAccounts()
     {
         return $this->belongsToMany(AdminDepositAccount::class, 'user_admin_deposit_accounts')
+            ->withPivot('status', 'field_values')
             ->withTimestamps();
     }
 }

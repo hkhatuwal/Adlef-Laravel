@@ -123,11 +123,14 @@ class AssetTransferController extends Controller
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),
             'currency_id' => $request->input('currency_id'),
-            'reference_number' => Str::uuid(),
+            'reference_number' => Str::random(8),
             'status' => 'pending',
             'fee' => $transferDetails['fee'],
             'transfer_type' => AssetTransfer::TYPE_IN,
             'user_id' => $request->user()->id,
+        ]);
+        $transfer->update([
+            'reference_number' => "REF_" .$request->user()->id."_".$transfer->id,
         ]);
 
         return view('client.transfer.transfer-in-success', compact('transfer'));

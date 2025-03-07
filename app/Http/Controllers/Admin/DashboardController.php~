@@ -32,8 +32,8 @@ class DashboardController extends Controller
         $totalRevenue = $assetTransferRevenue + $otcRequestRevenue;
 
         // Calculate Costs
-        $assetTransferCosts = AssetTransfer::where('status', 'completed')->sum('transaction_cost');
-        $otcRequestCosts = OtcRequest::where('status', 'completed')->sum('transaction_cost');
+        $assetTransferCosts = AssetTransfer::sum('transaction_cost');
+        $otcRequestCosts = OtcRequest::sum('transaction_cost');
         $totalCosts = $assetTransferCosts + $otcRequestCosts;
 
         // Calculate Profit
