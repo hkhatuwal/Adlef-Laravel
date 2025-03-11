@@ -48,7 +48,7 @@ class VerificationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to send OTP '.$e
+                'message' => 'Failed to send OTP'
             ], 500);
         }
     }

@@ -7,6 +7,7 @@ use App\Models\AssetTransfer;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AssetTransferController extends Controller
 {
@@ -54,10 +55,6 @@ class AssetTransferController extends Controller
                 $this->verifyTransferIn($transfer,$request);
             }
 
-
-
-
-
             return back()->with('success', 'Transfer has been verified successfully.');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to verify transfer: ' . $e->getMessage());
@@ -92,9 +89,9 @@ class AssetTransferController extends Controller
             $transfer->user,
             [
                 'type' => 'success',
-                'title' => 'Transfer Verified',
+                'title' => 'Transfer Out Verified',
                 'message' => "Your transfer ({$transfer->reference_number}) has been verified successfully.",
-                'notifiable_type' => AssetTransfer::class,
+                'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_SUCCESS,
                 'notifiable_id' => $transfer->id,
                 'metadata' => [
                     'reference_number' => $transfer->reference_number,
@@ -102,7 +99,7 @@ class AssetTransferController extends Controller
                     'currency' => $transfer->currency->symbol,
                     'fee' => $transfer->fee,
                     'verified_at' => now()->format('Y-m-d H:i:s'),
-                    'verified_by' => auth()->user()->name
+                    'verified_by' => \auth()->user()->id
                 ]
             ],
             ['database', 'email']
@@ -124,7 +121,7 @@ class AssetTransferController extends Controller
                 'type' => 'success',
                 'title' => 'Transfer Verified',
                 'message' => "Your transfer ({$transfer->reference_number}) has been verified successfully.",
-                'notifiable_type' => AssetTransfer::class,
+                'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_IN_SUCCESS,
                 'notifiable_id' => $transfer->id,
                 'metadata' => [
                     'reference_number' => $transfer->reference_number,
@@ -139,14 +136,84 @@ class AssetTransferController extends Controller
         );
     }
 
+    /**
+     * Verify a transfer-in from API
+     *
+     * @param AssetTransfer $transfer
+     * @param Request $request
+     * @return void
+     */
+    public function verifyTransferInApi(AssetTransfer $transfer, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // Update transfer status
+            $transfer->status = 'verified';
+            $transfer->save();
+
+            // Update the user's account balance
+            $userAccount = $transfer->to_account;
+            $userAccount->balance += $transfer->amount;
+            $userAccount->save();
+
+
+
+            // Create notification
+            $this->notificationService->notify(
+                $transfer->user,
+                [
+                    'type' => 'success',
+                    'title' => 'Transfer Verified',
+                    'message' => "Your deposit of {$transfer->amount} {$transfer->currency->code} has been verified.",
+                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_IN_SUCCESS,
+                    'notifiable_id' => $transfer->id,
+                    'metadata' => [
+                        'reference_number' => $transfer->reference_number,
+                        'amount' => $transfer->amount,
+                        'currency' => $transfer->currency->symbol,
+                        'fee' => $transfer->fee,
+                        'verified_at' => now()->format('Y-m-d H:i:s'),
+                        'verified_by' => 'API Verification'
+                    ]
+                ],
+                ['database', 'email']
+            );
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     public function reject(AssetTransfer $transfer)
     {
         try {
-            if ($transfer->status !== 'processing') {
+            if ($transfer->status !== 'pending') {
                 return back()->with('error', 'This transfer cannot be rejected because it is not in processing state.');
             }
 
             $transfer->update(['status' => 'failed']);
+            $this->notificationService->notify(
+                $transfer->user,
+                [
+                    'type' => 'error',
+                    'title' => 'Transfer Cancelled',
+                    'message' => "Your deposit of {$transfer->amount} {$transfer->currency->code} has been cancelled.",
+                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
+                    'notifiable_id' => $transfer->id,
+                    'metadata' => [
+                        'reference_number' => $transfer->reference_number,
+                        'amount' => $transfer->amount,
+                        'currency' => $transfer->currency->symbol,
+                        'fee' => $transfer->fee,
+                        'verified_at' => now()->format('Y-m-d H:i:s'),
+                        'verified_by' => 'API Verification'
+                    ]
+                ],
+                ['database', 'email']
+            );
+
 
             return back()->with('success', 'Transfer has been rejected successfully.');
         } catch (\Exception $e) {

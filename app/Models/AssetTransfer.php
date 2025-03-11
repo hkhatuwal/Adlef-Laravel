@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class AssetTransfer extends Model
 {
 
+    const  NOTIFICATION_TRANSFER_SUCCESS="asset_transfer_success";
+    const  NOTIFICATION_TRANSFER_FAILED="asset_transfer_failed";
+
+    const  NOTIFICATION_TRANSFER_IN_SUCCESS="asset_transfer_in_success";
+    const  NOTIFICATION_TRANSFER_IN_FAILED="asset_transfer_in_success";
     const  TYPE_IN="in";
     const  TYPE_OUT="out";
     const  TYPE_THIRD_PARTY="third_party";

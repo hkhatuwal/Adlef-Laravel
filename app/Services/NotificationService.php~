@@ -54,7 +54,8 @@ class NotificationService
         $this->channels
             ->filter(fn (NotificationChannel $notificationChannel) =>
                 $notificationChannel->supports($channel))
-            ->each(fn (NotificationChannel $notificationChannel) =>
-                $notificationChannel->send($data));
+            ->each(function (NotificationChannel $notificationChannel) use($data) {
+                $notificationChannel->send($data);
+            });
     }
 }

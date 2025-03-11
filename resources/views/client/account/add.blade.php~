@@ -27,7 +27,7 @@
                         <label class="cursor-pointer">
                             <input type="radio" name="account_type" value="bank_account"
                                    class="hidden account-type-radio" checked required>
-                            <div class="border-2 border-black rounded-lg p-4 hover:border-blue-500 transition-colors  " id="type-bank-container">
+                            <div class="border rounded-lg p-4 hover:border-blue-500 transition-colors  " id="type-bank-container">
                                 <div class="flex justify-center mb-2">
                                     <img src="{{ asset('assets/images/bank.png') }}" alt="Bank Account"
                                          class="w-16 h-16">

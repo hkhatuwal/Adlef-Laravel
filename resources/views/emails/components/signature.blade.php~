@@ -1,0 +1,10 @@
+<p>Thank You,<br>
+FDT Support Team</p>
+
+<p>We are constantly working on improving the Client Portal and your comments and suggestions are most welcome.</p>
+
+<h3>Questions?</h3>
+
+<p>Don't hesitate to contact us if you have any further questions via email at <a href="{{config('app.email')}}">{{config('app.email')}}</a>. For more information about our company and our services, please visit our website <a href="https://adlef.com">https://1stDigital.com</a> or talk to your Relationship Manager.</p>
+
+<p>Thank you for choosing First Digital Trust!</p>

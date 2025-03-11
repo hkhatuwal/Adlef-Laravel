@@ -14,6 +14,7 @@ class NotificationServiceProvider extends ServiceProvider
     {
         $this->app->singleton(NotificationService::class, function ($app) {
             $service = new NotificationService();
+            dd("");
             // Register notification channels
             $service->addChannel(new EmailChannel())
                    ->addChannel(new SmsChannel());

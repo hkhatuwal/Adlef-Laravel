@@ -7,7 +7,6 @@ use App\Mail\NewBankAccountAdded;
 use App\Mail\OtcTransferFailed;
 use App\Mail\OtcTransferSuccess;
 use App\Mail\TransferinSuccess;
-use App\Mail\TransferOutFailed;
 use App\Mail\TransferOutSuccess;
 use App\Models\AssetTransfer;
 use App\Models\BankAccount;
@@ -70,10 +69,6 @@ class EmailChannel implements NotificationChannel
 
         if ($type == AssetTransfer::NOTIFICATION_TRANSFER_SUCCESS) {
             return new TransferOutSuccess($data);
-        }
-
-        if ($type == AssetTransfer::NOTIFICATION_TRANSFER_FAILED) {
-            return new TransferOutFailed($data);
         }
 
         return new TransferinSuccess($data);

@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Admin\AssetTransferController;
+use App\Http\Controllers\Controller;
+use App\Models\AssetTransfer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+
+class AssetTransferVerificationController extends Controller
+{
+    protected $assetTransferController;
+
+    public function __construct(AssetTransferController $assetTransferController)
+    {
+        $this->assetTransferController = $assetTransferController;
+    }
+
+    /**
+     * Verify a transfer by reference ID
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyByReference(Request $request)
+    {
+        try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'reference_id' => 'required|string',
+                'signature' => 'required|string',
+                'timestamp' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Verify the request signature
+            if (!$this->verifySignature($request)) {
+                Log::warning('Invalid signature for transfer verification', [
+                    'reference_id' => $request->reference_id,
+                    'ip' => $request->ip()
+                ]);
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid signature'
+                ], 401);
+            }
+
+            // Check if the timestamp is within acceptable range (5 minutes)
+            if (time() - $request->timestamp > 300) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Request expired'
+                ], 401);
+            }
+
+            // Find the transfer by reference number
+            $transfer = AssetTransfer::where('reference_number', $request->reference_id)
+                ->where('status', 'pending')
+                ->where('transfer_type', AssetTransfer::TYPE_IN)
+                ->first();
+
+            if (!$transfer) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transfer not found or not in pending state'
+                ], 404);
+            }
+
+            // Call the verification method from the admin controller
+            $this->assetTransferController->verifyTransferInApi($transfer, $request);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transfer verified successfully',
+                'data' => [
+                    'reference_id' => $transfer->reference_number,
+                    'status' => 'verified',
+                    'verified_at' => now()->format('Y-m-d H:i:s')
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error verifying transfer: ' . $e->getMessage(), [
+                'reference_id' => $request->reference_id ?? null,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to verify transfer',
+                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
+            ], 500);
+        }
+    }
+
+    /**
+     * Verify the request signature
+     *
+     * @param Request $request
+     * @return bool
+     */
+    private function verifySignature(Request $request)
+    {
+        // Get the API secret from config
+        $apiSecret = config('services.transfer_verification.secret');
+        
+        // Data to sign: reference_id + timestamp + secret
+        $dataToSign = $request->reference_id . $request->timestamp . $apiSecret;
+        
+        // Generate expected signature
+        $expectedSignature = hash_hmac('sha256', $dataToSign, $apiSecret);
+        
+        // Compare with provided signature (constant time comparison)
+        return hash_equals($expectedSignature, $request->signature);
+    }
+}

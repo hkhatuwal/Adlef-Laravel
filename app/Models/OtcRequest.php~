@@ -30,8 +30,7 @@ class OtcRequest extends Model
         'network_fee' => 'decimal:8',
         'transaction_cost' => 'decimal:8',
     ];
-    const  NOTIFICATION_OTC_SUCCESS="otc_transfer_success";
-    const  NOTIFICATION_OTC_FAILED="otc_transfer_failed";
+
     protected static function booted(): void
     {
         // Create activity record when OTC request is created
@@ -72,7 +71,7 @@ class OtcRequest extends Model
     protected function recordActivity()
     {
         $description = $this->generateActivityDescription();
-
+        
         UserActivity::create([
             'user_id' => $this->user_id,
             'activity_type' => UserActivity::TYPE_OTC_TRADE,

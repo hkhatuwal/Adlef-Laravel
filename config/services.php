@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
+    ],
+
+    'transfer_verification' => [
+        'secret' => env('TRANSFER_VERIFICATION_SECRET'),
+    ],
+
 ];

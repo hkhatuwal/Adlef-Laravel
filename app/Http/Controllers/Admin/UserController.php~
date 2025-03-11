@@ -10,6 +10,7 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Currency;
 use App\Models\Commission;
+use App\Models\AdminDepositAccount;
 
 class UserController extends Controller
 {
@@ -136,7 +137,7 @@ class UserController extends Controller
                 'type' => 'success',
                 'title' => 'Bank Account Verified',
                 'message' => "Your bank account ({$bankAccount->bank_name} - {$bankAccount->account_number}) has been verified successfully.",
-                'notifiable_type' => BankAccount::class,
+                'notifiable_type' => BankAccount::NOTIFICATION_TYPE_BANK_ACCOUNT_VERIFIED,
                 'notifiable_id' => $bankAccount->id,
                 'metadata' => [
                     'bank_name' => $bankAccount->bank_name,
@@ -164,7 +165,7 @@ class UserController extends Controller
                 'type' => 'warning',
                 'title' => 'Bank Account Verification Revoked',
                 'message' => "The verification status of your bank account ({$bankAccount->bank_name} - {$bankAccount->account_number}) has been revoked. Please contact support for more information.",
-                'notifiable_type' => BankAccount::class,
+                'notifiable_type' => BankAccount::NOTIFICATION_TYPE_BANK_ACCOUNT_UNVERIFIED,
                 'notifiable_id' => $bankAccount->id,
                 'metadata' => [
                     'bank_name' => $bankAccount->bank_name,
@@ -190,7 +191,6 @@ class UserController extends Controller
     public function updateCommissions(Request $request, User $user)
     {
 
-        dd($request->all());
         $request->validate([
             'commissions' => ['required', 'array'],
             'commissions.*.*.currency_id' => ['required', 'exists:currencies,id'],
@@ -226,5 +226,36 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.commissions', $user)
             ->with('success', 'Commission rates updated successfully');
+    }
+
+    public function depositAccounts(User $user)
+    {
+        $availableAccounts = AdminDepositAccount::where('is_active', true)
+            ->whereNotIn('id', $user->adminDepositAccounts->pluck('id'))
+            ->get();
+
+        return view('admin.users.deposit-accounts', compact('user', 'availableAccounts'));
+    }
+
+    public function assignDepositAccount(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'admin_deposit_account_id' => 'required|exists:admin_deposit_accounts,id'
+        ]);
+
+        $user->adminDepositAccounts()->attach($validated['admin_deposit_account_id']);
+
+        return redirect()
+            ->route('admin.users.deposit-accounts', $user)
+            ->with('success', 'Deposit account assigned successfully.');
+    }
+
+    public function removeDepositAccount(User $user, AdminDepositAccount $account)
+    {
+        $user->adminDepositAccounts()->detach($account->id);
+
+        return redirect()
+            ->route('admin.users.deposit-accounts', $user)
+            ->with('success', 'Deposit account removed successfully.');
     }
 }

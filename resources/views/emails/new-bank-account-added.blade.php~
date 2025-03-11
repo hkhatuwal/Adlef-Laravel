@@ -1,0 +1,19 @@
+@component('emails.components.layout', ['title' => 'A new third-party bank account has been approved', 'heading' => 'A new third-party bank account has been approved', 'showFooter' => false])
+
+    <p>Dear {{ $username}},</p>
+
+    <h3>{{json_encode($heading2)}}</h3>
+    <p>{{$message2}}</p>
+
+
+    @if(isset($metadata) && is_array($metadata))
+    <p>Bank Name: {{ $bank_name }}<br>
+    <br>
+    Account Number: {{ $account_number }}<br>
+    </p>
+    @endif
+
+    <p>You can create transfer-in and third party transfer instructions. If you did not initiate or recognize this account, please contact our customer service team immediately.</p>
+
+    @include('emails.components.signature')
+@endcomponent

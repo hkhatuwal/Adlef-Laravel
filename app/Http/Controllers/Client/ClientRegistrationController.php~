@@ -100,7 +100,7 @@ class ClientRegistrationController extends Controller
                 'balance' => 0, // Default starting balance
                 'account_number' => 'ACC-' . strtoupper(substr($currency->name, 0, 3)) . '-' . str_pad(2, 6, '0', STR_PAD_LEFT),
             ]);
-        }
+        }]
     }
 
 

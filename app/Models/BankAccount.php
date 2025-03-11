@@ -10,6 +10,10 @@ class BankAccount extends Model
 
     const  TYPE_OWN="Own";
     const  TYPE_THIRD_PARTY="ThirdParty";
+    const NOTIFICATION_TYPE_BANK_ACCOUNT_VERIFIED="bank_account_verified";
+    const NOTIFICATION_TYPE_BANK_ACCOUNT_UNVERIFIED="bank_account_unverified";
+
+
     protected $fillable = [
         'user_id',
         'account_type',

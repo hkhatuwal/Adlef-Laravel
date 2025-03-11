@@ -137,7 +137,7 @@ class UserController extends Controller
                 'type' => 'success',
                 'title' => 'Bank Account Verified',
                 'message' => "Your bank account ({$bankAccount->bank_name} - {$bankAccount->account_number}) has been verified successfully.",
-                'notifiable_type' => BankAccount::class,
+                'notifiable_type' => BankAccount::NOTIFICATION_TYPE_BANK_ACCOUNT_VERIFIED,
                 'notifiable_id' => $bankAccount->id,
                 'metadata' => [
                     'bank_name' => $bankAccount->bank_name,
@@ -159,23 +159,23 @@ class UserController extends Controller
         ]);
 
         // Send notification through multiple channels
-        $this->notificationService->notify(
-            $bankAccount->user,
-            [
-                'type' => 'warning',
-                'title' => 'Bank Account Verification Revoked',
-                'message' => "The verification status of your bank account ({$bankAccount->bank_name} - {$bankAccount->account_number}) has been revoked. Please contact support for more information.",
-                'notifiable_type' => BankAccount::class,
-                'notifiable_id' => $bankAccount->id,
-                'metadata' => [
-                    'bank_name' => $bankAccount->bank_name,
-                    'account_number' => $bankAccount->account_number,
-                    'unverified_at' => now()->format('Y-m-d H:i:s'),
-                    'unverified_by' => auth()->user()->name,
-                ]
-            ],
-            ['database', 'email'] // Send through database and email
-        );
+//        $this->notificationService->notify(
+//            $bankAccount->user,
+//            [
+//                'type' => 'warning',
+//                'title' => 'Bank Account Verification Revoked',
+//                'message' => "The verification status of your bank account ({$bankAccount->bank_name} - {$bankAccount->account_number}) has been revoked. Please contact support for more information.",
+//                'notifiable_type' => BankAccount::NOTIFICATION_TYPE_BANK_ACCOUNT_UNVERIFIED,
+//                'notifiable_id' => $bankAccount->id,
+//                'metadata' => [
+//                    'bank_name' => $bankAccount->bank_name,
+//                    'account_number' => $bankAccount->account_number,
+//                    'unverified_at' => now()->format('Y-m-d H:i:s'),
+//                    'unverified_by' => auth()->user()->name,
+//                ]
+//            ],
+//            ['database', 'email'] // Send through database and email
+//        );
 
         return back()->with('success', 'Bank account verification has been revoked.');
     }

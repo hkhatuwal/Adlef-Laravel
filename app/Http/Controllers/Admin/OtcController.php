@@ -5,10 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AssetAccount;
 use App\Models\OtcRequest;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OtcController extends Controller
 {
+    private NotificationService $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * Display a listing of OTC requests.
      */
@@ -34,10 +43,8 @@ class OtcController extends Controller
     /**
      * Process the OTC request.
      */
-    public function process(OtcRequest $otc,Request $request)
+    public function process(OtcRequest $otc, Request $request)
     {
-
-
         $oldFee=$otc->network_fee;
         $newFee=$request->network_fee;
         $feeDifference=$newFee-$oldFee;
@@ -59,7 +66,27 @@ class OtcController extends Controller
         $toAccount->balance=$toAccount->balance+$otc->to_amount;
         $toAccount->save();
 
-
+        // Send notification to user
+        $this->notificationService->notify(
+            $otc->user,
+            [
+                'type' => 'success',
+                'title' => 'OTC Trade Processed',
+                'message' => "Your OTC trade request has been processed successfully.",
+                'notifiable_type' => OtcRequest::NOTIFICATION_OTC_FAILED,
+                'notifiable_id' => $otc->id,
+                'metadata' => [
+                    'from_currency' => $otc->fromCurrency->symbol,
+                    'to_currency' => $otc->toCurrency->symbol,
+                    'from_amount' => $otc->from_amount,
+                    'to_amount' => $otc->to_amount,
+                    'network_fee' => $otc->network_fee,
+                    'processed_at' => now()->format('Y-m-d H:i:s'),
+                    'processed_by' => auth()->user()->name
+                ]
+            ],
+            ['database', 'email']
+        );
 
         return redirect()->route('admin.otc.show', $otc)
             ->with('success', 'OTC trade is now being processed.');
@@ -74,6 +101,26 @@ class OtcController extends Controller
         $otc->status = 'failed';
         $otc->failure_reason = $request->reason;
         $otc->save();
+
+        // Send notification to user
+        $this->notificationService->notify(
+            $otc->user,
+            [
+                'type' => 'error',
+                'title' => 'Your OTC instruction has been cancelled',
+                'message' => "Your OTC instruction has been cancelled.",
+                'notifiable_type' => OtcRequest::NOTIFICATION_OTC_FAILED,
+                'notifiable_id' => $otc->id,
+                'metadata' => [
+                    'reference_code' => $otc->reference_code,
+                    'amount' => $otc->from_amount,
+                    'currency' => $otc->fromCurrency->symbol,
+                    'created_at' => $otc->created_at->format('Y-m-d H:i:s'),
+                    'reason' => $otc->failure_reason
+                ]
+            ],
+            ['database', 'email']
+        );
 
         return redirect()->route('admin.otc.show', $otc)
             ->with('success', 'OTC trade has been rejected.');
