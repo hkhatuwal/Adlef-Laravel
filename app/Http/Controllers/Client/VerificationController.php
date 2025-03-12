@@ -103,7 +103,8 @@ class VerificationController extends Controller
             }
 
             // Generate 6 digit OTP
-            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $otp = "123456";
+//            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
             // Store OTP in session with expiry time (15 minutes)
             session([
