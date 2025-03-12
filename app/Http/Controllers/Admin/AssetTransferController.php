@@ -148,7 +148,7 @@ class AssetTransferController extends Controller
         DB::beginTransaction();
         try {
             // Update transfer status
-            $transfer->status = 'verified';
+            $transfer->status = 'completed';
             $transfer->save();
 
             // Update the user's account balance

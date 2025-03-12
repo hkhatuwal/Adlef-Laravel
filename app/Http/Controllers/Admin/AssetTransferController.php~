@@ -189,7 +189,7 @@ class AssetTransferController extends Controller
     public function reject(AssetTransfer $transfer)
     {
         try {
-            if ($transfer->status !== 'processing') {
+            if ($transfer->status !== 'pending') {
                 return back()->with('error', 'This transfer cannot be rejected because it is not in processing state.');
             }
 

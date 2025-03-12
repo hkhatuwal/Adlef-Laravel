@@ -120,6 +120,7 @@ class AssetTransferVerificationController extends Controller
         // Generate expected signature
         $expectedSignature = hash_hmac('sha256', $dataToSign, $apiSecret);
 
+        echo "He4ll".$apiSecret;
         // Compare with provided signature (constant time comparison)
         return hash_equals($expectedSignature, $request->signature);
     }
