@@ -11,6 +11,11 @@ Route::get('install', function () {
     echo 'ok';
 });
 
+Route::get('storage', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    echo 'ok';
+});
+
 Route::group(['as' => 'frontend.'], function () {
     Route::get('/', [\App\Http\Controllers\Frontend\HomeController::class, 'index'])->name('home');
     Route::get('/about-us', [\App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about');
