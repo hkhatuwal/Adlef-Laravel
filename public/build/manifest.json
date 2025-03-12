@@ -1,109 +1,25 @@
 {
-  "__commonjsHelpers-Cpj98o6Y.js": {
-    "file": "assets/_commonjsHelpers-Cpj98o6Y.js",
-    "name": "_commonjsHelpers"
+  "resources/css/app.css": {
+    "file": "assets/app-CyBJp2c8.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
   },
-  "_choices-F57102UX.js": {
-    "file": "assets/choices-F57102UX.js",
-    "name": "choices",
-    "isDynamicEntry": true,
-    "imports": [
-      "__commonjsHelpers-Cpj98o6Y.js"
-    ]
+  "resources/fonts/VisueltPro-Bold.ttf": {
+    "file": "assets/VisueltPro-Bold-Dm4HgJ3T.ttf",
+    "src": "resources/fonts/VisueltPro-Bold.ttf"
   },
-  "_jodit.min-BrnkaEm1.js": {
-    "file": "assets/jodit.min-BrnkaEm1.js",
-    "name": "jodit.min",
-    "isDynamicEntry": true,
-    "imports": [
-      "__commonjsHelpers-Cpj98o6Y.js"
-    ]
+  "resources/fonts/VisueltPro-Light.woff": {
+    "file": "assets/VisueltPro-Light-Dtbm-qKW.woff",
+    "src": "resources/fonts/VisueltPro-Light.woff"
   },
-  "_nprogress-PDCxJPoF.js": {
-    "file": "assets/nprogress-PDCxJPoF.js",
-    "name": "nprogress",
-    "isDynamicEntry": true,
-    "imports": [
-      "__commonjsHelpers-Cpj98o6Y.js"
-    ]
-  },
-  "node_modules/@protonemedia/laravel-splade/dist/CompilerErrorMessages-6b34f14b.js": {
-    "file": "assets/CompilerErrorMessages-6b34f14b-Bw41afio.js",
-    "name": "CompilerErrorMessages-6b34f14b",
-    "src": "node_modules/@protonemedia/laravel-splade/dist/CompilerErrorMessages-6b34f14b.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/autosize/dist/autosize.esm.js": {
-    "file": "assets/autosize.esm-UHNFRGjn.js",
-    "name": "autosize.esm",
-    "src": "node_modules/autosize/dist/autosize.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.esm.js": {
-    "file": "assets/filepond-plugin-file-validate-size.esm-CRxnmUVA.js",
-    "name": "filepond-plugin-file-validate-size.esm",
-    "src": "node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js": {
-    "file": "assets/filepond-plugin-file-validate-type.esm-BWLk2aN8.js",
-    "name": "filepond-plugin-file-validate-type.esm",
-    "src": "node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.esm.js": {
-    "file": "assets/filepond-plugin-image-exif-orientation.esm-b3IGCAKo.js",
-    "name": "filepond-plugin-image-exif-orientation.esm",
-    "src": "node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js": {
-    "file": "assets/filepond-plugin-image-preview.esm-C5ae_mjO.js",
-    "name": "filepond-plugin-image-preview.esm",
-    "src": "node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.esm.js": {
-    "file": "assets/filepond-plugin-image-validate-size.esm-BanweLWG.js",
-    "name": "filepond-plugin-image-validate-size.esm",
-    "src": "node_modules/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/filepond/dist/filepond.esm.js": {
-    "file": "assets/filepond.esm-JD_mPYA6.js",
-    "name": "filepond.esm",
-    "src": "node_modules/filepond/dist/filepond.esm.js",
-    "isDynamicEntry": true
-  },
-  "node_modules/flatpickr/dist/esm/index.js": {
-    "file": "assets/index-BZ7OSNzo.js",
-    "name": "index",
-    "src": "node_modules/flatpickr/dist/esm/index.js",
-    "isDynamicEntry": true
+  "resources/fonts/VisueltPro-Light.woff2": {
+    "file": "assets/VisueltPro-Light-D1cJ0Qsk.woff2",
+    "src": "resources/fonts/VisueltPro-Light.woff2"
   },
   "resources/js/app.js": {
-    "file": "assets/app-UnKZlskn.js",
+    "file": "assets/app-l0sNRNKZ.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true,
-    "dynamicImports": [
-      "node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.esm.js",
-      "node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js",
-      "node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js",
-      "node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.esm.js",
-      "node_modules/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.esm.js",
-      "node_modules/filepond/dist/filepond.esm.js",
-      "node_modules/flatpickr/dist/esm/index.js",
-      "_jodit.min-BrnkaEm1.js",
-      "_choices-F57102UX.js",
-      "node_modules/autosize/dist/autosize.esm.js",
-      "node_modules/autosize/dist/autosize.esm.js",
-      "node_modules/autosize/dist/autosize.esm.js",
-      "_nprogress-PDCxJPoF.js",
-      "node_modules/@protonemedia/laravel-splade/dist/CompilerErrorMessages-6b34f14b.js"
-    ],
-    "css": [
-      "assets/app-B22Ww_5Q.css"
-    ]
+    "isEntry": true
   }
 }
