@@ -81,14 +81,13 @@ class AssetTransferController extends Controller
     public function storeTransferIn(Request $request)
     {
         $isUSD = $request->boolean('isUSD');
-        $isFiat = $request->boolean('isFiat');
         $rules = [
             'to_account' => 'required|exists:asset_accounts,id',
             'amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id',
         ];
 
-        if ($isFiat) {
+        if ($isUSD) {
             $rules['from_account'] = 'required|exists:bank_accounts,id';
         }
 
@@ -120,7 +119,7 @@ class AssetTransferController extends Controller
 
         $transfer = AssetTransfer::create([
             'from_account_id' => $request->input('from_account'),
-            'from_account_type' => $isFiat ? BankAccount::class : null,
+            'from_account_type' => $isUSD ? BankAccount::class : null,
             'to_account_type' => AssetAccount::class,
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),

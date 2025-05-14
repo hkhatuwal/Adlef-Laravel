@@ -29,7 +29,6 @@
                 <form id="transferForm" action="{{ route('client.transfer.in.post') }}" method="POST" class="space-y-6">
                     @csrf
                     <input type="hidden" name="isUSD" id="isUSD" value="{{$assetAccount->currency->isUSD()}}">
-                    <input type="hidden" name="isFiat" id="isFiat" value="{{$assetAccount->currency->isFiat()}}">
                     <input type="hidden" name="currency_id" value="{{request()->query('currency_id')}}">
 
                     <!-- Account Details -->
