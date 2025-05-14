@@ -50,8 +50,8 @@
                                                 <div class="flex justify-between items-center">
                                                     <span class="text-gray-600">{{ $field->field_name }}:</span>
                                                     <div class="flex items-center">
-                                                        <span class="text-gray-900" id="{{ Str::slug($depositAccount->name . '-' . $field->field_name) }}">{{ $field->field_value }}</span>
-                                                        <button onclick="copyToClipboard('{{ $field->field_value }}', '{{ $field->field_name }}')"
+                                                        <span class="text-gray-900" id="{{ $field->field_name }}">{{ $field->field_value }}</span>
+                                                        <button onclick="copyToClipboard('{{ $field->field_name }}')"
                                                                 class="ml-2 text-blue-600 hover:text-blue-700">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -64,8 +64,8 @@
                                             <div class="flex justify-between items-center">
                                                 <span class="text-gray-600">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900" id="reference-number-{{ $depositAccount->id }}">{{ $transfer->reference_number }}</span>
-                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                    <span class="text-gray-900" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('reference_number')"
                                                             class="ml-2 text-blue-600 hover:text-blue-700">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -91,8 +91,8 @@
                                             <div class="flex justify-between items-center">
                                                 <span class="text-gray-600">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900 font-medium">{{ $transfer->reference_number }}</span>
-                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                    <span class="text-gray-900 font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('reference_number')"
                                                             class="ml-2 text-blue-600 hover:text-blue-700">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -148,8 +148,8 @@
                                             <div class="flex justify-between items-center">
                                                 <span class="text-gray-600">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900 font-medium">{{ $transfer->reference_number }}</span>
-                                                    <button onclick="copyToClipboard('{{ $transfer->reference_number }}', 'Reference number')"
+                                                    <span class="text-gray-900 font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <button onclick="copyToClipboard('reference_number')"
                                                             class="ml-2 text-blue-600 hover:text-blue-700">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -179,7 +179,7 @@
                                 <p class="text-sm text-blue-700">
                                     Please transfer <span
                                         class="font-semibold">{{$transfer->currency->symbol}} {{ number_format($transfer->amount, 2) }}</span>
-                                    @if($transfer->currency->isUSD())
+                                    @if($transfer->currency->isFiat())
                                         to our bank account using the details above. Don't forget to include the
                                         reference number in your transfer.
                                     @else
@@ -207,17 +207,5 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            function copyToClipboard(text, label) {
-                navigator.clipboard.writeText(text).then(() => {
-                    // Show a toast notification
-                    toastr.success(label + ' copied to clipboard!');
-                }).catch(err => {
-                    toastr.error('Failed to copy ' + label.toLowerCase());
-                    console.error('Failed to copy: ', err);
-                });
-            }
-        </script>
-    @endpush
+
 @endsection

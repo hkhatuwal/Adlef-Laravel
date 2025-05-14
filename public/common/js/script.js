@@ -1,5 +1,6 @@
 function copyToClipboard(elementId) {
     const text = $(`#${elementId}`).text();
+    console.log(elementId)
     const button = $(`[onclick="copyToClipboard('${elementId}')"]`);
 
     navigator.clipboard.writeText(text).then(() => {
