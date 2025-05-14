@@ -80,5 +80,6 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
 
     // Notification Routes
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
 
 });

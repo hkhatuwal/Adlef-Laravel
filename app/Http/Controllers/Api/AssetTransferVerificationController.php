@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Admin\AssetTransferController;
 use App\Http\Controllers\Controller;
 use App\Models\AssetTransfer;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -13,9 +14,11 @@ class AssetTransferVerificationController extends Controller
 {
     protected $assetTransferController;
 
-    public function __construct(AssetTransferController $assetTransferController)
+    protected $notificationService;
+    public function __construct(AssetTransferController $assetTransferController,NotificationService $notificationService)
     {
         $this->assetTransferController = $assetTransferController;
+        $this->notificationService=$notificationService;
     }
 
     /**
@@ -63,17 +66,45 @@ class AssetTransferVerificationController extends Controller
                 ], 401);
             }
 
+
+
             // Find the transfer by reference number
             $transfer = AssetTransfer::where('reference_number', $request->reference_id)
                 ->where('status', 'pending')
                 ->where('transfer_type', AssetTransfer::TYPE_IN)
                 ->first();
 
+
             if (!$transfer) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Transfer not found or not in pending state'
                 ], 404);
+            }
+            if ($request->amount != $transfer->amount) {
+                $this->notificationService->notify(
+                    $transfer->user,
+                    [
+                        'type' => 'warning',
+                        'title' => 'Transfer failed',
+                        'message' => "We have received a payment from you but the amount does't match the amount you sent. Please contact support.",
+                        'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
+                        'notifiable_id' => $transfer->id,
+                        'metadata' => [
+                            'reference_number' => $transfer->reference_number,
+                            'amount' => $transfer->amount,
+                            'currency' => $transfer->currency->symbol,
+                            'fee' => $transfer->fee,
+                            'verified_at' => now()->format('Y-m-d H:i:s'),
+                            'verified_by' => 'API Verification'
+                        ]
+                    ],
+                    ['database', 'email']
+                );
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Amount mismatch'
+                ], 422);
             }
 
             // Call the verification method from the admin controller

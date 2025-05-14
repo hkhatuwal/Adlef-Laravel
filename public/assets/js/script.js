@@ -37,8 +37,8 @@ function toggleSidebar(hide = false) {
 }
 
 function markNotificationAsRead(id) {
-    fetch(`/notifications/${id}/mark-as-read`, {
-        method: 'POST',
+    fetch(`/notifications/${id}`, {
+        method: 'GET',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json'
@@ -47,11 +47,76 @@ function markNotificationAsRead(id) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Refresh the notifications or remove the notification from DOM
-                location.reload();
+                // Show the notification in the modal
+                showNotificationModal(data.notification);
             }
         });
 }
+
+function showNotificationModal(notification) {
+    // Set the content of the modal
+    document.getElementById('notification-title').textContent = notification.title;
+    document.getElementById('notification-message').textContent = notification.message;
+    document.getElementById('notification-time').textContent = notification.created_at;
+    
+    // Set the appropriate icon based on notification type
+    const iconContainer = document.getElementById('notification-icon');
+    
+    // Clear previous icon classes
+    iconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10';
+    
+    // Add type-specific classes
+    if (notification.type === 'success') {
+        iconContainer.classList.add('bg-green-100');
+        iconContainer.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+    } else if (notification.type === 'warning') {
+        iconContainer.classList.add('bg-yellow-100');
+        iconContainer.innerHTML = '<i class="fas fa-exclamation-circle text-yellow-500"></i>';
+    } else if (notification.type === 'error') {
+        iconContainer.classList.add('bg-red-100');
+        iconContainer.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+    } else {
+        iconContainer.classList.add('bg-blue-100');
+        iconContainer.innerHTML = '<i class="fas fa-info-circle text-blue-500"></i>';
+    }
+    
+    // Show the modal
+    const modal = document.getElementById('notification-modal');
+    modal.classList.remove('hidden');
+    
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Add event listener to close button - only add it once
+    const closeButton = document.getElementById('close-notification-modal');
+    closeButton.onclick = function() {
+        closeNotificationModal();
+    };
+    
+    // Close modal when clicking outside
+    modal.onclick = function(event) {
+        // If the click is directly on the modal (the backdrop), close it
+        if (event.target === modal) {
+            closeNotificationModal();
+        }
+    };
+}
+
+function closeNotificationModal() {
+    const modal = document.getElementById('notification-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Add event listener when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Close notification modal with escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeNotificationModal();
+        }
+    });
+});
 
 // Document ready handler
 $(function () {

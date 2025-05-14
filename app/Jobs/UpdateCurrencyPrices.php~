@@ -33,6 +33,7 @@ class UpdateCurrencyPrices implements ShouldQueue
             echo  "updating currency";
             if ($response->successful()) {
                 $data = $response->json()['data'];
+
                 foreach ($data as $cryptoData) {
                     Currency::where('symbol', strtoupper($cryptoData['symbol']))
                            ->where('type', Currency::TYPE_CRYPTO)

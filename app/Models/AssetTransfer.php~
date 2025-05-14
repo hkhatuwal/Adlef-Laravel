@@ -116,7 +116,7 @@ class AssetTransfer extends Model
         $amount = number_format($this->amount, 8) . ' ' . $this->currency->symbol;
 
 
-        $fromModel=isset($this->from_account_type)? app($this->from_account_type)->find($this->from_account_id):null;
+        $fromModel= app($this->from_account_type)->find($this->from_account_id);
         $toModel= app($this->to_account_type)->find($this->to_account_id);
         $currency=Currency::find($this->currency_id);
 

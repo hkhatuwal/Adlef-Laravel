@@ -117,6 +117,9 @@
         </div>
     </div>
 </div>
+
+@include('client.components.notification-modal')
+
 </body>
 @routes()
 <script src="{{asset('common/js/jquery.min.js')}}" crossorigin="anonymous"></script>
