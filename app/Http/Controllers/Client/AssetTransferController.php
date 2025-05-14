@@ -141,9 +141,10 @@ class AssetTransferController extends Controller
     public function storeTransferOut(Request $request)
     {
         $isUSD = $request->boolean('isUSD');
+        $isFiat = $request->boolean('isFiat');
         $rules = [
             'from_account' => 'required|exists:asset_accounts,id',
-            'to_account' => $isUSD ? 'required|exists:bank_accounts,id' : 'required|exists:crypto_wallets,id',
+            'to_account' => $isFiat ? 'required|exists:bank_accounts,id' : 'required|exists:crypto_wallets,id',
             'amount' => 'required|numeric|min:0.01',
             'currency_id' => 'required|exists:currencies,id',
         ];
@@ -177,7 +178,7 @@ class AssetTransferController extends Controller
         try {
             $transfer = AssetTransfer::create([
                 'from_account_type' => AssetAccount::class,
-                'to_account_type' => $isUSD ? BankAccount::class : CryptoWallet::class,
+                'to_account_type' => $isFiat ? BankAccount::class : CryptoWallet::class,
                 'from_account_id' => $request->input('from_account'),
                 'to_account_id' => $request->input('to_account'),
                 'amount' => $request->input('amount'),

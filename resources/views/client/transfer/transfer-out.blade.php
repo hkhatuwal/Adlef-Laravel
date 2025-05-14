@@ -37,9 +37,12 @@
                                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">To Account</h2>
                                 <input type="hidden" name="isUSD" id="isUSD"
                                        value="{{$assetAccount->currency->isUSD()}}">
+
+                                <input type="hidden" name="isFiat" id="isFiat"
+                                       value="{{$assetAccount->currency->isFiat()}}">
                                 <input type="hidden" name="currency_id" value="{{request()->query('currency_id')}}">
                             </div>
-                            @if($assetAccount->currency->isUSD())
+                            @if($assetAccount->currency->isFiat())
                                 <div class="space-y-4">
                                     <div class="relative from-account">
                                         <select name="to_account" id="to_account" class="select2">
