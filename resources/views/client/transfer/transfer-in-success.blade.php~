@@ -34,13 +34,13 @@
                         </div>
                     </div>
 
-                    @if($transfer->currency->isFiat())
+                    @if($transfer->currency->isUSD())
                         <!-- Bank Account Details for USD -->
                         <div class="space-y-4">
                             @php
                                 $bankAccounts = auth()->user()->adminDepositAccounts()->where('account_type', \App\Models\AdminDepositAccount::TYPE_BANK)->get();
                             @endphp
-
+                            
                             @if($bankAccounts->isNotEmpty())
                                 @foreach($bankAccounts as $depositAccount)
                                     <div>
