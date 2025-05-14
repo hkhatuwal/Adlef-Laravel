@@ -9,16 +9,17 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class AssetTransferVerificationController extends Controller
 {
     protected $assetTransferController;
-
     protected $notificationService;
-    public function __construct(AssetTransferController $assetTransferController,NotificationService $notificationService)
+
+    public function __construct(AssetTransferController $assetTransferController, NotificationService $notificationService)
     {
         $this->assetTransferController = $assetTransferController;
-        $this->notificationService=$notificationService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -30,108 +31,204 @@ class AssetTransferVerificationController extends Controller
     public function verifyByReference(Request $request)
     {
         try {
-            // Validate the request
-            $validator = Validator::make($request->all(), [
-                'reference_id' => 'required|string',
-                'signature' => 'required|string',
-                'timestamp' => 'required|integer',
-            ]);
+            // Run sequence of validation steps - each will throw exception if it fails
+            $validatedData = $this->validateRequest($request);
+            $transfer = $this->findTransfer($request->reference_id);
+            $this->checkAmountMatch($transfer, $request);
+            $this->checkCurrencyMatch($transfer, $request);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            // Verify the request signature
-            if (!$this->verifySignature($request)) {
-                Log::warning('Invalid signature for transfer verification', [
-                    'reference_id' => $request->reference_id,
-                    'ip' => $request->ip()
-                ]);
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid signature'
-                ], 401);
-            }
-
-            // Check if the timestamp is within acceptable range (5 minutes)
-            if (time() - $request->timestamp > 300) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Request expired'
-                ], 401);
-            }
-
-
-
-            // Find the transfer by reference number
-            $transfer = AssetTransfer::where('reference_number', $request->reference_id)
-                ->where('status', 'pending')
-                ->where('transfer_type', AssetTransfer::TYPE_IN)
-                ->first();
-
-
-            if (!$transfer) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Transfer not found or not in pending state'
-                ], 404);
-            }
-            if ($request->amount != $transfer->amount) {
-                $this->notificationService->notify(
-                    $transfer->user,
-                    [
-                        'type' => 'warning',
-                        'title' => 'Transfer failed',
-                        'message' => "We have received a payment from you but the amount does't match the amount you sent. Please contact support.",
-                        'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
-                        'notifiable_id' => $transfer->id,
-                        'metadata' => [
-                            'reference_number' => $transfer->reference_number,
-                            'amount' => $transfer->amount,
-                            'currency' => $transfer->currency->symbol,
-                            'fee' => $transfer->fee,
-                            'verified_at' => now()->format('Y-m-d H:i:s'),
-                            'verified_by' => 'API Verification'
-                        ]
-                    ],
-                    ['database', 'email']
-                );
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Amount mismatch'
-                ], 422);
-            }
-
-            // Call the verification method from the admin controller
+            // Complete verification
             $this->assetTransferController->verifyTransferInApi($transfer, $request);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Transfer verified successfully',
-                'data' => [
-                    'reference_id' => $transfer->reference_number,
-                    'status' => 'verified',
-                    'verified_at' => now()->format('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->successResponse($transfer);
 
-        } catch (\Exception $e) {
-            Log::error('Error verifying transfer: ' . $e->getMessage(), [
-                'reference_id' => $request->reference_id ?? null,
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to verify transfer',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+        } catch (Exception $e) {
+            return $this->handleException($e, $request->reference_id ?? null, $request->all());
         }
+    }
+
+    /**
+     * Validate the incoming request
+     *
+     * @param Request $request
+     * @throws Exception
+     * @return array
+     */
+    private function validateRequest(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'reference_id' => 'required|string',
+            'signature' => 'required|string',
+            'timestamp' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception('Validation failed: ' . json_encode($validator->errors()), 422);
+        }
+
+        // Verify the request signature
+        if (!$this->verifySignature($request)) {
+            Log::warning('Invalid signature for transfer verification', [
+                'reference_id' => $request->reference_id,
+                'ip' => $request->ip()
+            ]);
+
+            throw new Exception('Invalid signature', 401);
+        }
+
+        // Check if the timestamp is within acceptable range (5 minutes)
+        if (time() - $request->timestamp > 300) {
+            throw new Exception('Request expired', 401);
+        }
+
+        return $validator->validated();
+    }
+
+    /**
+     * Find the transfer by reference number
+     *
+     * @param string $referenceId
+     * @throws Exception
+     * @return AssetTransfer
+     */
+    private function findTransfer(string $referenceId)
+    {
+        $transfer = AssetTransfer::where('reference_number', $referenceId)
+            ->where('status', 'pending')
+            ->where('transfer_type', AssetTransfer::TYPE_IN)
+            ->first();
+
+        if (!$transfer) {
+            throw new Exception('Transfer not found or not in pending state', 404);
+        }
+
+        return $transfer;
+    }
+
+    /**
+     * Check if amount matches
+     *
+     * @param AssetTransfer $transfer
+     * @param Request $request
+     * @throws Exception
+     * @return void
+     */
+    private function checkAmountMatch(AssetTransfer $transfer, Request $request)
+    {
+        if (isset($request->amount) && $request->amount != $transfer->amount) {
+            throw new Exception('Amount mismatch: Received ' . $request->amount . ' but expected ' . $transfer->amount, 422);
+        }
+    }
+
+    /**
+     * Check if currency matches
+     *
+     * @param AssetTransfer $transfer
+     * @param Request $request
+     * @throws Exception
+     * @return void
+     */
+    private function checkCurrencyMatch(AssetTransfer $transfer, Request $request)
+    {
+        if (isset($request->currency) && $transfer->currency) {
+            $expectedCurrency = strtoupper($transfer->currency->symbol);
+            $receivedCurrency = strtoupper($request->currency);
+
+            if ($receivedCurrency !== $expectedCurrency) {
+                throw new Exception(
+                    "Currency mismatch: Received {$receivedCurrency} but expected {$expectedCurrency}",
+                    422
+                );
+            }
+        }
+    }
+
+    /**
+     * Create success response
+     *
+     * @param AssetTransfer $transfer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function successResponse(AssetTransfer $transfer)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Transfer verified successfully',
+            'data' => [
+                'reference_id' => $transfer->reference_number,
+                'status' => 'verified',
+                'verified_at' => now()->format('Y-m-d H:i:s')
+            ]
+        ]);
+    }
+
+    /**
+     * Handle all exceptions and send notifications
+     *
+     * @param Exception $e
+     * @param string|null $referenceId
+     * @param array $requestData
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handleException(Exception $e, $referenceId, array $requestData = [])
+    {
+        $code = $e->getCode() ?: 500;
+        $message = $e->getMessage();
+
+        // Log the error
+        Log::error('Error verifying transfer: ' . $message, [
+            'reference_id' => $referenceId,
+            'trace' => $e->getTraceAsString(),
+            'request_data' => $requestData
+        ]);
+
+        // Try to find the transfer for notification
+        $transfer = null;
+        if ($referenceId) {
+            $transfer = AssetTransfer::where('reference_number', $referenceId)->first();
+        }
+
+        // Send notification if we have a transfer
+        if ($transfer && $transfer->user) {
+            $this->sendFailureNotification($transfer, $message);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $code == 500 ? 'Failed to verify transfer' : $message,
+            'error' => config('app.debug') && $code == 500 ? $message : null
+        ], $code < 100 || $code > 599 ? 500 : $code);
+    }
+
+    /**
+     * Send failure notification to user
+     *
+     * @param AssetTransfer $transfer
+     * @param string $errorMessage
+     * @return void
+     */
+    private function sendFailureNotification(AssetTransfer $transfer, string $errorMessage)
+    {
+        $this->notificationService->notify(
+            $transfer->user,
+            [
+                'type' => 'warning',
+                'title' => 'Transfer Verification Failed',
+                'message' => "There was an issue verifying your transfer: {$errorMessage}. Please contact support.",
+                'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
+                'notifiable_id' => $transfer->id,
+                'metadata' => [
+                    'reference_number' => $transfer->reference_number,
+                    'amount' => $transfer->amount,
+                    'currency' => $transfer->currency->symbol ?? 'Unknown',
+                    'fee' => $transfer->fee,
+                    'failed_at' => now()->format('Y-m-d H:i:s'),
+                    'reason' => $errorMessage
+                ]
+            ],
+            ['database', 'email']
+        );
     }
 
     /**
