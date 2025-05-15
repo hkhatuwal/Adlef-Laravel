@@ -116,7 +116,7 @@ class AssetTransferVerificationController extends Controller
      */
     private function checkAmountMatch(AssetTransfer $transfer, Request $request)
     {
-        $receivedAmount=$request->amount;
+        $receivedAmount=$request->amount/100;          // THE AMOUNT IS IN CENTS
         $expectedAmount=$transfer->amount;
         $percentageDiff=100-($receivedAmount/$expectedAmount)*100;
         if ($percentageDiff>1){
