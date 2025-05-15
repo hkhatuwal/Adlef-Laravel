@@ -132,7 +132,7 @@ class AssetTransferController extends Controller
             'user_id' => $request->user()->id,
         ]);
         $transfer->update([
-            'reference_number' => "REF".$request->user()->id.$transfer->id,
+            'reference_number' => config('constants.reference_prefix').$request->user()->id.$transfer->id.config('constants.reference_suffix'),
         ]);
 
         return view('client.transfer.transfer-in-success', compact('transfer'));
@@ -191,7 +191,7 @@ class AssetTransferController extends Controller
                 'user_id' => $request->user()->id,
             ]);
             $transfer->update([
-                'reference_number' => "REF".$request->user()->id.$transfer->id,
+                'reference_number' => config('constants.reference_prefix').$request->user()->id.$transfer->id.config('constants.reference_suffix'),
             ]);
             $fromAccount = AssetAccount::find($request->input('from_account'));
             $fromAccount->balance -= $transferDetails['total'];

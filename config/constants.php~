@@ -3,7 +3,6 @@
 
 return [
     "reference_prefix"=>"ADREF",
-    "reference_suffix"=>"AD",
     "client_login" => [
         "email" => "lygezozi@mailinator.com",
         "password" => "Pa$\$w0rd!"
