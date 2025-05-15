@@ -116,9 +116,13 @@ class AssetTransferVerificationController extends Controller
      */
     private function checkAmountMatch(AssetTransfer $transfer, Request $request)
     {
-        if (isset($request->amount) && $request->amount != $transfer->amount) {
-            throw new Exception('Amount mismatch: Received ' . $request->amount . ' but expected ' . $transfer->amount, 422);
+        $receivedAmount=$request->amount;
+        $expectedAmount=$transfer->amount;
+        $percentageDiff=100-($receivedAmount/$expectedAmount)*100;
+        if ($percentageDiff>1){
+            throw new Exception('Amount mismatch: Received ' .$receivedAmount . ' but expected ' . $expectedAmount, 422);
         }
+
     }
 
     /**
