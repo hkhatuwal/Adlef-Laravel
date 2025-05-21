@@ -16,7 +16,7 @@ class OtcTransferCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(protected $data)
     {
         //
     }
@@ -38,6 +38,15 @@ class OtcTransferCreated extends Mailable
     {
         return new Content(
             view: 'emails.otc-transfer-created',
+            with: [
+                'username' => $this->data['user']->name ?? 'Valued Customer',
+                'reference_code' => $this->data['metadata']['reference_code'],
+                'amount' => $this->data['metadata']['amount'],
+                'currency' => $this->data['metadata']['currency'],
+                'target_amount' => $this->data['metadata']['target_amount'] ?? null,
+                'target_currency' => $this->data['metadata']['target_currency'] ?? null,
+                'created_at' => $this->data['metadata']['created_at'],
+            ]
         );
     }
 

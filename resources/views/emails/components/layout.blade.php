@@ -18,8 +18,8 @@
             padding: 20px;
         }
         .header {
-            background-color: #1a2b47;
-            padding: 20px;
+            background-color: white;
+            padding: 4px;
             text-align: center;
         }
         .logo {

@@ -1,4 +1,4 @@
-@component('emails.components.layout', ['title' => $heading2, 'heading' => $heading2, 'showFooter' => false])
+@component('emails.components.layout', ['title' => $heading2, 'heading' => $heading2, 'showFooter' => true])
 
     <p style="font-size: 16px; margin-bottom: 20px;">Dear {{ $username }},</p>
 
@@ -36,4 +36,4 @@
     </div>
 
     @include('emails.components.signature')
-@endcomponent 
+@endcomponent

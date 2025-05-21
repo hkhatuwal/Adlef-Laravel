@@ -1,3 +1,3 @@
-<div class="header">
-    <img src="{{ asset('assets/images/logo.svg') }}" alt="{{config('app.name')}}" class="logo">
+<div class="header" style="text-align: center; padding: 20px 0; background-color: #ffffff;">
+    <img src="{{asset("assets/images/logo.png")}}" alt="{{config('app.name')}}" style="max-width: 180px; height: auto; display: inline-block; margin: 0 auto; -ms-interpolation-mode: bicubic; border: 0;">
 </div>

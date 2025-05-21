@@ -5,7 +5,7 @@ return [
     "reference_prefix"=>"ADREF",
     "reference_suffix"=>"AD",
     "client_login" => [
-        "email" => "lygezozi@mailinator.com",
+        "email" => "himtech727@gmail.com",
         "password" => "Pa$\$w0rd!"
     ],
     "tin_reasons" => [
