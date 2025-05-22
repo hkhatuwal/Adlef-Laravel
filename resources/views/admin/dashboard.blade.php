@@ -162,6 +162,37 @@
             </div>
         </div>
 
+        <!-- Currency Last Updated Section -->
+        @if($firstCurrency && $currencyLastUpdated)
+        <div class="mb-8">
+            <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-sky-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-200"></div>
+                <div class="relative p-6 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 p-3 rounded-lg bg-cyan-50 dark:bg-cyan-900/50">
+                            <i class="fas fa-sync-alt text-2xl text-cyan-600 dark:text-cyan-400"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">
+                                    Currency  Last Updated
+                                </dt>
+                                <dd class="mt-1 flex items-baseline">
+                                    <div class="text-xl font-bold text-slate-900 dark:text-white">
+                                        {{ $currencyLastUpdated->diffForHumans() }}
+                                    </div>
+                                    <div class="ml-2 flex items-baseline text-sm font-medium text-slate-600 dark:text-slate-400">
+                                        <span>{{ $currencyLastUpdated->format('M d, Y H:i') }}</span>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Charts Section -->
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 mb-8">
             <!-- User Registration Chart -->

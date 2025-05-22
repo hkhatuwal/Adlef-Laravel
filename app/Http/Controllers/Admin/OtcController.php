@@ -73,7 +73,7 @@ class OtcController extends Controller
                 'type' => 'success',
                 'title' => 'OTC Trade Processed',
                 'message' => "Your OTC trade request has been processed successfully.",
-                'notifiable_type' => OtcRequest::NOTIFICATION_OTC_FAILED,
+                'notifiable_type' => OtcRequest::NOTIFICATION_OTC_SUCCESS,
                 'notifiable_id' => $otc->id,
                 'metadata' => [
                     'from_currency' => $otc->fromCurrency->symbol,
@@ -82,7 +82,7 @@ class OtcController extends Controller
                     'to_amount' => $otc->to_amount,
                     'network_fee' => $otc->network_fee,
                     'processed_at' => now()->format('Y-m-d H:i:s'),
-                    'processed_by' => auth()->user()->name
+                    'processed_by' => Auth::user()->name
                 ]
             ],
             ['database', 'email']
@@ -92,6 +92,40 @@ class OtcController extends Controller
             ->with('success', 'OTC trade is now being processed.');
     }
 
+    /**
+     * Hold the OTC request.
+     */
+    public function hold(OtcRequest $otc, Request $request)
+    {
+        $otc->status = 'on-hold';
+        $otc->hold_reason = $request->reason;
+        $otc->save();
+
+        // Send notification to user
+        $this->notificationService->notify(
+            $otc->user,
+            [
+                'type' => 'warning',
+                'title' => 'Your OTC instruction has been put on hold',
+                'message' => "Your OTC instruction has been put on hold and is under review.",
+                'notifiable_type' => OtcRequest::NOTIFICATION_OTC_HOLD,
+                'notifiable_id' => $otc->id,
+                'metadata' => [
+                    'reference_code' => $otc->reference_code ?? $otc->id,
+                    'amount' => $otc->from_amount,
+                    'currency' => $otc->fromCurrency->symbol,
+                    'created_at' => $otc->created_at->format('Y-m-d H:i:s'),
+                    'reason' => $otc->hold_reason,
+                    'held_by' => Auth::user()->name,
+                    'held_at' => now()->format('Y-m-d H:i:s')
+                ]
+            ],
+            ['database', 'email']
+        );
+
+        return redirect()->route('admin.otc.show', $otc)
+            ->with('success', 'OTC trade has been put on hold.');
+    }
 
     /**
      * Reject the OTC request.

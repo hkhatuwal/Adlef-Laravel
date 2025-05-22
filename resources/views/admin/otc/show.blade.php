@@ -22,6 +22,27 @@
                         <i class="material-symbols-outlined text-[20px] mr-2">play_arrow</i>
                         Process Trade
                     </button>
+                    <button type="button" id="hold_otc"
+                            class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <i class="material-symbols-outlined text-[20px] mr-2">pause</i>
+                        Hold Trade
+                    </button>
+                    <form action="{{ route('admin.otc.reject', $otc) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                            <i class="material-symbols-outlined text-[20px] mr-2">cancel</i>
+                            Reject Trade
+                        </button>
+                    </form>
+                </div>
+            @elseif($otc->status === 'on-hold')
+                <div class="flex items-center gap-2">
+                    <button type="button" id="process_otc"
+                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                        <i class="material-symbols-outlined text-[20px] mr-2">play_arrow</i>
+                        Process Trade
+                    </button>
                     <form action="{{ route('admin.otc.reject', $otc) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"
@@ -45,13 +66,15 @@
                 {{ $otc->status === 'completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' :
                    ($otc->status === 'failed' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' :
                    ($otc->status === 'processing' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400' :
-                   'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400')) }}">
+                   ($otc->status === 'on-hold' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-400' :
+                   'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400'))) }}">
                 <i class="material-symbols-outlined text-[20px] mr-2">
                     {{ $otc->status === 'completed' ? 'check_circle' :
                        ($otc->status === 'failed' ? 'error' :
-                       ($otc->status === 'processing' ? 'sync' : 'pending')) }}
+                       ($otc->status === 'processing' ? 'sync' :
+                       ($otc->status === 'on-hold' ? 'pause' : 'pending'))) }}
                 </i>
-                {{ ucfirst($otc->status) }}
+                {{ $otc->status === 'on-hold' ? 'On Hold' : ucfirst($otc->status) }}
             </span>
         </div>
     </div>
@@ -213,6 +236,11 @@
                                         @if($activity->status === 'failed' && $otc->failure_reason)
                                             <div class="mt-2 text-sm text-red-600 dark:text-red-400">
                                                 Reason: {{ $otc->failure_reason }}
+                                            </div>
+                                        @endif
+                                        @if($activity->status === 'on-hold' && $otc->hold_reason)
+                                            <div class="mt-2 text-sm text-orange-600 dark:text-orange-400">
+                                                Reason: {{ $otc->hold_reason }}
                                             </div>
                                         @endif
                                     </div>
@@ -401,6 +429,75 @@
                             class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 inline-flex items-center gap-2">
                         <i class="material-symbols-outlined text-[20px]">play_arrow</i>
                         Process Trade
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Hold Modal -->
+<div id="holdModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-lg w-full">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900 dark:text-white">
+                            Hold OTC Trade
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            Provide a reason for holding this trade
+                        </p>
+                    </div>
+                    <button type="button"
+                            id="close-hold-modal"
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <i class="material-symbols-outlined text-2xl">close</i>
+                    </button>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.otc.hold', $otc) }}" method="POST">
+                @csrf
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label for="hold_reason" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            Reason for Hold
+                        </label>
+                        <textarea
+                            id="hold_reason"
+                            name="reason"
+                            rows="4"
+                            class="block w-full rounded-lg border-slate-200 bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm"
+                            placeholder="Explain why this trade is being put on hold..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Warning Message -->
+                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg p-4">
+                        <div class="flex gap-3">
+                            <i class="material-symbols-outlined text-amber-500">warning</i>
+                            <div class="text-sm text-amber-800 dark:text-amber-300">
+                                This will place the OTC trade on hold and notify the customer. You can process or reject the trade later.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-200 dark:border-slate-700 rounded-b-xl flex justify-end gap-3">
+                    <button type="button"
+                            id="cancel-hold"
+                            class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors duration-200 inline-flex items-center gap-2">
+                        <i class="material-symbols-outlined text-[20px]">pause</i>
+                        Hold Trade
                     </button>
                 </div>
             </form>

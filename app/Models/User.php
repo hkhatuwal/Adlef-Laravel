@@ -87,7 +87,7 @@ class User extends Authenticatable
 
     public function areDetailsVerified(): bool
     {
-        return isset($this->contactDetails) && $this->contactDetails->is_email_verified && $this->contactDetails->is_phone_verified;
+        return isset($this->contactDetails ) && isset($this->profile) && $this->profile->document_verified &&  $this->contactDetails->is_email_verified && $this->contactDetails->is_phone_verified ;
     }
 
     public static function generateAccountNumber()

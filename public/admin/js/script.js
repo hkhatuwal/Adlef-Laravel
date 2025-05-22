@@ -1,14 +1,10 @@
 $(document).ready(function () {
 
 
-
-
-
-
-
-
     // Verify Transfer Modal Functionality
     const $verifyModal = $('#verifyModal');
+    const $holdModal = $('#holdModal');
+
     const $verifyForm = $('#verifyForm');
     const $feePercentage = $('#feePercentage');
     const $feeValue = $('#feeValue');
@@ -29,6 +25,14 @@ $(document).ready(function () {
     const $displayTransactionCost = $('#displayTransactionCost');
 
     // Button Event Handlers for Verify Transfer
+
+    $('#hold_otc').click(function () {
+        openHoldModal()
+    })
+
+    $('#close-hold-modal, #cancel-hold').click(function () {
+        closeHoldModal();
+    });
     $('#verify_transfer').click(function () {
         openVerifyModal();
     });
@@ -142,8 +146,8 @@ $(document).ready(function () {
         const transactionCostAmount = parseFloat($transactionCostValue.val());
         const totalAmount = parseFloat($feePercentage.data('amount'));
 
-        if (isNaN(fee) || fee < 0 || isNaN(feeAmount) || feeAmount < 0  ||
-            isNaN(transactionCost) || transactionCost < 0 ||  isNaN(transactionCostAmount) || transactionCostAmount < 0 ) {
+        if (isNaN(fee) || fee < 0 || isNaN(feeAmount) || feeAmount < 0 ||
+            isNaN(transactionCost) || transactionCost < 0 || isNaN(transactionCostAmount) || transactionCostAmount < 0) {
             e.preventDefault();
             alert('Please enter valid fee and transaction cost values. Percentages should be between 0-100% and amounts should not exceed the transfer amount.');
         }
@@ -156,9 +160,9 @@ $(document).ready(function () {
         const transactionCost = parseFloat($transactionCostAmountOtc.val());
         const transactionCostPercentage = parseFloat($transactionCostPercentageOtc.val());
 
-        if (isNaN(fee) || fee < 0 ||  isNaN(percentage) || percentage < 0  ||
-            isNaN(transactionCost) || transactionCost < 0  ||
-            isNaN(transactionCostPercentage) || transactionCostPercentage < 0 ) {
+        if (isNaN(fee) || fee < 0 || isNaN(percentage) || percentage < 0 ||
+            isNaN(transactionCost) || transactionCost < 0 ||
+            isNaN(transactionCostPercentage) || transactionCostPercentage < 0) {
             e.preventDefault();
             alert('Please enter valid fee and transaction cost values. Percentages should be between 0-100% and amounts should not exceed the trade amount.');
         }
@@ -169,6 +173,14 @@ $(document).ready(function () {
         $verifyModal.removeClass('hidden');
         updateCalculations();
     }
+
+    function openHoldModal() {
+        $holdModal.removeClass('hidden');
+    }
+    function closeHoldModal() {
+        $holdModal.addClass('hidden');
+    }
+
 
     function closeVerifyModal() {
         $verifyModal.addClass('hidden');
@@ -184,7 +196,7 @@ $(document).ready(function () {
     }
 
     // Fee Preset Function for Verify Transfer
-    window.setFeePreset = function(percentage) {
+    window.setFeePreset = function (percentage) {
         const totalAmount = parseFloat($feePercentage.data('amount'));
         const feeAmount = (percentage * totalAmount) / 100;
 
@@ -194,7 +206,7 @@ $(document).ready(function () {
     }
 
     // Network Fee Preset Function
-    window.setNetworkFeePreset = function(percentage) {
+    window.setNetworkFeePreset = function (percentage) {
         const totalAmount = parseFloat($networkFeeInput.data('amount'));
         const amount = (percentage * totalAmount) / 100;
 
@@ -210,11 +222,11 @@ $(document).ready(function () {
 
         if (isNaN(fee)) return;
 
-        const finalAmount = amount + fee ;
+        const finalAmount = amount + fee;
 
         // Update display with proper formatting
         $feeAmount.html(
-            `${formatNumber(fee , 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
+            `${formatNumber(fee, 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
         );
         $finalAmount.html(
             `${formatNumber(finalAmount, 8)} <span class="text-base font-medium ml-1">${currencySymbol}</span>`

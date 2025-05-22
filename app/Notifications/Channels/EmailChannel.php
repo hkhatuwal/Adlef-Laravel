@@ -3,15 +3,19 @@
 namespace App\Notifications\Channels;
 
 use App\Contracts\NotificationChannel;
+use App\Mail\DocumentVerified;
 use App\Mail\NewBankAccountAdded;
 use App\Mail\OtcTransferFailed;
+use App\Mail\OtcTransferHold;
 use App\Mail\OtcTransferSuccess;
+use App\Mail\TransferinFailed;
 use App\Mail\TransferinSuccess;
 use App\Mail\TransferOutFailed;
 use App\Mail\TransferOutSuccess;
 use App\Models\AssetTransfer;
 use App\Models\BankAccount;
 use App\Models\OtcRequest;
+use App\Models\UserProfile;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -49,7 +53,7 @@ class EmailChannel implements NotificationChannel
     {
         if (!isset($data['notifiable_type'])) {
             Log::error("Email notification missing notifiable_type");
-            return new TransferinSuccess(); // Default fallback
+            return new TransferinSuccess($data); // Default fallback
         }
 
         $type = $data['notifiable_type'];
@@ -63,9 +67,19 @@ class EmailChannel implements NotificationChannel
         if ($type == OtcRequest::NOTIFICATION_OTC_FAILED) {
             return new OtcTransferFailed($data);
         }
+        if ($type == OtcRequest::NOTIFICATION_OTC_HOLD) {
+            return new OtcTransferHold($data);
+        }
+        if ($type == UserProfile::NOTIFICATION_DOCUMENT_VERIFIED) {
+            return new DocumentVerified($data);
+        }
 
         if ($type == AssetTransfer::NOTIFICATION_TRANSFER_IN_SUCCESS) {
             return new TransferinSuccess($data);
+        }
+
+        if ($type == AssetTransfer::NOTIFICATION_TRANSFER_IN_FAILED) {
+            return new TransferinFailed($data);
         }
 
         if ($type == AssetTransfer::NOTIFICATION_TRANSFER_SUCCESS) {

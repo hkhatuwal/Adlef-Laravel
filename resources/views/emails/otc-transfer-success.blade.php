@@ -12,15 +12,15 @@
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">From Amount:</td>
-                <td style="padding: 8px 0;">{{ $from_amount }} {{ $from_currency }}</td>
+                <td style="padding: 8px 0;">{{ number_format($from_amount, 3) }} {{ $from_currency }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">To Amount:</td>
-                <td style="padding: 8px 0;">{{ $to_amount }} {{ $to_currency }}</td>
+                <td style="padding: 8px 0;">{{ number_format($to_amount, 3) }} {{ $to_currency }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">Network Fee:</td>
-                <td style="padding: 8px 0;">{{ $network_fee }}</td>
+                <td style="padding: 8px 0;">{{ number_format($network_fee, 3) }}</td>
             </tr>
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">Processed At:</td>

@@ -58,12 +58,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('transfers/{transfer}', [\App\Http\Controllers\Admin\AssetTransferController::class, 'show'])->name('transfers.show');
         Route::post('transfers/{transfer}/verify', [\App\Http\Controllers\Admin\AssetTransferController::class, 'verify'])->name('transfers.verify');
         Route::post('transfers/{transfer}/reject', [\App\Http\Controllers\Admin\AssetTransferController::class, 'reject'])->name('transfers.reject');
+        Route::post('transfers/{transfer}/hold', [\App\Http\Controllers\Admin\AssetTransferController::class, 'hold'])->name('transfers.hold');
 
         // OTC Routes
         Route::get('otc', [OtcController::class, 'index'])->name('otc.index');
         Route::get('otc/{otc}', [OtcController::class, 'show'])->name('otc.show');
         Route::post('otc/{otc}/process', [OtcController::class, 'process'])->name('otc.process');
         Route::post('otc/{otc}/complete', [OtcController::class, 'complete'])->name('otc.complete');
+        Route::post('otc/{otc}/hold', [OtcController::class, 'hold'])->name('otc.hold');
         Route::post('otc/{otc}/reject', [OtcController::class, 'reject'])->name('otc.reject');
 
         // Settings Routes

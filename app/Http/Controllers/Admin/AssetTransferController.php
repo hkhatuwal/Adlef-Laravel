@@ -99,7 +99,7 @@ class AssetTransferController extends Controller
                     'currency' => $transfer->currency->symbol,
                     'fee' => $transfer->fee,
                     'verified_at' => now()->format('Y-m-d H:i:s'),
-                    'verified_by' => \auth()->user()->id
+                    'verified_by' => 'Admin'
                 ]
             ],
             ['database', 'email']
@@ -129,7 +129,7 @@ class AssetTransferController extends Controller
                     'currency' => $transfer->currency->symbol,
                     'fee' => $transfer->fee,
                     'verified_at' => now()->format('Y-m-d H:i:s'),
-                    'verified_by' => auth()->user()->name
+                    'verified_by' => 'Admin'
                 ]
             ],
             ['database', 'email']
@@ -173,7 +173,7 @@ class AssetTransferController extends Controller
                         'currency' => $transfer->currency->symbol,
                         'fee' => $transfer->fee,
                         'verified_at' => now()->format('Y-m-d H:i:s'),
-                        'verified_by' => 'API Verification'
+                        'verified_by' => 'Admin'
                     ]
                 ],
                 ['database', 'email']
@@ -200,7 +200,7 @@ class AssetTransferController extends Controller
                     'type' => 'error',
                     'title' => 'Transfer Cancelled',
                     'message' => "Your deposit of {$transfer->amount} {$transfer->currency->code} has been cancelled.",
-                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
+                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_IN_FAILED,
                     'notifiable_id' => $transfer->id,
                     'metadata' => [
                         'reference_number' => $transfer->reference_number,
@@ -208,7 +208,7 @@ class AssetTransferController extends Controller
                         'currency' => $transfer->currency->symbol,
                         'fee' => $transfer->fee,
                         'verified_at' => now()->format('Y-m-d H:i:s'),
-                        'verified_by' => 'API Verification'
+                        'verified_by' => 'Admin'
                     ]
                 ],
                 ['database', 'email']
@@ -218,6 +218,43 @@ class AssetTransferController extends Controller
             return back()->with('success', 'Transfer has been rejected successfully.');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to reject transfer: ' . $e->getMessage());
+        }
+    }
+
+    public function hold(AssetTransfer $transfer)
+    {
+        try {
+            if ($transfer->status !== AssetTransfer::STATUS_PENDING) {
+                return back()->with('error', 'This transfer cannot be put on hold because it is not in pending state.');
+            }
+
+            $transfer->update(['status' => AssetTransfer::STATUS_HOLD]);
+            
+            $this->notificationService->notify(
+                $transfer->user,
+                [
+                    'type' => 'info',
+                    'title' => 'Transfer On Hold',
+                    'message' => "Your transfer ({$transfer->reference_number}) has been placed on hold.",
+                    'notifiable_type' => $transfer->transfer_type === AssetTransfer::TYPE_IN ? 
+                        AssetTransfer::NOTIFICATION_TRANSFER_IN_FAILED : 
+                        AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
+                    'notifiable_id' => $transfer->id,
+                    'metadata' => [
+                        'reference_number' => $transfer->reference_number,
+                        'amount' => $transfer->amount,
+                        'currency' => $transfer->currency->symbol,
+                        'fee' => $transfer->fee,
+                        'hold_at' => now()->format('Y-m-d H:i:s'),
+                        'hold_by' => 'Admin'
+                    ]
+                ],
+                ['database', 'email']
+            );
+
+            return back()->with('success', 'Transfer has been put on hold successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to put transfer on hold: ' . $e->getMessage());
         }
     }
 }

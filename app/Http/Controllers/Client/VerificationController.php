@@ -12,9 +12,13 @@ class VerificationController extends Controller
 {
 
     public function showVerifyForm(){
-
         return view('client.auth.verify');
     }
+    
+    public function showDocumentPending(){
+        return view('client.auth.document-verification-pending');
+    }
+
     public function sendEmailOtp(Request $request)
     {
         try {
@@ -183,3 +187,4 @@ class VerificationController extends Controller
     }
 
 }
+

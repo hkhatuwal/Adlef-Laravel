@@ -26,6 +26,14 @@
                         <i class="material-symbols-outlined text-[20px] mr-2">verified</i>
                         Verify Payment
                     </button>
+                    <form action="{{ route('admin.transfers.hold', $transfer) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                            <i class="material-symbols-outlined text-[20px] mr-2">pause_circle</i>
+                            Hold Transfer
+                        </button>
+                    </form>
                     <form action="{{ route('admin.transfers.reject', $transfer) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"
@@ -39,10 +47,12 @@
             <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
                 {{ $transfer->status === 'completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' :
                    ($transfer->status === 'failed' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' :
-                   'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400') }}">
+                   ($transfer->status === 'hold' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400' :
+                   'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400')) }}">
                 <i class="material-symbols-outlined text-[20px] mr-2">
                     {{ $transfer->status === 'completed' ? 'check_circle' :
-                       ($transfer->status === 'failed' ? 'error' : 'pending') }}
+                       ($transfer->status === 'failed' ? 'error' : 
+                       ($transfer->status === 'hold' ? 'pause_circle' : 'pending')) }}
                 </i>
                 {{ ucfirst($transfer->status) }}
             </span>

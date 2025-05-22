@@ -10,12 +10,12 @@
             </tr>
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">Amount:</td>
-                <td style="padding: 8px 0;">{{ $amount }} {{ $currency }}</td>
+                <td style="padding: 8px 0;">{{ number_format($amount, 3) }} {{ $currency }}</td>
             </tr>
             @if($target_amount && $target_currency)
             <tr>
                 <td style="padding: 8px 0; width: 40%; color: #6c757d; font-weight: bold;">Converting to:</td>
-                <td style="padding: 8px 0;">{{ $target_amount }} {{ $target_currency }}</td>
+                <td style="padding: 8px 0;">{{ number_format($target_amount, 3) }} {{ $target_currency }}</td>
             </tr>
             @endif
             <tr>

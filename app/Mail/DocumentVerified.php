@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TransferinFailed extends Mailable
+class DocumentVerified extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -26,7 +26,7 @@ class TransferinFailed extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->data['title'] ?? 'Your transfer-in instruction has been cancelled',
+            subject: $this->data['title'],
         );
     }
 
@@ -36,15 +36,14 @@ class TransferinFailed extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.transfer-in-failed',
+            view: 'emails.document-verified',
             with: [
-                'heading2' => $this->data['title'] ?? 'Your transfer-in instruction has been cancelled',
-                'username' => $this->data['user']->name ?? 'Valued Customer',
-                'message2' => $this->data['message'] ?? "Your transfer-in instruction (reference code: {$this->data['metadata']['reference_number']}) for {$this->data['metadata']['amount']} {$this->data['metadata']['currency']} has been cancelled.",
-                'reference_number' => $this->data['metadata']['reference_number'],
-                'amount' => $this->data['metadata']['amount'],
-                'currency' => $this->data['metadata']['currency'],
-                'reason' => $this->data['metadata']['reason'] ?? 'No specific reason provided.',
+                'heading2' => $this->data['title'],
+                'username' => $this->data['user']->name,
+                'message2' => $this->data['message'],
+                'document_type' => $this->data['metadata']['document_type'],
+                'verified_at' => $this->data['metadata']['verified_at'],
+                'verified_by' => $this->data['metadata']['verified_by'],
             ]
         );
     }
@@ -58,4 +57,4 @@ class TransferinFailed extends Mailable
     {
         return [];
     }
-}
+} 

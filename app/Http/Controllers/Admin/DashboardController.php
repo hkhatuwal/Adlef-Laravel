@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserActivity;
 use App\Models\AssetTransfer;
 use App\Models\OtcRequest;
+use App\Models\Currency;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,10 @@ class DashboardController extends Controller
         // Calculate verification rate
         $verificationRate = $totalUsers > 0 ? ($verifiedUsers / $totalUsers) * 100 : 0;
 
+        // Get first currency and its last update time
+        $firstCurrency = Currency::first();
+        $currencyLastUpdated = $firstCurrency ? $firstCurrency->updated_at : null;
+
 
         return view('admin.dashboard', compact(
             'totalUsers',
@@ -79,7 +84,9 @@ class DashboardController extends Controller
             'verificationRate',
             'totalRevenue',
             'totalCosts',
-            'totalProfit'
+            'totalProfit',
+            'firstCurrency',
+            'currencyLastUpdated'
         ));
     }
 }

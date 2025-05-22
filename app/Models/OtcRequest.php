@@ -21,6 +21,7 @@ class OtcRequest extends Model
         'transaction_cost',
         'status',
         'failure_reason',
+        'hold_reason',
     ];
 
     protected $casts = [
@@ -32,6 +33,7 @@ class OtcRequest extends Model
     ];
     const  NOTIFICATION_OTC_SUCCESS="otc_transfer_success";
     const  NOTIFICATION_OTC_FAILED="otc_transfer_failed";
+    const  NOTIFICATION_OTC_HOLD="otc_transfer_hold";
     protected static function booted(): void
     {
         // Create activity record when OTC request is created
@@ -145,6 +147,7 @@ class OtcRequest extends Model
         $type = match($this->status) {
             'completed' => Notification::TYPE_SUCCESS,
             'failed' => Notification::TYPE_ERROR,
+            'on-hold' => Notification::TYPE_WARNING,
             default => Notification::TYPE_INFO
         };
 
@@ -152,6 +155,7 @@ class OtcRequest extends Model
             'completed' => 'OTC Trade Completed',
             'failed' => 'OTC Trade Failed',
             'processing' => 'OTC Trade Processing',
+            'on-hold' => 'OTC Trade On Hold',
             default => 'OTC Trade Status Updated'
         };
 
@@ -159,6 +163,7 @@ class OtcRequest extends Model
             'completed' => "Your OTC trade to exchange {$fromAmount} for {$toAmount} has been completed successfully.",
             'failed' => "Your OTC trade to exchange {$fromAmount} for {$toAmount} has failed. Please contact support.",
             'processing' => "Your OTC trade to exchange {$fromAmount} for {$toAmount} is being processed.",
+            'on-hold' => "Your OTC trade to exchange {$fromAmount} for {$toAmount} has been put on hold. " . ($this->hold_reason ? "Reason: {$this->hold_reason}" : ""),
             default => "Your OTC trade to exchange {$fromAmount} for {$toAmount} status has been updated to {$this->status}."
         };
 

@@ -35,9 +35,9 @@ class TestEmailsCommand extends Command
     public function handle()
     {
         $email = $this->argument('email') ?? 'prajapathimanshu51@gmail.com';
-        
+
         $this->info("Starting to send test emails to: {$email}");
-        
+
         $emailClasses = [
             OtcTransferSuccess::class => 'OTC Transfer Success',
             OtcTransferFailed::class => 'OTC Transfer Failed',
@@ -48,10 +48,10 @@ class TestEmailsCommand extends Command
             TransferinFailed::class => 'Transfer In Failed',
             NewBankAccountAdded::class => 'New Bank Account Added',
         ];
-        
+
         $bar = $this->output->createProgressBar(count($emailClasses));
         $bar->start();
-        
+
         foreach ($emailClasses as $class => $description) {
             try {
                 Mail::to($email)->send(new $class());
@@ -61,12 +61,12 @@ class TestEmailsCommand extends Command
                 $this->newLine();
                 $this->error("✗ Failed to send {$description}: {$e->getMessage()}");
             }
-            
+
             $bar->advance();
             // Add a small delay to prevent email server throttling
             sleep(1);
         }
-        
+
         $bar->finish();
         $this->newLine(2);
         $this->info('All test emails have been sent!');

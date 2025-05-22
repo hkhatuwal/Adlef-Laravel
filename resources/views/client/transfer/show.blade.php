@@ -32,13 +32,17 @@
                             $transfer->status === 'completed' ? 'bg-emerald-500 text-white' :
                             ($transfer->status === 'pending' ? 'bg-amber-500 text-white' :
                             ($transfer->status === 'failed' ? 'bg-red-500 text-white' :
+                            ($transfer->status === 'hold' ? 'bg-orange-500 text-white' :
                             ($transfer->status === 'cancelled' ? 'bg-slate-500 text-white' :
-                            'bg-blue-500 text-white'))) }}">
+                            'bg-blue-500 text-white'))))
+                             }}">
                                 <i class="fa-solid {{
                                 $transfer->status === 'completed' ? 'fa-circle-check' :
                                 ($transfer->status === 'failed' ? 'fa-circle-xmark' :
+                                ($transfer->status === 'hold' ? 'fa-pause-circle' :
                                 ($transfer->status === 'cancelled' ? 'fa-ban' :
-                                'fa-clock')) }} mr-2"></i>
+                                'fa-clock')))
+                                 }} mr-2"></i>
                                 {{ ucfirst($transfer->status) }}
                             </div>
                         </div>
@@ -230,7 +234,8 @@
                                 $transfer->status === 'completed' ? 'text-emerald-600' :
                                 ($transfer->status === 'pending' ? 'text-amber-600' :
                                 ($transfer->status === 'failed' ? 'text-red-600' :
-                                'text-slate-600')) }}">
+                                ($transfer->status === 'hold' ? 'text-orange-600' :
+                                'text-slate-600'))) }}">
                                 {{ ucfirst($transfer->status) }}
                             </span>
                             </div>

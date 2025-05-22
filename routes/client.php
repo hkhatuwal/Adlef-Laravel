@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Client\DashboardController;
 use App\Http\Controllers\Client\OtcController;
+use App\Http\Controllers\Client\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\ActivityController;
 use App\Http\Controllers\Client\NotificationController;
@@ -22,6 +23,10 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/holdings', [DashboardController::class, 'holdings'])->name('holdings');
         Route::get('/activity', [DashboardController::class, 'activity'])->name('activity');
+
+        // Profile Routes
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
         // Asset Transfer Routes
         Route::get('/transfer', [\App\Http\Controllers\Client\AssetTransferController::class, 'index'])->name('transfer');
@@ -57,6 +62,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
     Route::prefix("verification")->group(function () {
         // Verification Routes
         Route::get('/', [\App\Http\Controllers\Client\VerificationController::class, 'showVerifyForm'])->name('client-registration.verify');
+        Route::get('/document-pending', [\App\Http\Controllers\Client\VerificationController::class, 'showDocumentPending'])->name('client-registration.document-pending');
         Route::post('/send-email-otp', [\App\Http\Controllers\Client\VerificationController::class, 'sendEmailOtp']);
         Route::post('/verify-email-otp', [\App\Http\Controllers\Client\VerificationController::class, 'verifyEmailOtp']);
         Route::post('/send-phone-otp', [\App\Http\Controllers\Client\VerificationController::class, 'sendPhoneOtp']);

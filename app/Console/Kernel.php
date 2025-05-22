@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        echo "Hwll";
         // ... existing code ...
         $schedule->call(function (){
             UpdateCurrencyPrices::dispatch();

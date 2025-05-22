@@ -109,13 +109,13 @@ $notifications = auth()->user()->unreadNotifications()->take(5)->get();
                     <div class="bg-white rounded-lg p-3 mb-3 border border-gray-100 shadow-sm">
                         <h2 class=" font-semibold text-xl bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Premium Custody Platinum</h2>
                     </div>
-                    <button class="w-full flex justify-between items-center px-3 py-2 hover:bg-white rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-100">
+                    <a href="{{ route('client.profile.edit') }}" class="w-full flex justify-between items-center px-3 py-2 hover:bg-white rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-100">
                         <div class="flex items-center">
                             <i class="fa-regular fa-user-circle text-gray-400 mr-2"></i>
                             <span class="font-medium text-gray-600">User & Profile</span>
                         </div>
                         <i class="fa-solid fa-angle-right text-gray-400 text-sm group-hover:translate-x-1 transition-transform"></i>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

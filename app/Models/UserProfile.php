@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserProfile extends Model
 {
+
+    const  NOTIFICATION_DOCUMENT_VERIFIED="document_verified";
+    const  NOTIFICATION_DOCUMENT_VERIFICATION_FAILED="document_verification_failed";
+
     protected $fillable = [
         'user_id',
         'first_name',

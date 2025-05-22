@@ -11,10 +11,14 @@ class AssetTransfer extends Model
     const  NOTIFICATION_TRANSFER_FAILED="asset_transfer_failed";
 
     const  NOTIFICATION_TRANSFER_IN_SUCCESS="asset_transfer_in_success";
-    const  NOTIFICATION_TRANSFER_IN_FAILED="asset_transfer_in_success";
+    const  NOTIFICATION_TRANSFER_IN_FAILED="asset_transfer_in_failed";
     const  TYPE_IN="in";
     const  TYPE_OUT="out";
     const  TYPE_THIRD_PARTY="third_party";
+    const  STATUS_PENDING="pending";
+    const  STATUS_COMPLETED="completed";
+    const  STATUS_FAILED="failed";
+    const  STATUS_HOLD="hold";
     protected $fillable = [
         'from_account_id',
         'to_account_id',

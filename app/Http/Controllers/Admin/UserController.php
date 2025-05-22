@@ -53,7 +53,7 @@ class UserController extends Controller
                 'type' => 'success',
                 'title' => 'Document Verified',
                 'message' => 'Your verification document has been reviewed and approved.',
-                'notifiable_type' => UserProfile::class,
+                'notifiable_type' => UserProfile::NOTIFICATION_DOCUMENT_VERIFIED,
                 'notifiable_id' => $userProfile->id,
                 'metadata' => [
                     'document_type' => $userProfile->document_type ?? 'Identity Document',
