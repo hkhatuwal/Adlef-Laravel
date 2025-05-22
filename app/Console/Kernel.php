@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Jobs\UpdateCurrencyPrices;
+use App\Jobs\UpdateCryptoPrices;
+use App\Jobs\UpdateFiatCurrencyPrices;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,8 +16,9 @@ class Kernel extends ConsoleKernel
     {
         // ... existing code ...
         $schedule->call(function (){
-            UpdateCurrencyPrices::dispatch();
-        });
+            UpdateFiatCurrencyPrices::dispatch();
+            UpdateCryptoPrices::dispatch();
+        })->everyFourHours();
     }
 
     /**
