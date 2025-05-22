@@ -12,7 +12,6 @@ Route::get('install', function () {
 });
 Route::get('/run-scheduler', function () {
     Artisan::call('schedule:run');
-    Artisan::call('queue:work');
     return 'Scheduler executed at ' . now();
 });
 Route::get('storage', function () {
