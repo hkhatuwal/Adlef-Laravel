@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF  | HOME','description' => 'Power your finances with our personalized platform designed for Multi-asset servicing, seamlessly connecting traditional and digital financial ecosystems','image' => asset('assets/images/savings.svg'),'isDark' => true])
+@extends('_partials.app',['title' => config('app.name').'  | HOME','description' => 'Power your finances with our personalized platform designed for Multi-asset servicing, seamlessly connecting traditional and digital financial ecosystems','image' => asset('assets/images/savings.svg'),'isDark' => true])
 @section('content')
     <section class="bg-black">
         <div class="container p-6 py-20 mx-auto">

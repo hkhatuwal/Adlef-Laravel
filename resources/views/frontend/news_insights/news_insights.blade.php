@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF  | SOLUTIONS','description' => 'We integrate our service offerings to provide clients full-turnkey solutions.'])
+@extends('_partials.app',['title' =>config('app.name'). config('app.name').'  | SOLUTIONS','description' => 'We integrate our service offerings to provide clients full-turnkey solutions.'])
 @section('content')
     {{-- Section 1--}}
     <section class="bg-light">

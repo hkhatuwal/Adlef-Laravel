@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF | HOME','description' => ' Power your finances with our personalized platform designed for
+@extends('_partials.app',['title' => config('app.name').' | HOME','description' => ' Power your finances with our personalized platform designed for
                 Multi asset servicing, seamlessly Connecting traditional and
                 digital financial ecosystems','image' => asset('assets/images/savings.svg')])
 

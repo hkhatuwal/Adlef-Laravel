@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF | Careers','description' => 'Explore the exciting career opportunities at ADLEF Group, Asia\'s innovative trust company. Learn more about the available positions and our unique work culture.'])
+@extends('_partials.app',['title' => config('app.name').' | Careers','description' => 'Explore the exciting career opportunities at ADLEF Group, Asia\'s innovative trust company. Learn more about the available positions and our unique work culture.'])
 
 @section('content')
     {{-- Section 1 --}}
@@ -9,7 +9,7 @@
                     We're <span class="font-bold">recruiting</span>
                 </h2>
                 <p class="text-xl mt-4">
-                    As a leader in tech innovation across Asia, the career paths at ADLEF are limitless. Explore the diverse job roles we offer and gain insight into the vibrant workplace culture that sets us apart.
+                    As a leader in tech innovation across Asia, the career paths at {{config('app.name')}} are limitless. Explore the diverse job roles we offer and gain insight into the vibrant workplace culture that sets us apart.
                 </p>
             </div>
 
@@ -39,7 +39,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mt-8">
                 <!-- Working at ADLEF -->
                 <div class="bg-white p-6">
-                    <h3 class="font-bold text-lg">Life at ADLEF Group
+                    <h3 class="font-bold text-lg">Life at {{config('app.name')}}
  </h3>
                     <div class="progress-bar h-3 w-full bg-gray-200 my-3">
                         <div class="h-full w-3/4 bg-green-400"></div>
@@ -47,7 +47,7 @@
                     <div class="mt-4">
                         <p class="text-2xl font-semibold">88%</p>
                         <p class="text-sm">
-                            of our employees take pride in being a part of ADLEF Group.</p>
+                            of our employees take pride in being a part of {{config('app.name')}}.</p>
                     </div>
                     <div class="progress-bar h-3 w-full bg-gray-200 my-3">
                         <div class="h-full w-3/4 bg-green-400"></div>
@@ -82,7 +82,7 @@
                         <div class="h-full w-3/4 bg-green-500"></div>
                     </div>
                     <p class="mt-4 text-2xl font-semibold">78%</p>
-                    <p class="text-sm">experience a profound sense of belonging within ADLEF Group. </p>
+                    <p class="text-sm">experience a profound sense of belonging within {{config('app.name')}}. </p>
                 </div>
             </div>
         </div>
@@ -168,7 +168,8 @@
         <div class="container mx-auto p-10">
             <div class="flex">
                 <div class="md:flex-1">
-                    <h3 class="text-white font-semibold text-2xl inline-block"> <span class="material-symbols-outlined text-white">trending_down</span>How can I apply for a role at ADLEF Group?</h3>
+                    <h3 class="text-white font-semibold text-2xl inline-block"> <span class="material-symbols-outlined text-white">trending_down</span>How can I apply for a role at
+                        {{config('app.name')}}?</h3>
                     <p class="text-white opacity-80">You can explore open positions on our career page or through external job platforms like LinkedIn. Each job listing will provide details on the application process.</p>
                 </div>
                 <div class="md:flex-1 p-10 flex justify-center items-center">

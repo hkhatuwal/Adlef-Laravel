@@ -1,4 +1,4 @@
-@extends('_partials.app',['title' => 'ADLEF | ABOUT','description' => '  First Digital brings traditional fiduciary services into the digital-first world through technology and
+@extends('_partials.app',['title' => config('app.name').' | ABOUT','description' => '  First Digital brings traditional fiduciary services into the digital-first world through technology and
                 developing financial services infrastructure that lets us and our clients create world-class financial
                 products and services.','image' => asset('assets/images/office.webp')])
 
@@ -23,7 +23,7 @@
                     <h4 class="font-semibold text-xl">It All Begins with an Idea
                     </h4>
                     <p class="text-lg leading-relaxed mb-4">
-                        With extensive experience in international trade, our senior leaders identified the need for advanced technology in global markets. Recognizing the challenges businesses faced in a digital economy, we combined traditional finance with digital assets to create open finance solutions. This led to the founding of ADLEF  in 2019, now a multinational company headquartered in Dubai.
+                        With extensive experience in international trade, our senior leaders identified the need for advanced technology in global markets. Recognizing the challenges businesses faced in a digital economy, we combined traditional finance with digital assets to create open finance solutions. This led to the founding of {{config('app.name')}}  in 2019, now a multinational company headquartered in Dubai.
 
                     </p>
                     <img src="{{asset('assets/images/office.webp')}}" alt="Bridge Image"
