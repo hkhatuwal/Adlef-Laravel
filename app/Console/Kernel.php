@@ -16,8 +16,8 @@ class Kernel extends ConsoleKernel
     {
         // ... existing code ...
         $schedule->call(function (){
-            UpdateFiatCurrencyPrices::dispatch();
-            UpdateCryptoPrices::dispatch();
+            UpdateFiatCurrencyPrices::dispatchSync();
+            UpdateCryptoPrices::dispatchSync();
         })->hourly();
     }
 
