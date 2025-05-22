@@ -10,7 +10,10 @@ Route::get('install', function () {
     \Illuminate\Support\Facades\Artisan::call('migrate');
     echo 'ok';
 });
-
+Route::get('/run-scheduler', function () {
+    Artisan::call('schedule:run');
+    return 'Scheduler executed at ' . now();
+});
 Route::get('storage', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
     echo 'ok';
