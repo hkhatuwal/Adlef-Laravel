@@ -185,7 +185,7 @@
                                     your future transactions with us?
                                 </legend>
                                 <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-1">
-                                    @foreach(config('constants.source_funds') as $source)
+                                    @foreach(config('constants.register_source_funds') as $source)
                                         <div class="flex items-start">
                                             <div class="flex items-center h-5">
                                                 <input id="{{ Str::snake($source) }}" name="source_funds[]" type="checkbox" value="{{ $source }}"

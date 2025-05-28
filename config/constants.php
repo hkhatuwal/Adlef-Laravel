@@ -51,6 +51,18 @@ return [
         'PYR030 User Withdrawal',
         'PYR031 Advance Payments for goods'
     ],
+    "register_source_funds"=>[
+        'Salary',
+        'Inheritance',
+        'Divorce Settlement',
+        'Pension/SavingsFromEmployment',
+        'Sale Of Property',
+        'Interest Income',
+        'Capital Gain/Dividends',
+        'Gambling',
+        'Gift',
+        'Other'
+    ],
     "wealth_source" => [
         'Salary',
         'Inheritance',
