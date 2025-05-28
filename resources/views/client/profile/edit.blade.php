@@ -138,7 +138,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="gender" class="block text-sm text-gray-700 mb-2">Gender</label>
-                                    <select name="gender" id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="gender" id="gender" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                         <option value="">Select Gender</option>
                                         <option value="male" {{ old('gender', $profile->gender) == 'male' ? 'selected' : '' }}>Male</option>
                                         <option value="female" {{ old('gender', $profile->gender) == 'female' ? 'selected' : '' }}>Female</option>
@@ -148,7 +148,7 @@
 
                                 <div>
                                     <label for="marital_status" class="block text-sm text-gray-700 mb-2">Marital Status</label>
-                                    <select name="marital_status" id="marital_status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="marital_status" id="marital_status" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                         <option value="">Select Status</option>
                                         <option value="single" {{ old('marital_status', $profile->marital_status) == 'single' ? 'selected' : '' }}>Single</option>
                                         <option value="married" {{ old('marital_status', $profile->marital_status) == 'married' ? 'selected' : '' }}>Married</option>
@@ -180,7 +180,7 @@
                             <!-- Account Purpose -->
                             <div>
                                 <label for="account_purpose" class="block text-sm text-gray-700 mb-2">Account Purpose</label>
-                                <select name="account_purpose" id="account_purpose" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <select name="account_purpose" id="account_purpose" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                     <option value="">Select Purpose</option>
                                     <option value="Investment" {{ old('account_purpose', $profile->account_purpose) == 'Investment' ? 'selected' : '' }}>Investment</option>
                                     <option value="Trading" {{ old('account_purpose', $profile->account_purpose) == 'Trading' ? 'selected' : '' }}>Trading</option>
