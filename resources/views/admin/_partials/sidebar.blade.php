@@ -14,7 +14,9 @@
     <div class="h-full bg-white dark:bg-slate-800 flex flex-col shadow-xl">
         <!-- Logo Section -->
         <div class="p-5 border-b border-slate-200 dark:border-slate-700">
-            <img src="{{asset('assets/images/logo.svg')}}" class="h-12 mx-auto" alt="Logo">
+            <a href="{{route('admin.dashboard')}}">
+                <img src="{{asset('assets/images/logo.svg')}}" class="h-12 mx-auto" alt="Logo">
+            </a>
         </div>
 
         <!-- Navigation Section -->

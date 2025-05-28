@@ -11,7 +11,9 @@ $notifications = auth()->user()->unreadNotifications()->take(5)->get();
         <!-- Header -->
         <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
             <div class="text-lg font-bold">
-                <img src="{{asset('assets/images/logo.svg')}}" alt="Logo" class="h-10">
+                <a href="{{route('client.dashboard')}}">
+                    <img src="{{asset('assets/images/logo.svg')}}" alt="Logo" class="h-10">
+                </a>
             </div>
             <div class="flex items-center space-x-4">
                 <!-- Notification -->
