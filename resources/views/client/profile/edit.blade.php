@@ -265,7 +265,7 @@
 
                                 <div>
                                     <label for="country" class="block text-sm text-gray-700 mb-2">Country</label>
-                                    <select name="country" id="country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="country" id="country" class="w-ful select2  px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                         <option value="">Select Country</option>
                                         @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                             <option value="{{$countryName}}" @selected(old('country', $address->country) == $countryName)>{{$countryName}}</option>
@@ -367,7 +367,7 @@
                             <!-- Secondary Tax Country -->
                             <div>
                                 <label for="secondary_tax_country_id" class="block text-sm text-gray-700 mb-2">Secondary Tax Country</label>
-                                <select name="secondary_tax_country_id" id="secondary_tax_country_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <select name="secondary_tax_country_id" id="secondary_tax_country_id" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                     <option value="">Select Country</option>
                                     @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                         <option value="{{$code}}" @selected(old('secondary_tax_country_id', $profile->secondary_tax_country_id) == $code)>{{$countryName}}</option>
@@ -401,7 +401,7 @@
 
                                 <div>
                                     <label for="business_country" class="block text-sm text-gray-700 mb-2">Business Country</label>
-                                    <select name="business_country" id="business_country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="business_country" id="business_country" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                                         <option value="">Select Country</option>
                                         @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                             <option value="{{$countryName}}" @selected(old('business_country', $businessDetail->country) == $countryName)>{{$countryName}}</option>
