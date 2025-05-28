@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OtcController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\DepositAccountController;
+use App\Http\Controllers\Admin\UserActivityController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -67,6 +68,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('otc/{otc}/complete', [OtcController::class, 'complete'])->name('otc.complete');
         Route::post('otc/{otc}/hold', [OtcController::class, 'hold'])->name('otc.hold');
         Route::post('otc/{otc}/reject', [OtcController::class, 'reject'])->name('otc.reject');
+
+        // User Activities Routes
+        Route::get('activities', [UserActivityController::class, 'index'])->name('activities.index');
+        Route::get('activities/{activity}', [UserActivityController::class, 'show'])->name('activities.show');
 
         // Settings Routes
         Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');

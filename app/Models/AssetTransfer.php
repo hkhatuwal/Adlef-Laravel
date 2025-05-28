@@ -112,14 +112,15 @@ class AssetTransfer extends Model
 
     protected function updateActivity(): void
     {
-        $this->activities()
+        $activity = $this->activities()
             ->latest()
-            ->first()
-            ->update([
-                'status' => $this->status,
-                'reference_number' => $this->reference_number,
-                'description' => $this->generateActivityDescription()
-            ]);
+            ->first();
+        $activity->fill([
+            'status' => $this->status,
+            'reference_number' => $this->reference_number,
+        ]);
+        $saved = $activity->save();
+
     }
 
     protected function generateActivityDescription()

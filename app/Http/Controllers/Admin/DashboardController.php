@@ -20,6 +20,7 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $newUsersToday = User::whereDate('created_at', Carbon::today())->count();
 
+
         // Get users registered in last 7 days for chart
         $userRegistrationData = User::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
             ->where('created_at', '>=', Carbon::now()->subDays(7))
