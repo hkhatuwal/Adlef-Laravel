@@ -44,7 +44,7 @@ class AssetTransferController extends Controller
         $activeCurrencyIds = Currency::where('active', true)->pluck('id');
 
         // Get the asset account for the current user and selected currency
-        $fromAccounts = $request->user()->bankAccounts;
+        $fromAccounts = $request->user()->bankAccounts()->where('is_verified', true)->get();
 
         $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
