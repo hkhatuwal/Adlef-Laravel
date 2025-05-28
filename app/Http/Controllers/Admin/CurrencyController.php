@@ -31,6 +31,7 @@ class CurrencyController extends Controller
             'conversion_rate' => ['required', 'numeric', 'min:0'],
             'type' => ['required', Rule::in([Currency::TYPE_FIAT, Currency::TYPE_CRYPTO])],
             'icon' => ['required', 'image', 'max:2048'], // Max 2MB
+            'active' => ['boolean'],
         ]);
 
         try {
@@ -39,6 +40,9 @@ class CurrencyController extends Controller
             // Store the icon
             $iconPath = $request->file('icon')->store('logo', 'public');
             $validated['icon'] = $iconPath;
+            
+            // Handle checkbox value - if not present, set to false
+            $validated['active'] = $request->has('active') ? true : false;
 
             // Create currency
             $currency = Currency::create($validated);
@@ -76,6 +80,7 @@ class CurrencyController extends Controller
             'conversion_rate' => ['required', 'numeric', 'min:0'],
             'type' => ['required', Rule::in([Currency::TYPE_FIAT, Currency::TYPE_CRYPTO])],
             'icon' => ['nullable', 'image', 'max:2048'], // Max 2MB
+            'active' => ['boolean'],
         ]);
 
         try {
@@ -84,6 +89,9 @@ class CurrencyController extends Controller
                 $iconPath = $request->file('icon')->store('logo', 'public');
                 $validated['icon'] = $iconPath;
             }
+
+            // Handle checkbox value - if not present, set to false
+            $validated['active'] = $request->has('active') ? true : false;
 
             $currency->update($validated);
             return redirect()->route('admin.currencies.index')->with('success', 'Currency updated successfully');

@@ -21,6 +21,7 @@ class OtcRequest extends Model
         'transaction_cost',
         'status',
         'failure_reason',
+        'reference_number',
         'hold_reason',
     ];
 
@@ -44,7 +45,7 @@ class OtcRequest extends Model
 
         // Update activity record when OTC request status changes
         static::updated(function ($otcRequest) {
-            if ($otcRequest->isDirty('status')) {
+            if ($otcRequest->isDirty('status','reference_number')) {
                 $otcRequest->updateActivity();
                 $otcRequest->updateNotification();
             }
@@ -103,17 +104,15 @@ class OtcRequest extends Model
             ->first()
             ->update([
                 'status' => $this->status,
+                'reference_number' => $this->reference_number,
                 'description' => $this->generateActivityDescription()
             ]);
     }
 
     protected function generateActivityDescription()
     {
-        $fromAmount = number_format($this->from_amount, 8) . ' ' . $this->fromCurrency->symbol;
-        $toAmount = number_format($this->to_amount, 8) . ' ' . $this->toCurrency->symbol;
-        $rate = number_format($this->exchange_rate, 8);
 
-        return "Exchange {$fromAmount} to {$toAmount} at rate {$rate}";
+        return "OTC Exchange ".$this->fromCurrency->symbol." to ".$this->toCurrency->symbol;
     }
 
     protected function createNotification(): void
@@ -128,6 +127,7 @@ class OtcRequest extends Model
             'message' => "Your OTC trade to exchange {$fromAmount} for {$toAmount} has been initiated.",
             'notifiable_type' => self::class,
             'notifiable_id' => $this->id,
+            'reference_number'=>$this->reference_number,
             'metadata' => [
                 'from_amount' => $this->from_amount,
                 'to_amount' => $this->to_amount,

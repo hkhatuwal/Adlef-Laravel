@@ -31,7 +31,8 @@
                                      x-transition:leave-end="opacity-0 scale-95"
                                      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 focus:outline-none z-50">
                                     <div class="py-1">
-                                        <a href="{{ route('client.activities.export.pdf', request()->query()) }}" target="_blank"
+                                        <a href="{{ route('client.activities.export.pdf', request()->query()) }}"
+                                           target="_blank"
                                            class="group flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900">
                                             <i class="fa-solid fa-file-pdf mr-3 text-red-500 group-hover:text-red-600"></i>
                                             Export as PDF
@@ -258,99 +259,23 @@
             <!-- Activities List -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden ring-1 ring-slate-200">
                 @forelse($activities as $activity)
-                    <div
-                        class="p-6 flex items-start gap-6 {{ !$loop->last ? 'border-b border-slate-200' : '' }} hover:bg-slate-50/70 transition-all duration-200 group">
-                        <!-- Icon with dynamic color based on activity type -->
-                        <div class="flex-shrink-0">
-                            <div class="w-12 h-12 rounded-xl bg-opacity-10 flex items-center justify-center
-                            {{ $activity->activity_type === \App\Models\UserActivity::TYPE_ASSET_TRANSFER ? 'bg-green-100 text-green-600' :
-                            ($activity->activity_type === \App\Models\UserActivity::TYPE_OTC_TRADE ? 'bg-purple-100 text-purple-600' :
-                            ($activity->activity_type === \App\Models\UserActivity::TYPE_CRYPTO_WITHDRAWAL ? 'bg-orange-100 text-orange-600' :
-                            ($activity->activity_type === \App\Models\UserActivity::TYPE_FIAT_WITHDRAWAL ? 'bg-red-100 text-red-600' :
-                            'bg-emerald-100 text-emerald-600'))) }}
-                            group-hover:scale-110 transform transition-transform duration-200">
-                                <i class="fa-solid {{ $activity->icon_class }} text-2xl"></i>
+                    <!-- Table Header (only on first iteration) -->
+                    @if($loop->first)
+                        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                            <div
+                                class="grid grid-cols-12 gap-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                <div class="col-span-3">Type & Date</div>
+                                <div class="col-span-3">Counterparty</div>
+                                <div class="col-span-2">Reference No.</div>
+                                <div class="col-span-2">Status</div>
+                                <div class="col-span-2 text-right">Amount</div>
                             </div>
                         </div>
+                    @endif
 
-                        <!-- Content -->
-                        <div class="flex-grow">
-                            <div class="flex items-start justify-between mb-2">
-                                <div>
-                                    <div class="flex items-center gap-3">
-                                        <h3 class="text-lg font-semibold text-slate-900">
-                                            {{ ucfirst(str_replace('_', ' ', $activity->activity_type)) }}
-                                        </h3>
-                                        <!-- Dynamic Status Badge -->
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                        {{ $activity->status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
-                                        ($activity->status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                                        ($activity->status === 'failed' ? 'bg-red-100 text-red-700' :
-                                        'bg-slate-100 text-slate-700')) }}">
-                                        <i class="fa-solid {{ $activity->status === 'completed' ? 'fa-check-circle' :
-                                            ($activity->status === 'pending' ? 'fa-clock' :
-                                            ($activity->status === 'failed' ? 'fa-times-circle' :
-                                            'fa-ban')) }} mr-1.5 text-xs"></i>
-                                        {{ ucfirst($activity->status) }}
-                                    </span>
-                                    </div>
-                                    <p class="text-sm text-slate-600 mt-1">{{ $activity->description }}</p>
-                                </div>
-                                <span class="text-sm text-slate-500 flex items-center">
-                                <i class="fa-regular fa-clock mr-1.5"></i>
-                                {{ $activity->created_at->format('M d, Y H:i A') }}
-                            </span>
-                            </div>
+                    <!-- Dynamic Activity Component -->
+                    <x-activity-renderer :activity="$activity" :loop="$loop" />
 
-                            <div class="mt-4 flex items-center justify-between">
-                                <div class="flex items-center gap-6">
-                                    @if($activity->amount)
-                                        <div class="flex items-center text-slate-700">
-                                            <i class="fa-solid fa-coins mr-2 text-amber-500"></i>
-                                            <span class="font-medium">
-                                            {{ number_format($activity->amount, 8) }}
-                                        </span>
-                                            <span class="text-slate-500 ml-1">{{ $activity->currency_symbol }}</span>
-                                        </div>
-                                    @endif
-
-                                    <div class="flex items-center text-slate-600">
-                                        <i class="fa-solid fa-hashtag mr-2 text-blue-500"></i>
-                                        <span>{{ $activity->reference_number }}</span>
-                                    </div>
-
-                                    @if($activity->metadata)
-                                        <div class="flex items-center text-slate-600">
-                                            @if(isset($activity->metadata['fee']))
-                                                <i class="fa-solid fa-receipt mr-2 text-purple-500"></i>
-                                                <span>Fee: {{ number_format($activity->metadata['fee'], 8) }} {{ $activity->currency_symbol }}</span>
-
-                                            @elseif(isset($activity->metadata['network_fee']) && $activity->metadata['network_fee'])
-                                                <i class="fa-solid fa-receipt mr-2 text-purple-500"></i>
-                                                <span>Network Fee: {{ number_format($activity->metadata['network_fee'], 8) }} {{ $activity->currency_symbol }}</span>
-                                            @endif
-
-
-                                        </div>
-                                        <div class="flex items-center text-slate-600">
-                                            @if(isset($activity->metadata['exchange_rate']))
-                                                <i class="fa-solid fa-exchange-alt mr-2 text-green-500"></i>
-                                                <span>Rate: {{ number_format($activity->metadata['exchange_rate'], 8) }}</span>
-                                            @endif
-                                        </div>
-
-                                    @endif
-                                </div>
-
-                                <a href="{{ $activity->route }}"
-                                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700
-                                bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200">
-                                    <span>View Details</span>
-                                    <i class="fa-solid fa-arrow-right ml-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 @empty
                     <div class="p-12 text-center">
                         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">

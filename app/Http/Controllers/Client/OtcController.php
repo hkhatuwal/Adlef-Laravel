@@ -22,7 +22,7 @@ class OtcController extends Controller
 
     public function index()
     {
-        $currencies = Currency::all();
+        $currencies = Currency::where('active', true)->get();
         return view('client.otc.index', compact('currencies'));
     }
 
@@ -34,8 +34,15 @@ class OtcController extends Controller
             'to_currency' => 'required|exists:currencies,id'
         ]);
 
-        $fromCurrency = Currency::find($request->get('from_currency'));
-        $toCurrency = Currency::find($request->get('to_currency'));
+        $fromCurrency = Currency::where('active', true)->find($request->get('from_currency'));
+        $toCurrency = Currency::where('active', true)->find($request->get('to_currency'));
+
+        if (!$fromCurrency || !$toCurrency) {
+            return response()->json([
+                'success' => false,
+                'message' => 'One or more selected currencies are not active'
+            ], 400);
+        }
 
         return response()->json([
             'success' => true,
@@ -57,8 +64,12 @@ class OtcController extends Controller
             'terms' => 'accepted',
         ]);
 
-        $fromCurrency = Currency::find($request->get('from_currency'));
-        $toCurrency = Currency::find($request->get('to_currency'));
+        $fromCurrency = Currency::where('active', true)->find($request->get('from_currency'));
+        $toCurrency = Currency::where('active', true)->find($request->get('to_currency'));
+
+        if (!$fromCurrency || !$toCurrency) {
+            return redirect()->back()->with('error', 'One or more selected currencies are not active');
+        }
 
         // Calculate exchange details using new AssetOperations
         $calculation = $this->assetOperations->calculateOtcTransferDetails(
@@ -67,9 +78,19 @@ class OtcController extends Controller
             to: $toCurrency,
             user: $request->user()
         );
-        $fromAccount=AssetAccount::query()->where('user_id', auth()->user()->id)->where('currency_id', $fromCurrency->id)->first();
+        $fromAccount = AssetAccount::query()
+            ->where('user_id', $request->user()->id)
+            ->where('currency_id', $fromCurrency->id)
+            ->whereHas('currency', function($query) {
+                $query->where('active', true);
+            })
+            ->first();
 
-        if ($fromAccount->balance<$request->get('from_amount')+$calculation['fee']) {
+        if (!$fromAccount) {
+            return redirect()->back()->with('error', 'Asset account not found or currency is not active');
+        }
+
+        if ($fromAccount->balance < $request->get('from_amount')) {
             // Check if user has sufficient balance
             return redirect()->back()->with('error', 'Insufficient balance');
         }
@@ -87,10 +108,14 @@ class OtcController extends Controller
                 'transaction_cost' => $calculation['otc_cost'],
                 'network_fee' => $calculation['fee'],
                 'status' => 'pending',
-                'reference_number' => Str::uuid()
+                'reference_number' => Str::random()
             ]);
 
-            $fromAccount->balance=$fromAccount->balance-($request->get('from_amount')+$calculation['fee']);
+            $otcRequest->update([
+                "reference_number"=> "OTCREF".$otcRequest->id."AD"
+            ]);
+
+            $fromAccount->balance=$fromAccount->balance-($request->get('from_amount'));
             $fromAccount->save();
             // Here you would typically:
             // 1. Check if user has sufficient balance
@@ -103,6 +128,7 @@ class OtcController extends Controller
             return redirect()->route('client.otc.success', ['id' => $otcRequest->id])->with('success', 'OTC exchange completed successfully');
 
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to process OTC request. Please try again.');
         }
@@ -139,8 +165,16 @@ class OtcController extends Controller
             'to_currency' => 'required|exists:currencies,id'
         ]);
 
-        $fromCurrency = Currency::find($request->get('from_currency'));
-        $toCurrency = Currency::find($request->get('to_currency'));
+        $fromCurrency = Currency::where('active', true)->find($request->get('from_currency'));
+        $toCurrency = Currency::where('active', true)->find($request->get('to_currency'));
+
+        if (!$fromCurrency || !$toCurrency) {
+            return response()->json([
+                'success' => false,
+                'message' => "One or more selected currencies are not active"
+            ], 403);
+        }
+
         if ($fromCurrency->type == "fiat" && $fromCurrency->symbol != 'USD' && $toCurrency->type != "fiat") {
             return response()->json([
                 'success' => false,

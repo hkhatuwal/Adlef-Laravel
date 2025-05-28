@@ -14,6 +14,7 @@ class Company extends Model
         'email',
         'contact',
         'relationship',
+        'business_activity',
         'registration_proof',
         'third_party_account_id'
     ];

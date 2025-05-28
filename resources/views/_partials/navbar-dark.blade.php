@@ -26,16 +26,32 @@
                         <ul class="py-2">
                             <li class="px-4 py-2 text-sm text-white hover:bg-gray-600 " ><a href="{{route('frontend.about')}}">About Us</a></li>
                             <li class="px-4 py-2 text-sm text-white hover:bg-gray-600"><a href="{{route('frontend.careers')}}">Careers</a></li>
-                            <li class="px-4 py-2 text-sm text-white hover:bg-gray-600"><a href="">Get in touch</a></li>
+                            <li class="px-4 py-2 text-sm text-white hover:bg-gray-600"><a href="{{route('frontend.contact-us')}}">Get in touch</a></li>
                         </ul>
                     </div>
                 </div>
             </li>
             <li>
-                <button class="px-8 py-3  md:block text-white border border-white">Client Login</button>
+                @if(auth()->check())
+                    <a href="{{route('client.client-logout')}}">
+                        <button class="px-8 py-3  md:block text-white border border-white">Log Out</button>
+                    </a>
+                @else
+                    <a href="{{route('client-login')}}">
+                        <button class="px-8 py-3  md:block text-white border border-white">Client Login</button>
+                    </a>
+                @endif
             </li>
             <li>
-                <button class="btn-secondary  md:block">Become a Client</button>
+                @if(!auth()->check())
+                <a href="{{route('client-registration')}}">
+                    <button class="btn-secondary  md:block">Become a Client</button>
+                </a>
+                @else
+                    <a href="{{route('client.dashboard')}}">
+                        <button class="btn-secondary">Client Dashboard</button>
+                    </a>
+                @endif
             </li>
         </ul>
     </div>

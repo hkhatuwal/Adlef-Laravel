@@ -72,5 +72,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'store'])->name('settings.store');
         Route::post('settings/create', [\App\Http\Controllers\Admin\SettingController::class, 'createSetting'])->name('settings.create');
+
+        // Help Center Routes
+        Route::get('help-center', [\App\Http\Controllers\Admin\HelpCenterController::class, 'index'])->name('help-center.index');
+        Route::get('help-center/{helpRequest}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'show'])->name('help-center.show');
+        Route::put('help-center/{helpRequest}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'update'])->name('help-center.update');
+        
+        // Help Center Categories Routes
+        Route::get('help-center-categories', [\App\Http\Controllers\Admin\HelpCenterController::class, 'categories'])->name('help-center.categories');
+        Route::post('help-center-categories', [\App\Http\Controllers\Admin\HelpCenterController::class, 'storeCategory'])->name('help-center.categories.store');
+        Route::put('help-center-categories/{category}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'updateCategory'])->name('help-center.categories.update');
+        Route::delete('help-center-categories/{category}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'destroyCategory'])->name('help-center.categories.destroy');
     });
 });

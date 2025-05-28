@@ -23,7 +23,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Network</label>
                 <select  name="network" class="w-full border rounded-lg px-3 py-2 select2" required>
                     <option value="">Select Network</option>
-                    @foreach (\App\Models\Currency::all() as $currency)
+                    @foreach (\App\Models\Currency::where(['active'=>true,'type'=>\App\Models\Currency::TYPE_CRYPTO])->get() as $currency)
                         <option value="{{ $currency->id }}" data-icon="{{asset("storage/".$currency->icon)}}" class='currency-icon'>
                             {{ $currency->name }}
                         </option>

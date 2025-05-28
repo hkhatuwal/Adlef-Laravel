@@ -25,7 +25,7 @@
                             <div class="text-2xl font-bold text-gray-900">
                                 {{ number_format($otcRequest->from_amount, 8) }}
                             </div>
-                            <div class="text-lg font-semibold text-indigo-600">
+                            <div class="text-lg font-semibold text-gray-600">
                                 {{ $otcRequest->fromCurrency->symbol }}
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <div class="text-2xl font-bold text-gray-900">
                                 {{ number_format($otcRequest->to_amount, 8) }}
                             </div>
-                            <div class="text-lg font-semibold text-indigo-600">
+                            <div class="text-lg font-semibold text-gray-600">
                                 {{ $otcRequest->toCurrency->symbol }}
                             </div>
                         </div>
@@ -80,11 +80,11 @@
             <!-- Action Buttons -->
             <div class="mt-8 flex justify-center space-x-4">
                 <a href="{{ route('client.otc.index') }}"
-                   class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                   class="inline-flex items-center px-5 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-150">
                     New Exchange
                 </a>
                 <a href="{{route('client.activities.index')}}"
-                   class="inline-flex items-center px-5 py-2.5 border border-gray-200 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                   class="inline-flex items-center px-5 py-2.5 border border-gray-200 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-150">
                     View History
                 </a>
             </div>

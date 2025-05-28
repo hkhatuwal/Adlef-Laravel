@@ -114,7 +114,7 @@ class AssetOperations
 
         return [
             'original_amount' => round($amount, 2),
-            'converted_amount' => round($convertedAmount, 2),
+            'converted_amount' => round($convertedAmount, 2)-$transferCost,
             'fee' => round($commission, 2),
             'otc_cost'=>$transferCost,
             'commission_rate' => $user ? $this->getCommissionRate($user, $to) : 0,

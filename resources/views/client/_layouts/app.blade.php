@@ -55,7 +55,7 @@
 </head>
 
 
-<body class=" antialiased bg-gray-100">
+<body class=" antialiased bg-gray-100 poppins-medium">
 <div class="min-h-screen">
     <!-- Sidebar -->
     @if(!$hideSidebar)
@@ -134,7 +134,6 @@
 <script src="{{asset("assets/js/script.js")}}"></script>
 <script src="{{asset("common/js/script.js")}}"></script>
 
-{{--<script src="https://kit.fontawesome.com/6494bc34f7.js" crossorigin="anonymous"></script>--}}
 
 @yield('post-script')
 

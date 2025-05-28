@@ -3,22 +3,22 @@
 @section('content')
     <div class="max-w-xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">
+            <h2 class="text-2xl font-bold text-black">
                 Currency Exchange
             </h2>
-            <p class="mt-2 text-sm text-gray-500">
+            <p class="mt-2 text-sm text-gray-600">
                 Exchange your digital assets instantly
             </p>
         </div>
 
         <form action="{{ route('client.otc.confirm') }}" method="POST"
-              class="bg-white rounded-lg shadow-sm border border-gray-100 " id="exchange-form">
+              class="bg-white rounded-lg shadow-sm border border-gray-300 " id="exchange-form">
             @csrf
             <div class="p-4">
                 <!-- You Pay Section -->
                 <div class="mb-4 car">
                     <div class="flex bg-white h-28 items-start rounded-md flex-col justify-center card shadow-lg p-2">
-                        <label class="text-xs w-full h-10 flex items-center font-semibold text-gray-500   p-2">YOU
+                        <label class="text-xs w-full h-10 flex items-center font-semibold text-gray-700   p-2">YOU
                             PAY</label>
                         <div class="flex flex-row w-full bg-white justify-between items-center px-3 py-2 relative">
                             <input id="fromAmount" name="from_amount"
@@ -37,7 +37,7 @@
                                        placeholder="Search currency...">
                                 <ul class="currency-list pay-currency-list max-h-48 overflow-y-auto">
                                     @foreach($currencies as $currency)
-                                        <li class="currency-item flex items-center p-1.5 hover:bg-gray-100 cursor-pointer text-sm"
+                                        <li class="currency-item flex items-center p-1.5 hover:bg-gray-200 cursor-pointer text-sm"
                                             data-balance="{{$currency->getMyAssetAccount()->balance}}"
                                             data-type="pay-currency"
                                             data-currency_type="{{$currency->type}}"
@@ -51,8 +51,8 @@
                             </div>
                         </div>
                         <div class="balance-info flex items-center justify-between px-3 py-1  text-xs w-full ">
-                            <span class="text-gray-500">Available Balance</span>
-                            <span class="available-balance font-medium text-gray-900"
+                            <span class="text-gray-600">Available Balance</span>
+                            <span class="available-balance font-medium text-black"
                                   id="availableBalance">$ 0.00</span>
                         </div>
                     </div>
@@ -61,12 +61,12 @@
                 <!-- Exchange Icon -->
                 <div class="exchange-icon-wrapper relative my-4">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-200"></div>
+                        <div class="w-full border-t border-gray-300"></div>
                     </div>
                     <div class="relative flex justify-center">
                         <button type="button"
-                                class="switch-currencies-btn inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
+                                class="switch-currencies-btn inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
@@ -78,7 +78,7 @@
                 <!-- You Receive Section -->
                 <div class="mb-4">
                     <div class="flex bg-white h-28 items-start rounded-md flex-col justify-center card p-2">
-                        <label class="text-xs w-full h-6 flex items-center font-semibold text-gray-500 bg-white p-2">YOU
+                        <label class="text-xs w-full h-6 flex items-center font-semibold text-gray-700 bg-white p-2">YOU
                             RECEIVE</label>
                         <div class="flex flex-row w-full bg-white justify-between items-center px-3 py-2 relative">
                             <input id="toAmount" name="to_amount"
@@ -97,7 +97,7 @@
                                        placeholder="Search currency...">
                                 <ul class="currency-list receive-currency-list max-h-48 overflow-y-auto">
                                     @foreach($currencies as $currency)
-                                        <li class="currency-item flex items-center p-1.5 hover:bg-gray-100 cursor-pointer text-sm"
+                                        <li class="currency-item flex items-center p-1.5 hover:bg-gray-200 cursor-pointer text-sm"
                                             data-value="{{$currency->id}}"  data-type="receive">
                                             <img src="{{ asset('storage/'.$currency->icon) }}"
                                                  class="currency-icon w-5 h-5 mr-2">
@@ -107,21 +107,21 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="px-3 py-1 text-xs bg-gray-50 text-gray-500">
+                        <div class="px-3 py-1 text-xs bg-gray-100 text-gray-600">
                             Estimated amount
                         </div>
                     </div>
                 </div>
 
                 <!-- Exchange Info -->
-                <div class="bg-gray-50 rounded-lg p-3 space-y-1.5 text-xs">
+                <div class="bg-gray-100 rounded-lg p-3 space-y-1.5 text-xs">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Exchange Rate</span>
-                        <span class="exchange-rate font-medium text-gray-900" id="exchangeRate">-</span>
+                        <span class="text-gray-600">Exchange Rate</span>
+                        <span class="exchange-rate font-medium text-black" id="exchangeRate">-</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Network Fee</span>
-                        <span class="network-fee font-medium text-gray-900" id="networkFee">N/A</span>
+                        <span class="text-gray-600">Network Fee</span>
+                        <span class="network-fee font-medium text-black" id="networkFee">N/A</span>
                     </div>
                 </div>
 
@@ -129,16 +129,16 @@
                 <div class="mt-4 space-y-4">
                     <div class="flex items-center">
                         <input type="checkbox" id="terms" name="terms"
-                               class="terms-checkbox h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                               class="terms-checkbox h-4 w-4 rounded border-gray-300 text-black focus:ring-gray-500"
                                required>
-                        <label for="terms" class="ml-2 text-xs text-gray-500">
-                            I agree to the <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Terms and
+                        <label for="terms" class="ml-2 text-xs text-gray-600">
+                            I agree to the <a href="#" class="font-medium text-black hover:text-gray-700">Terms and
                                 Conditions</a>
                         </label>
                     </div>
 
                     @if ($errors->any())
-                        <div class="bg-red-50 text-red-500 p-3 rounded-lg text-xs">
+                        <div class="bg-gray-100 text-black p-3 rounded-lg text-xs border border-gray-300">
                             <ul class="list-disc list-inside">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -148,13 +148,13 @@
                     @endif
 
                     @if (session('success'))
-                        <div class="bg-green-50 text-green-500 p-3 rounded-lg text-xs">
+                        <div class="bg-gray-100 text-black p-3 rounded-lg text-xs border border-gray-300">
                             {{ session('success') }}
                         </div>
                     @endif
 
                     <button type="submit"
-                            class="confirm-exchange-btn w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            class="confirm-exchange-btn w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                             disabled>
                         Confirm Exchange
                     </button>

@@ -27,6 +27,8 @@ class AccountController extends Controller
             "account_number" => $request->get('account_number'),
             "shortcode" => $request->get('shortcode'),
             "branch_code" => $request->get('branch_code'),
+            "country" => $request->get('bank_country'),
+            "address" => $request->get('bank_address'),
             "user_id" => auth()->user()->id,
         ]);
 
@@ -70,9 +72,12 @@ class AccountController extends Controller
             ->with(['thirdPartyAccount'])
             ->get();
 
+
         $cryptoWallets = $user->cryptoWallets()
             ->with('currency')
             ->get();
+
+
 
         return view('client.account.index', compact('ownAccounts', 'thirdPartyAccounts', 'cryptoWallets'));
     }
@@ -88,6 +93,7 @@ class AccountController extends Controller
             "contact" => $request->get('first_name'),
             "country_of_origin" => $request->get('country_of_birth'),
             "relationship" => $request->get('counterparty_relationship'),
+            "business_activity" => $request->get('business_activity'),
             "document_id_number" => $request->get('document_number'),
             "document_issued_country" => $request->get('document_country'),
             "document_url" => $request->get('id_proof_path'),
@@ -106,6 +112,7 @@ class AccountController extends Controller
             "registration_number" => $request->get('registration_number'),
             "email" => $request->get('email'),
             "contact" => $request->get('phone'),
+            "business_activity" => $request->get('business_activity'),
             "relationship" => $request->get('counterparty_relationship'),
             "registration_proof" => $request->get('company_document_proof_path'),
             "third_party_account_id" => $bank->id,

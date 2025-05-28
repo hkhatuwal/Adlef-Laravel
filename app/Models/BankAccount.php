@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BankAccount extends Model
 {
@@ -35,9 +36,9 @@ class BankAccount extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function thirdPartyAccount(): BelongsTo
+    public function thirdPartyAccount(): HasOne
     {
-        return $this->belongsTo(ThirdPartyAccount::class);
+        return $this->hasOne(ThirdPartyAccount::class);
     }
 
 

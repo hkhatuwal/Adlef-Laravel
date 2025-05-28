@@ -75,6 +75,23 @@
                             <input type="text" name="swift_code" id="swift_code" required>
                             <p class="mt-1 text-sm text-red-600 hidden"></p>
                         </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Bank Country</label>
+                            <select name="bank_country" id="bank_country" class="select2" required>
+                                <option value="">Select Country</option>
+                                @foreach(config('constants.country_code_with_name') as $code=>$country)
+                                    <option value="{{$country}}" @selected(old('bank_country') == $country)>{{$country}}</option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-sm text-red-600 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Bank Address</label>
+                            <textarea name="bank_address" id="bank_address" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent resize-none" placeholder="Enter complete bank address" required></textarea>
+                            <p class="mt-1 text-sm text-red-600 hidden"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -165,6 +182,33 @@
                                 </div>
 
                                 <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Business Activity</label>
+                                    <select name="business_activity" id="business_activity" class="select2" required>
+                                        <option value="">Select Business Activity</option>
+                                        <option value="agriculture">Agriculture & Farming</option>
+                                        <option value="automotive">Automotive</option>
+                                        <option value="banking">Banking & Finance</option>
+                                        <option value="construction">Construction</option>
+                                        <option value="consulting">Consulting Services</option>
+                                        <option value="education">Education</option>
+                                        <option value="energy">Energy & Utilities</option>
+                                        <option value="entertainment">Entertainment & Media</option>
+                                        <option value="food_beverage">Food & Beverage</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="hospitality">Hospitality & Tourism</option>
+                                        <option value="insurance">Insurance</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                        <option value="real_estate">Real Estate</option>
+                                        <option value="retail">Retail & E-commerce</option>
+                                        <option value="technology">Technology & IT</option>
+                                        <option value="telecommunications">Telecommunications</option>
+                                        <option value="transportation">Transportation & Logistics</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <p class="mt-1 text-sm text-red-600 hidden"></p>
+                                </div>
+
+                                <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Upload Id Proof</label>
                                     @include('_components.file_picker',['id'=>'id_proof'])
                                 </div>
@@ -181,9 +225,10 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Registration
                                         Country</label>
                                     <select name="registration_country" id="registration_country" class="select2" required>
-                                        <option value="">Select Country</option>
-                                        <option value="US">United States</option>
-                                        <option value="UK">United Kingdom</option>
+                                        @foreach(config('constants.country_code_with_name') as $code=>$country)
+                                            <option
+                                                value="{{$country}}" @selected(old('registration_country') == $country)>{{$country}}</option>
+                                        @endforeach
                                     </select>
                                     <p class="mt-1 text-sm text-red-600 hidden"></p>
                                 </div>
@@ -198,6 +243,33 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-2">Registration
                                         Number</label>
                                     <input type="text" name="registration_number" id="registration_number" required>
+                                    <p class="mt-1 text-sm text-red-600 hidden"></p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Business Activity</label>
+                                    <select name="business_activity" id="business_activity_company" class="select2" required>
+                                        <option value="">Select Business Activity</option>
+                                        <option value="agriculture">Agriculture & Farming</option>
+                                        <option value="automotive">Automotive</option>
+                                        <option value="banking">Banking & Finance</option>
+                                        <option value="construction">Construction</option>
+                                        <option value="consulting">Consulting Services</option>
+                                        <option value="education">Education</option>
+                                        <option value="energy">Energy & Utilities</option>
+                                        <option value="entertainment">Entertainment & Media</option>
+                                        <option value="food_beverage">Food & Beverage</option>
+                                        <option value="healthcare">Healthcare</option>
+                                        <option value="hospitality">Hospitality & Tourism</option>
+                                        <option value="insurance">Insurance</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                        <option value="real_estate">Real Estate</option>
+                                        <option value="retail">Retail & E-commerce</option>
+                                        <option value="technology">Technology & IT</option>
+                                        <option value="telecommunications">Telecommunications</option>
+                                        <option value="transportation">Transportation & Logistics</option>
+                                        <option value="other">Other</option>
+                                    </select>
                                     <p class="mt-1 text-sm text-red-600 hidden"></p>
                                 </div>
 
@@ -355,6 +427,38 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-600 mb-2">Bank Country</p>
+                                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                                            <p class=" text-lg text-gray-800" id="review-bank-country"></p>
+                                            <button type="button" onclick="copyToClipboard('review-bank-country')"
+                                                    class="text-gray-600 hover:text-gray-800 transition-colors copy-btn">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                     viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-600 mb-2">Bank Address</p>
+                                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                                            <p class=" text-lg text-gray-800" id="review-bank-address"></p>
+                                            <button type="button" onclick="copyToClipboard('review-bank-address')"
+                                                    class="text-gray-600 hover:text-gray-800 transition-colors copy-btn">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                     viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -492,6 +596,22 @@
                                                          viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                               stroke-width="2"
+                                                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600 mb-2">Business Activity</p>
+                                            <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                                                <p class=" text-lg text-gray-800" id="review-business_activity"></p>
+                                                <button type="button" onclick="copyToClipboard('review-business_activity')"
+                                                        class="text-gray-600 hover:text-gray-800 transition-colors copy-btn">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                         viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                              stroke-width="2"
                                                               d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                                                     </svg>
                                                 </button>
@@ -549,6 +669,21 @@
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600 mb-2">Business Activity</p>
+                                            <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                                                <p class=" text-lg text-gray-800" id="review-business_activity_company"></p>
+                                                <button type="button" onclick="copyToClipboard('review-business_activity_company')"
+                                                        class="text-gray-600 hover:text-gray-800 transition-colors copy-btn">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                         viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                              stroke-width="2"
+                                                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <div>
                                             <p class="text-sm font-medium text-gray-600 mb-2">Relationship</p>
                                             <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
@@ -771,6 +906,8 @@
                 $('#review-bank-name').text($('#bank_name').val());
                 $('#review-account-number').text($('#account_number').val());
                 $('#review-swift-code').text($('#swift_code').val());
+                $('#review-bank-country').text($('#bank_country option:selected').text());
+                $('#review-bank-address').text($('#bank_address').val());
 
                 // Personal/Company Info
                 const thirdPartyType = $('input[name="third_party_type"]').val();
@@ -787,6 +924,7 @@
                     $('#review-document_number').text($('#document_number').val());
                     $('#review-document_country').text($('#document_country option:selected').text());
                     $('#review-document_proof').text($('#id_proof')[0].files[0].name);
+                    $('#review-business_activity').text($('#business_activity option:selected').text());
                 } else {
                     // Company Information
                     $('#review-company-name').text($('#company_name').val());
@@ -803,6 +941,7 @@
 
                     // Counterparty Relationship
                     $('#review-counterparty-relationship').text($('#counterparty_relationship option:selected').text());
+                    $('#review-business_activity_company').text($('#business_activity_company option:selected').text());
                 }
 
                 // Address

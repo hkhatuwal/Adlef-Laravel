@@ -20,6 +20,7 @@ class Individual extends Model
         'document_id_number',
         'document_issued_country',
         'document_url',
+        'business_activity',
         'third_party_account_id'
     ];
 

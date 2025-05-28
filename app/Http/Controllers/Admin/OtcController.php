@@ -57,13 +57,13 @@ class OtcController extends Controller
         $fromAccount=AssetAccount::query()->where('user_id', $otc->user_id)->where('currency_id', $otc->from_currency_id)->first();
 
 
-        if ($feeDifference>0){
-            $fromAccount->update([
-                'balance' => $fromAccount->balance - $feeDifference
-            ]);
-        }
+//        if ($feeDifference>0){
+//            $toAccount->update([
+//                'balance' => $fromAccount->balance - $feeDifference
+//            ]);
+//        }
 
-        $toAccount->balance=$toAccount->balance+$otc->to_amount;
+        $toAccount->balance=$toAccount->balance+$otc->to_amount-$feeDifference;
         $toAccount->save();
 
         // Send notification to user
@@ -79,7 +79,7 @@ class OtcController extends Controller
                     'from_currency' => $otc->fromCurrency->symbol,
                     'to_currency' => $otc->toCurrency->symbol,
                     'from_amount' => $otc->from_amount,
-                    'to_amount' => $otc->to_amount,
+                    'to_amount' => $otc->to_amount-($feeDifference),
                     'network_fee' => $otc->network_fee,
                     'processed_at' => now()->format('Y-m-d H:i:s'),
                     'processed_by' => Auth::user()->name

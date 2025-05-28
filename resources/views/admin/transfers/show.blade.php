@@ -51,7 +51,7 @@
                    'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400')) }}">
                 <i class="material-symbols-outlined text-[20px] mr-2">
                     {{ $transfer->status === 'completed' ? 'check_circle' :
-                       ($transfer->status === 'failed' ? 'error' : 
+                       ($transfer->status === 'failed' ? 'error' :
                        ($transfer->status === 'hold' ? 'pause_circle' : 'pending')) }}
                 </i>
                 {{ ucfirst($transfer->status) }}
@@ -75,6 +75,67 @@
                 <i class="material-symbols-outlined text-red-500 mr-2">error</i>
                 <p class="text-red-600 dark:text-red-400">{{ session('error') }}</p>
             </div>
+        </div>
+    @endif
+
+    <!-- Invoice Requested Alert -->
+    @if($transfer->invoice_requested)
+        <div class="mb-6 relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-700/50 rounded-xl shadow-sm">
+            <!-- Animated background pattern -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 dark:from-blue-400/10 dark:to-indigo-400/10"></div>
+
+            <!-- Alert content -->
+            <div class="relative p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                        <!-- Icon container with pulse animation -->
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                <i class="material-symbols-outlined text-white text-2xl">receipt_long</i>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Invoice Requested</h4>
+
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-4">
+                                The user <strong>{{ $transfer->user->name }}</strong> has requested an invoice for this transfer.
+                                Generate and send the invoice to complete the documentation process.
+                            </p>
+
+                            <!-- Transfer details summary -->
+                            <div class="bg-white/60 dark:bg-slate-800/60 rounded-lg p-3 mb-4 border border-blue-100 dark:border-blue-800/50">
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-slate-500 dark:text-slate-400">Amount:</span>
+                                        <span class="font-medium text-slate-900 dark:text-white ml-1">
+                                            {{ number_format($transfer->amount, 8) }} {{ $transfer->currency->symbol }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500 dark:text-slate-400">Reference:</span>
+                                        <span class="font-medium text-slate-900 dark:text-white ml-1">{{ $transfer->reference_number }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-500 dark:text-slate-400">Date:</span>
+                                        <span class="font-medium text-slate-900 dark:text-white ml-1">{{ $transfer->created_at->format('M d, Y') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action buttons -->
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Bottom accent line -->
+            <div class="h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
         </div>
     @endif
 

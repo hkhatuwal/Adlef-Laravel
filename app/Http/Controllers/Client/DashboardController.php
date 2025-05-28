@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssetAccount;
+use App\Models\Currency;
 use App\Models\UserActivity;
 use App\Utils\AssetOperations;
 use App\Utils\CurrencyCalculator;
@@ -26,10 +27,17 @@ class DashboardController extends Controller
         // Get user's asset accounts with their currencies
         $assetAccounts = AssetAccount::with('currency')
             ->where('user_id', $user->id)
+            ->whereHas('currency', function($query) {
+                $query->where('active', 1);
+            })
             ->get();
 
         // Calculate portfolio statistics
-        $totalValue = $assetAccounts->sum('balance');
+        $currencyCalculator = new \App\Utils\CurrencyConverter();
+        $totalValue = $assetAccounts->reduce(function ($carry, $account) use ($currencyCalculator) {
+            return $carry + $currencyCalculator->convertToUSD($account->balance, $account->currency);
+        }, 0);
+
         $assetClassesCount = $assetAccounts->groupBy('currency.type')->count();
 
         // Group assets by class (crypto/fiat)
@@ -40,7 +48,7 @@ class DashboardController extends Controller
                 $percentage = $totalValue > 0 ? ($value / $totalValue) * 100 : 0;
                 return [
                     'name' => ucfirst($type),
-                    'value' => $value,
+                    'value' => number_format($value,4),
                     'percentage' => round($percentage, 1),
                     'color' => $type === 'crypto' ? 'bg-purple-500' : 'bg-blue-500',
                     'icon' => $type === 'crypto' ? 'currency_bitcoin' : 'payments',
@@ -123,7 +131,7 @@ class DashboardController extends Controller
                     </div>
                 </div>',
                 // Balance column
-                '<div class="font-medium">'.number_format($account->balance, $currency->type === 'crypto' ? 8 : 2).' '.$currency->symbol.'</div>',
+                '<div class="font-medium">'.number_format($account->balance, $currency->type === 'crypto' ? 5 : 2).' '.$currency->symbol.'</div>',
                 // Value column
                 '<div class="font-medium">$'.number_format($this->assetOperations->convertToUSD($account->balance,$currency)['converted_amount']).'</div>',
                 // 24h Change column - You would calculate this based on historical data
@@ -139,8 +147,8 @@ class DashboardController extends Controller
             [
                 'title' => 'Activity',
                 'icon' => 'history',
-                'iconBg' => 'bg-indigo-50',
-                'iconColor' => 'text-indigo-600'
+                'iconBg' => 'bg-slate-50',
+                'iconColor' => 'text-slate-600'
             ],
             [
                 'title' => 'Amount',
@@ -198,7 +206,7 @@ class DashboardController extends Controller
                 // Activity type column
                 '<div class="flex items-center">
                     <span class="flex items-center justify-center w-8 h-8 rounded-lg '.$bgColorMap[$activity->activity_type].' '.$textColorMap[$activity->activity_type].' mr-3">
-                        <i class="material-symbols-outlined">'.$iconMap[$activity->activity_type].'</i>
+                        <i class="material-symbols-outlined text-slate-600">'.$iconMap[$activity->activity_type].'</i>
                     </span>
                     <div>
                         <div class="font-medium text-slate-900">'.str_replace('_', ' ', ucwords($activity->activity_type)).'</div>

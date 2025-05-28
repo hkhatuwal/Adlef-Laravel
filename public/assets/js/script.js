@@ -58,13 +58,13 @@ function showNotificationModal(notification) {
     document.getElementById('notification-title').textContent = notification.title;
     document.getElementById('notification-message').textContent = notification.message;
     document.getElementById('notification-time').textContent = notification.created_at;
-    
+
     // Set the appropriate icon based on notification type
     const iconContainer = document.getElementById('notification-icon');
-    
+
     // Clear previous icon classes
     iconContainer.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10';
-    
+
     // Add type-specific classes
     if (notification.type === 'success') {
         iconContainer.classList.add('bg-green-100');
@@ -79,20 +79,20 @@ function showNotificationModal(notification) {
         iconContainer.classList.add('bg-blue-100');
         iconContainer.innerHTML = '<i class="fas fa-info-circle text-blue-500"></i>';
     }
-    
+
     // Show the modal
     const modal = document.getElementById('notification-modal');
     modal.classList.remove('hidden');
-    
+
     // Prevent body scrolling when modal is open
     document.body.style.overflow = 'hidden';
-    
+
     // Add event listener to close button - only add it once
     const closeButton = document.getElementById('close-notification-modal');
     closeButton.onclick = function() {
         closeNotificationModal();
     };
-    
+
     // Close modal when clicking outside
     modal.onclick = function(event) {
         // If the click is directly on the modal (the backdrop), close it
@@ -740,7 +740,106 @@ $(document).ready(function () {
     calculateExchangeRate();
     // Select default currencies
     $('.currency-item:first').click();
-    $('.receive-currency-list li').eq(3).click();
+    $('.receive-currency-list li').eq(1).click();
 
 
+    window.copyAllInformation = function(event) {
+        let allInfo = "=== TRANSFER INFORMATION ===\n\n";
+
+        // Add amount and currency
+        const amountElement = document.querySelector('.bg-gray-50.rounded-lg.p-4.mb-6');
+        if (amountElement) {
+            const amountText = amountElement.textContent.replace(/\s+/g, ' ').trim();
+            allInfo += "TRANSFER DETAILS:\n";
+            allInfo += amountText.replace('Amount to Transfer:', 'Amount: ').replace('Currency:', '\nCurrency: ') + "\n\n";
+        }
+
+        // Add bank account details or wallet address
+        const depositAccounts = document.querySelectorAll('.bg-gray-50.rounded-lg.p-4.space-y-3, .flex.items-center.mb-3');
+
+        if (depositAccounts.length > 0) {
+            allInfo += "PAYMENT DETAILS:\n";
+
+            // For bank accounts (fiat)
+            const bankDetails = document.querySelectorAll('.bg-gray-50.rounded-lg.p-4.space-y-3');
+            bankDetails.forEach((detail, index) => {
+                const rows = detail.querySelectorAll('.flex.justify-between.items-center');
+                rows.forEach(row => {
+                    const label = row.querySelector('.text-gray-600');
+                    const value = row.querySelector('.text-gray-900');
+                    if (label && value) {
+                        allInfo += `${label.textContent.trim()} ${value.textContent.trim()}\n`;
+                    }
+                });
+                if (index < bankDetails.length - 1) allInfo += "\n";
+            });
+
+            // For wallet addresses (crypto)
+            const walletInputs = document.querySelectorAll('input[readonly]');
+            walletInputs.forEach((input, index) => {
+                const label = input.closest('div').previousElementSibling;
+                if (label && label.tagName === 'LABEL') {
+                    allInfo += `${label.textContent.trim()}: ${input.value}\n`;
+                } else {
+                    allInfo += `Wallet Address ${index + 1}: ${input.value}\n`;
+                }
+            });
+        }
+
+
+        // Add instructions
+        allInfo += "\n=== INSTRUCTIONS ===\n";
+        const instructionElement = document.querySelector('.bg-blue-50 .text-sm.text-blue-700');
+        if (instructionElement) {
+            allInfo += instructionElement.textContent.replace(/\s+/g, ' ').trim();
+        }
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(allInfo).then(function() {
+            // Show success message
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = `
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Copied!
+        `;
+            button.classList.remove('text-gray-700', 'bg-white', 'hover:bg-gray-50');
+            button.classList.add('text-green-700', 'bg-green-50', 'hover:bg-green-100');
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('text-green-700', 'bg-green-50', 'hover:bg-green-100');
+                button.classList.add('text-gray-700', 'bg-white', 'hover:bg-gray-50');
+            }, 3000);
+        }).catch(function(err) {
+            console.error('Could not copy text: ', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = allInfo;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            // Show success message
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = `
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Copied!
+        `;
+            button.classList.remove('text-gray-700', 'bg-white', 'hover:bg-gray-50');
+            button.classList.add('text-green-700', 'bg-green-50', 'hover:bg-green-100');
+
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('text-green-700', 'bg-green-50', 'hover:bg-green-100');
+                button.classList.add('text-gray-700', 'bg-white', 'hover:bg-gray-50');
+            }, 3000);
+        });
+    }
 });

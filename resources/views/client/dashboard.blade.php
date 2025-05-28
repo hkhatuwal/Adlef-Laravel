@@ -3,27 +3,27 @@
 @section('page-title', 'Asset Holdings')
 
 @section('content')
-    <div class="space-y-8 py-4">
+    <div class="space-y-6 py-3">
         <!-- Portfolio Overview Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Total Portfolio Value Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center justify-between mb-4">
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center">
-                    <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 mr-3">
-                        <i class="material-symbols-outlined text-xl">account_balance_wallet</i>
+                    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 mr-2">
+                        <i class="material-symbols-outlined text-lg">account_balance_wallet</i>
                     </span>
-                        <h3 class="text-sm font-medium text-slate-900">Portfolio Value</h3>
+                        <h3 class="text-xs font-medium text-slate-600">Portfolio Value</h3>
                     </div>
                     <span class="text-xs text-slate-500">Last updated {{ $portfolioStats['last_updated']->diffForHumans() }}</span>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-2xl font-bold text-slate-900">${{ number_format($portfolioStats['total_value'], 2) }}</span>
-                    <span class="ml-2 text-sm text-slate-500">USD</span>
+                    <span class="text-xl font-bold text-slate-700">${{ number_format($portfolioStats['total_value'], 2) }}</span>
+                    <span class="ml-2 text-xs text-slate-500">USD</span>
                 </div>
                 <div class="mt-2 flex items-center">
                 <span class="inline-flex items-center {{ $portfolioStats['total_change_24h'] >= 0 ? 'text-emerald-600' : 'text-red-600' }} text-sm">
-                    <i class="material-symbols-outlined text-base mr-1">{{ $portfolioStats['total_change_24h'] >= 0 ? 'trending_up' : 'trending_down' }}</i>
+                    <i class="material-symbols-outlined text-sm mr-1">{{ $portfolioStats['total_change_24h'] >= 0 ? 'trending_up' : 'trending_down' }}</i>
                     {{ abs($portfolioStats['total_change_24h_percentage']) }}%
                 </span>
                     <span class="text-xs text-slate-500 ml-2">24h change</span>
@@ -31,26 +31,25 @@
             </div>
 
             <!-- Asset Distribution Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-50 text-purple-600 mr-3">
-                    <i class="material-symbols-outlined text-xl">pie_chart</i>
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                <div class="flex items-center mb-3">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 mr-2">
+                    <i class="material-symbols-outlined text-lg">pie_chart</i>
                 </span>
-                    <h3 class="text-sm font-medium text-slate-900">Asset Distribution</h3>
+                    <h3 class="text-xs font-medium text-slate-600">Asset Distribution</h3>
                 </div>
-                <div class="space-y-3">
+                <div class="space-y-2">
                     @foreach($assetClasses as $class)
                         <div>
-                            <div class="flex items-center justify-between text-sm mb-1">
+                            <div class="flex items-center justify-between text-xs mb-1">
                                 <div class="flex items-center">
-                                    <i class="material-symbols-outlined text-base mr-2">{{ $class['icon'] }}</i>
-                                    <span class="font-medium text-slate-700">{{ $class['name'] }}</span>
+                                    <i class="material-symbols-outlined text-sm mr-1 text-slate-600">{{ $class['icon'] }}</i>
+                                    <span class="font-medium text-slate-600">{{ $class['name'] }}</span>
                                 </div>
                                 <span class="text-slate-500">{{ $class['percentage'] }}%</span>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <span class="bg-blue-500 bg-purple-500"></span>
-                                <div class=" {{ $class['color'] }} h-1.5 rounded-full"
+                            <div class="w-full bg-slate-100 rounded-full h-1">
+                                <div class="bg-slate-400 h-1 rounded-full"
                                      style="width: {{ $class['percentage'] }}%"></div>
                             </div>
                         </div>
@@ -59,43 +58,43 @@
             </div>
 
             <!-- Quick Stats Cards -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 mr-3">
-                    <i class="material-symbols-outlined text-xl">analytics</i>
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                <div class="flex items-center mb-3">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 mr-2">
+                    <i class="material-symbols-outlined text-lg">analytics</i>
                 </span>
-                    <h3 class="text-sm font-medium text-slate-900">Portfolio Stats</h3>
+                    <h3 class="text-xs font-medium text-slate-600">Portfolio Stats</h3>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
                         <p class="text-xs text-slate-500">Asset Types</p>
-                        <p class="text-lg font-semibold text-slate-900">{{ $portfolioStats['asset_classes'] }}</p>
+                        <p class="text-lg font-semibold text-slate-700">{{ $portfolioStats['asset_classes'] }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-slate-500">Total Assets</p>
-                        <p class="text-lg font-semibold text-slate-900">{{ $portfolioStats['total_assets'] }}</p>
+                        <p class="text-lg font-semibold text-slate-700">{{ $portfolioStats['total_assets'] }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Quick Actions Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600 mr-3">
-                    <i class="material-symbols-outlined text-xl">bolt</i>
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                <div class="flex items-center mb-3">
+                <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 mr-2">
+                    <i class="material-symbols-outlined text-lg">bolt</i>
                 </span>
-                    <h3 class="text-sm font-medium text-slate-900">Quick Actions</h3>
+                    <h3 class="text-xs font-medium text-slate-600">Quick Actions</h3>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2">
                     <a href="{{route('client.transfer')}}"
-                       class="inline-flex items-center justify-center px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors">
-                        <i class="material-symbols-outlined text-base mr-2">add_circle</i>
-                        <span class="text-sm font-medium">Asset Transfer </span>
+                       class="inline-flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors">
+                        <i class="material-symbols-outlined text-sm mr-1">add_circle</i>
+                        <span class="text-xs font-medium">Asset Transfer</span>
                     </a>
                     <a href="{{route('client.otc.index')}}"
-                       class="inline-flex items-center justify-center px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors">
-                        <i class="material-symbols-outlined text-base mr-2">swap_horiz</i>
-                        <span class="text-sm font-medium">OTC</span>
+                       class="inline-flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors">
+                        <i class="material-symbols-outlined text-sm mr-1">swap_horiz</i>
+                        <span class="text-xs font-medium">OTC</span>
                     </a>
                 </div>
             </div>
@@ -103,9 +102,9 @@
 
         <!-- Assets Table Section -->
         <div>
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-slate-900">Your Assets</h2>
-                <p class="mt-1 text-sm text-slate-600">View and manage your asset holdings</p>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-slate-600">Your Assets</h2>
+                <p class="mt-1 text-xs text-slate-500">View and manage your asset holdings</p>
             </div>
 
             <x-table.data-table
@@ -120,9 +119,9 @@
 
         <!-- Recent Activities Section -->
         <div>
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-slate-900">Recent Activities</h2>
-                <p class="mt-1 text-sm text-slate-600">Track your recent transactions and activities</p>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold text-slate-600">Recent Activities</h2>
+                <p class="mt-1 text-xs text-slate-500">Track your recent transactions and activities</p>
             </div>
 
             <x-table.data-table

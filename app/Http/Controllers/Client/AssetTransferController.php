@@ -25,7 +25,7 @@ class AssetTransferController extends Controller
 
     public function index()
     {
-        $currencies = Currency::all();
+        $currencies = Currency::where('active', true)->get();
         return view('client.transfer.index', compact('currencies'));
     }
 
@@ -40,12 +40,18 @@ class AssetTransferController extends Controller
         // Get the currency ID from the request
         $currencyId = $request->query('currency_id');
 
+        // Get active currency IDs to filter accounts
+        $activeCurrencyIds = Currency::where('active', true)->pluck('id');
+
         // Get the asset account for the current user and selected currency
         $fromAccounts = $request->user()->bankAccounts;
 
         $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
-            ->with('currency')
+            ->whereIn('currency_id', $activeCurrencyIds)
+            ->with(['currency' => function($query) {
+                $query->where('active', true);
+            }])
             ->firstOrFail();
 
         $sourceOptions = config('constants.source_funds');
@@ -57,9 +63,16 @@ class AssetTransferController extends Controller
     {
         // Get user's bank accounts for the from account selection
         $currencyId = $request->query('currency_id');
+
+        // Get active currency IDs to filter accounts
+        $activeCurrencyIds = Currency::where('active', true)->pluck('id');
+
         $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
-            ->with('currency')
+            ->whereIn('currency_id', $activeCurrencyIds)
+            ->with(['currency' => function($query) {
+                $query->where('active', true);
+            }])
             ->firstOrFail();
 
         $isThirdParty = $request->has('third-party');
@@ -69,7 +82,9 @@ class AssetTransferController extends Controller
                 $toAccounts = $toAccounts->where('account_type', BankAccount::TYPE_THIRD_PARTY);
             }
         } else {
-            $toAccounts = $request->user()->cryptoWallets()->where('currency_id', $currencyId);
+            $toAccounts = $request->user()->cryptoWallets()
+                ->where('currency_id', $currencyId)
+                ->whereIn('currency_id', $activeCurrencyIds);
         }
 
         $toAccounts = $toAccounts->get();
@@ -109,7 +124,7 @@ class AssetTransferController extends Controller
                 ->with('error', 'Validation failed. Please check your inputs.');
         }
 
-        $currency = Currency::findOrFail($request->input('currency_id'));
+        $currency = Currency::where('active', true)->findOrFail($request->input('currency_id'));
         $transferDetails = $this->assetOperations->calculateTransferDetails(
             amount: $request->input('amount'),
             from: $currency,
@@ -132,7 +147,7 @@ class AssetTransferController extends Controller
             'user_id' => $request->user()->id,
         ]);
         $transfer->update([
-            'reference_number' => config('constants.reference_prefix').$request->user()->id.$transfer->id.config('constants.reference_suffix'),
+            'reference_number' => config('constants.reference_prefix').$transfer->id.config('constants.reference_suffix'),
         ]);
 
         return view('client.transfer.transfer-in-success', compact('transfer'));
@@ -166,7 +181,7 @@ class AssetTransferController extends Controller
                 ->with('error', 'Validation failed. Please check your inputs.');
         }
 
-        $currency = Currency::findOrFail($request->input('currency_id'));
+        $currency = Currency::where('active', true)->findOrFail($request->input('currency_id'));
         $transferDetails = $this->assetOperations->calculateTransferDetails(
             amount: $request->input('amount'),
             from: $currency,
@@ -191,7 +206,7 @@ class AssetTransferController extends Controller
                 'user_id' => $request->user()->id,
             ]);
             $transfer->update([
-                'reference_number' => config('constants.reference_prefix').$request->user()->id.$transfer->id.config('constants.reference_suffix'),
+                'reference_number' => config('constants.reference_prefix').$transfer->id.config('constants.reference_suffix'),
             ]);
             $fromAccount = AssetAccount::find($request->input('from_account'));
             $fromAccount->balance -= $transferDetails['total'];
@@ -226,7 +241,7 @@ class AssetTransferController extends Controller
             ], 422);
         }
 
-        $currency = Currency::findOrFail($request->currency_id);
+        $currency = Currency::where('active', true)->findOrFail($request->currency_id);
         $transferDetails = $this->assetOperations->calculateTransferDetails(
             amount: $request->amount,
             from: $currency,
@@ -234,7 +249,9 @@ class AssetTransferController extends Controller
             user: $request->user()
         );
 
-        $assetAccount=AssetAccount::where('user_id', $request->user()->id)->where('currency_id', $request->currency_id)->first();
+        $assetAccount = AssetAccount::where('user_id', $request->user()->id)
+            ->where('currency_id', $request->currency_id)
+            ->first();
         if ($transferDetails['total']>$assetAccount->balance){
             return  response()->json([
                 'success' => false,
@@ -258,5 +275,22 @@ class AssetTransferController extends Controller
         $transfer = AssetTransfer::find($id);
         $transfer->load(['currency', 'from_account', 'to_account']);
         return view('client.transfer.show', compact('transfer'));
+    }
+
+    public function requestInvoice(Request $request, $id)
+    {
+        $transfer = AssetTransfer::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        // Check if invoice is already requested
+        if ($transfer->invoice_requested) {
+            return redirect()->back()->with('info', 'Invoice has already been requested for this transfer.');
+        }
+
+        // Update the invoice_requested column to true
+        $transfer->update(['invoice_requested' => true]);
+        return view('client.transfer.transfer-in-success', compact('transfer'))->with('success', 'Invoice has been requested successfully. You will receive it shortly.');
+
     }
 }

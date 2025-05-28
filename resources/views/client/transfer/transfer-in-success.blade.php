@@ -1,10 +1,10 @@
 @extends('client._layouts.app')
 @section('content')
-    <div class="min-h-screen py-8">
+    <div class="min-h-screen py-8 bg-gray-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto">
                 <!-- Success Message -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                     <div class="text-center">
                         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -12,25 +12,25 @@
                                       d="M5 13l4 4L19 7"></path>
                             </svg>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Transfer Request Successful!</h2>
+                        <h2 class="text-2xl font-bold text-black mb-2">Transfer Request Successful!</h2>
                         <p class="text-gray-600">Your transfer request has been submitted successfully.</p>
                     </div>
                 </div>
 
                 <!-- Transfer Details -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Transfer Instructions</h3>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-black mb-4">Transfer Instructions</h3>
 
                     <!-- Amount Details -->
-                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="bg-gray-100 rounded-lg p-4 mb-6 border border-gray-200">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-gray-600">Amount to Transfer:</span>
+                            <span class="text-gray-700">Amount to Transfer:</span>
                             <span
-                                class="text-lg font-semibold text-gray-900">{{$transfer->currency->symbol}} {{ number_format($transfer->amount, 2) }}</span>
+                                class="text-lg font-semibold text-black">{{$transfer->currency->symbol}} {{ number_format($transfer->amount, 2) }}</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Currency:</span>
-                            <span class="text-gray-900">{{ $transfer->currency->name }}</span>
+                            <span class="text-gray-700">Currency:</span>
+                            <span class="text-black">{{ $transfer->currency->name }}</span>
                         </div>
                     </div>
 
@@ -44,15 +44,15 @@
                             @if($bankAccounts->isNotEmpty())
                                 @foreach($bankAccounts as $depositAccount)
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ $depositAccount->name }}</label>
-                                        <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                                        <label class="block text-sm font-medium text-black mb-2">{{ $depositAccount->name }}</label>
+                                        <div class="bg-gray-100 rounded-lg p-4 space-y-3 border border-gray-200">
                                             @foreach($depositAccount->fields as $field)
                                                 <div class="flex justify-between items-center">
-                                                    <span class="text-gray-600">{{ $field->field_name }}:</span>
+                                                    <span class="text-gray-700">{{ $field->field_name }}:</span>
                                                     <div class="flex items-center">
-                                                        <span class="text-gray-900" id="{{ $field->field_name }}">{{ $field->field_value }}</span>
+                                                        <span class="text-black" id="{{ $field->field_name }}">{{ $field->field_value }}</span>
                                                         <button onclick="copyToClipboard('{{ $field->field_name }}')"
-                                                                class="ml-2 text-blue-600 hover:text-blue-700">
+                                                                class="ml-2 text-gray-600 hover:text-black">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -62,11 +62,11 @@
                                                 </div>
                                             @endforeach
                                             <div class="flex justify-between items-center">
-                                                <span class="text-gray-600">Reference Number:</span>
+                                                <span class="text-gray-700">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <span class="text-black" id="reference_number">{{ $transfer->reference_number }}</span>
                                                     <button onclick="copyToClipboard('reference_number')"
-                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                            class="ml-2 text-gray-600 hover:text-black">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                   d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -87,13 +87,13 @@
                                         </div>
                                         <h3 class="text-lg font-medium text-yellow-800 mb-2">No Bank Accounts Available</h3>
                                         <p class="text-yellow-700 mb-4">Please contact the administrator to set up your bank account details for transfers.</p>
-                                        <div class="bg-white rounded-lg p-4 w-full max-w-md">
+                                        <div class="bg-white rounded-lg p-4 w-full max-w-md border border-gray-200">
                                             <div class="flex justify-between items-center">
-                                                <span class="text-gray-600">Reference Number:</span>
+                                                <span class="text-gray-700">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900 font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <span class="text-black font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
                                                     <button onclick="copyToClipboard('reference_number')"
-                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                            class="ml-2 text-gray-600 hover:text-black">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                   d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -117,13 +117,13 @@
                             @if($walletAccounts->isNotEmpty())
                                 @foreach($walletAccounts as $depositAccount)
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ $depositAccount->name }}</label>
+                                        <label class="block text-sm font-medium text-black mb-2">{{ $depositAccount->name }}</label>
                                         @foreach($depositAccount->fields as $field)
                                             <div class="flex items-center mb-3">
                                                 <input type="text" value="{{ $field->field_value }}" readonly
-                                                       class="flex-1 block w-full px-4 py-3 text-gray-700 bg-gray-100 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                                       class="flex-1 block w-full px-4 py-3 text-black bg-gray-100 border border-gray-300 rounded-lg focus:ring-gray-500 focus:border-gray-500">
                                                 <button onclick="copyToClipboard('{{ $field->field_value }}', '{{ $field->field_name }}')"
-                                                        class="ml-2 inline-flex items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                        class="ml-2 inline-flex items-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-black bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                                                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                               d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -144,13 +144,13 @@
                                         </div>
                                         <h3 class="text-lg font-medium text-yellow-800 mb-2">No Wallet Addresses Available</h3>
                                         <p class="text-yellow-700 mb-4">Please contact the administrator to set up your wallet addresses for transfers.</p>
-                                        <div class="bg-white rounded-lg p-4 w-full max-w-md">
+                                        <div class="bg-white rounded-lg p-4 w-full max-w-md border border-gray-200">
                                             <div class="flex justify-between items-center">
-                                                <span class="text-gray-600">Reference Number:</span>
+                                                <span class="text-gray-700">Reference Number:</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-gray-900 font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
+                                                    <span class="text-black font-medium" id="reference_number">{{ $transfer->reference_number }}</span>
                                                     <button onclick="copyToClipboard('reference_number')"
-                                                            class="ml-2 text-blue-600 hover:text-blue-700">
+                                                            class="ml-2 text-gray-600 hover:text-black">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                   d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
@@ -194,13 +194,44 @@
                     <!-- Action Buttons -->
                     <div class="mt-6 flex justify-between">
                         <a href="{{ route('client.transfer') }}"
-                           class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                           class="inline-flex items-center px-4 py-2 border border-gray-400 shadow-sm text-sm font-medium rounded-md text-black bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Back to Transfers
                         </a>
-                        <a href="{{ route('client.transfer.in',["currency_id"=>$transfer->currency_id]) }}"
-                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            New Transfer
-                        </a>
+                        <div class="flex space-x-3">
+                            <button onclick="copyAllInformation(event)"
+                                    class="inline-flex items-center px-4 py-2 border border-gray-400 shadow-sm text-sm font-medium rounded-md text-black bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                                Copy All Information
+                            </button>
+                            @if(!$transfer->invoice_requested)
+                                <form action="{{ route('client.transfer.request-invoice', $transfer->id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    <button type="submit"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        Request Invoice
+                                    </button>
+                                </form>
+                            @else
+                                <span class="inline-flex items-center px-4 py-2 border border-gray-400 text-sm font-medium rounded-md text-gray-600 bg-gray-200 cursor-not-allowed">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Invoice Requested
+                                </span>
+                            @endif
+                            <a href="{{ route('client.transfer.in',["currency_id"=>$transfer->currency_id]) }}"
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                New Transfer
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -78,6 +78,21 @@
                             required>
                     </div>
                 </div>
+                
+                <div class="mt-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <label for="active" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Enable or disable this currency</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="active" id="active" value="1" {{ old('active', '1') ? 'checked' : '' }}
+                                class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-indigo-600"></div>
+                            <span class="ml-3 text-sm font-medium text-slate-700 dark:text-slate-300">Active</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- Icon Upload -->

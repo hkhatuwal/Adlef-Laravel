@@ -158,6 +158,14 @@
                                     <p class="text-sm text-slate-900 dark:text-white">{{ $individual->relationship }}</p>
                                 </div>
 
+                                <!-- Business Activity Information -->
+                                @if($individual->business_activity)
+                                    <div>
+                                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Business Activity</h3>
+                                        <p class="text-sm text-slate-900 dark:text-white">{{ $individual->business_activity }}</p>
+                                    </div>
+                                @endif
+
                                 <!-- Address Information -->
                                 @if($individual->address)
                                     <div>
@@ -238,6 +246,14 @@
                                     <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Relationship</h3>
                                     <p class="text-sm text-slate-900 dark:text-white">{{ $company->relationship }}</p>
                                 </div>
+
+                                <!-- Business Activity Information -->
+                                @if($company->business_activity)
+                                    <div>
+                                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white mb-4">Business Activity</h3>
+                                        <p class="text-sm text-slate-900 dark:text-white">{{ $company->business_activity }}</p>
+                                    </div>
+                                @endif
 
                                 <!-- Address Information -->
                                 @if($company->address)

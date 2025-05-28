@@ -235,13 +235,22 @@ $(document).ready(function () {
 
     function updateNetworkFeeCalculations() {
         const amount = parseFloat($networkFeeInput.data('amount'));
+        const oldFee = parseFloat($networkFeeInput.data('old-fee')) || 0;
         const networkFee = parseFloat($networkFeeInput.val()) || 0;
         const transactionCost = parseFloat($transactionCostAmountOtc.val()) || 0;
         const currencySymbol = $networkFeeInput.data('currency');
 
+        // Get exchange rate and to_amount from data attributes
+        const exchangeRate = parseFloat($networkFeeInput.data('exchange-rate')) || 1;
+        const toAmount = parseFloat($networkFeeInput.data('to-amount')) || 0;
+        const toCurrencySymbol = $networkFeeInput.data('to-currency') || currencySymbol;
+
         if (isNaN(networkFee) || isNaN(transactionCost)) return;
 
-        const finalAmount = amount + networkFee + transactionCost;
+        // Calculate the amount user will receive: to_amount - (fees converted to target currency)
+        const totalFeesInFromCurrency = networkFee + transactionCost;
+        const totalFeesInToCurrency = totalFeesInFromCurrency * exchangeRate;
+        const finalAmountUserReceives = toAmount+oldFee  - totalFeesInToCurrency;
 
         // Update display with proper formatting
         $displayNetworkFee.html(
@@ -251,7 +260,7 @@ $(document).ready(function () {
             `${formatNumber(transactionCost, 8)} <span class="text-sm font-medium text-slate-500">${currencySymbol}</span>`
         );
         $displayFinalAmount.html(
-            `${formatNumber(finalAmount, 8)} <span class="text-base font-medium ml-1">${currencySymbol}</span>`
+            `${formatNumber(finalAmountUserReceives, 8)} <span class="text-base font-medium ml-1">${toCurrencySymbol}</span>`
         );
     }
 

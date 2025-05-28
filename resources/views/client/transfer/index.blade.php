@@ -12,7 +12,7 @@
                     <div class="max-w-md mx-auto">
                         <div class="relative">
                             <select id="currency_select" name="currency_id" class="select2">
-                                @foreach(\App\Models\Currency::all() as $currency)
+                                @foreach($currencies as $currency)
                                     <option value="{{ $currency->id }}"
                                             data-icon="{{ asset('storage/' . $currency->icon) }}">
                                         {{ $currency->name }} ({{ $currency->symbol }})

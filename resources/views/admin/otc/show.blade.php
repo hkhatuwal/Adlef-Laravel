@@ -126,6 +126,7 @@
                 <div class="text-2xl font-bold text-slate-900 dark:text-white">
                     {{ number_format($otc->to_amount, 8) }} {{ $otc->toCurrency->symbol }}
                 </div>
+
             </div>
         </div>
 
@@ -183,14 +184,28 @@
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-slate-500 dark:text-slate-400">Network Fee</span>
                         <span class="text-sm font-medium text-slate-900 dark:text-white">
-                            {{ number_format($otc->network_fee, 8) }} {{ $otc->fromCurrency->symbol }}
+                            {{ number_format($otc->network_fee, 8) }}
                         </span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-slate-500 dark:text-slate-400">Total Amount (incl. fees)</span>
-                        <span class="text-base font-semibold text-slate-900 dark:text-white">
-                            {{ number_format($otc->from_amount + $otc->network_fee, 8) }} {{ $otc->fromCurrency->symbol }}
+                        <span class="text-sm text-slate-500 dark:text-slate-400">Transaction Cost </span>
+                        <span class="text-sm font-medium text-slate-900 dark:text-white">
+                            {{ number_format($otc->transaction_cost, 8) }}
                         </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-slate-500 dark:text-slate-400">Total Fees </span>
+                        <span class="text-sm font-medium text-red-600 dark:text-red-400">
+                            -{{ number_format(($otc->network_fee + $otc->transaction_cost) * $otc->exchange_rate, 8) }}
+                        </span>
+                    </div>
+                    <div class="border-t border-slate-200 dark:border-slate-600 pt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount User Receives</span>
+                            <span class="text-base font-semibold text-emerald-600 dark:text-emerald-400">
+                                {{ number_format($otc->to_amount,4) }} {{ $otc->toCurrency->symbol }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -309,8 +324,12 @@
                                            value="{{ $otc->network_fee }}"
                                            step="0.00000001"
                                            min="0"
+                                           data-old-fee="{{$otc->network_fee+$otc->transaction_cost}}"
                                            data-amount="{{ $otc->from_amount }}"
                                            data-currency="{{ $otc->fromCurrency->symbol }}"
+                                           data-exchange-rate="{{ $otc->exchange_rate }}"
+                                           data-to-amount="{{ $otc->to_amount }}"
+                                           data-to-currency="{{ $otc->toCurrency->symbol }}"
                                            class="block w-full rounded-lg border-slate-200 !pr-12 py-2 text-right bg-white dark:bg-slate-700 dark:border-slate-600 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white text-sm font-medium">
                                 </div>
                             </div>
@@ -397,10 +416,10 @@
                             </div>
                             <div class="border-t border-slate-200 dark:border-slate-600 pt-4">
                                 <div class="flex justify-between items-baseline">
-                                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Final Amount</div>
+                                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Amount User Will Receive</div>
                                     <div id="displayFinalAmount" class="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                                        {{ number_format($otc->from_amount + $otc->network_fee + $otc->transaction_cost, 8) }}
-                                        <span class="text-base font-medium ml-1">{{ $otc->fromCurrency->symbol }}</span>
+                                        {{ number_format($otc->to_amount ,4) }}
+                                        <span class="text-base font-medium ml-1">{{ $otc->toCurrency->symbol }}</span>
                                     </div>
                                 </div>
                             </div>
