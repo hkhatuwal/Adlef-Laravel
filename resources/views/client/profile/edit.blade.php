@@ -6,7 +6,7 @@
 <div class="w-full bg-white overflow-hidden">
     <div class="bg-gray-900 text-white p-6">
         <h1 class="text-2xl font-medium">Edit Your Profile</h1>
-        <p class="text-gray-300 mt-2">Update your personal information, address, contact details, and business information</p>
+        <p class="text-gray-300 mt-2">Update your password. Other profile information is managed by administration.</p>
     </div>
 
     <div class="p-6 max-w-7xl mx-auto">
@@ -54,12 +54,12 @@
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label for="name" class="block text-sm text-gray-700 mb-2">Username</label>
-                                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
 
                             <div>
                                 <label for="email" class="block text-sm text-gray-700 mb-2">Email Address</label>
-                                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
                         </div>
                     </div>
@@ -107,17 +107,17 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label for="first_name" class="block text-sm text-gray-700 mb-2">First Name <span class="text-red-500">*</span></label>
-                                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $profile->first_name ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $profile->first_name ?? '') }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="middle_name" class="block text-sm text-gray-700 mb-2">Middle Name</label>
-                                    <input type="text" name="middle_name" id="middle_name" value="{{ old('middle_name', $profile->middle_name ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="middle_name" id="middle_name" value="{{ old('middle_name', $profile->middle_name ?? '') }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="last_name" class="block text-sm text-gray-700 mb-2">Last Name <span class="text-red-500">*</span></label>
-                                    <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $profile->last_name ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $profile->last_name ?? '') }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
                             </div>
 
@@ -125,12 +125,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="alias" class="block text-sm text-gray-700 mb-2">Alias/Nickname</label>
-                                    <input type="text" name="alias" id="alias" value="{{ old('alias', $profile->alias ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="alias" id="alias" value="{{ old('alias', $profile->alias ?? '') }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="date_of_birth" class="block text-sm text-gray-700 mb-2">Date of Birth</label>
-                                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', $profile->date_of_birth?->format('Y-m-d') ?? '') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', $profile->date_of_birth?->format('Y-m-d') ?? '') }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
                             </div>
 
@@ -138,7 +138,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="gender" class="block text-sm text-gray-700 mb-2">Gender</label>
-                                    <select name="gender" id="gender" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="gender" id="gender" disabled class="select2 w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                         <option value="">Select Gender</option>
                                         <option value="male" {{ old('gender', $profile->gender) == 'male' ? 'selected' : '' }}>Male</option>
                                         <option value="female" {{ old('gender', $profile->gender) == 'female' ? 'selected' : '' }}>Female</option>
@@ -148,7 +148,7 @@
 
                                 <div>
                                     <label for="marital_status" class="block text-sm text-gray-700 mb-2">Marital Status</label>
-                                    <select name="marital_status" id="marital_status" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="marital_status" id="marital_status" disabled class="select2 w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                         <option value="">Select Status</option>
                                         <option value="single" {{ old('marital_status', $profile->marital_status) == 'single' ? 'selected' : '' }}>Single</option>
                                         <option value="married" {{ old('marital_status', $profile->marital_status) == 'married' ? 'selected' : '' }}>Married</option>
@@ -162,25 +162,25 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="place_of_birth" class="block text-sm text-gray-700 mb-2">Place of Birth</label>
-                                    <input type="text" name="place_of_birth" id="place_of_birth" value="{{ old('place_of_birth', $profile->place_of_birth) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="place_of_birth" id="place_of_birth" value="{{ old('place_of_birth', $profile->place_of_birth) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="current_occupation" class="block text-sm text-gray-700 mb-2">Current Occupation</label>
-                                    <input type="text" name="current_occupation" id="current_occupation" value="{{ old('current_occupation', $profile->current_occupation) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="current_occupation" id="current_occupation" value="{{ old('current_occupation', $profile->current_occupation) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
                             </div>
 
                             <!-- Income -->
                             <div>
                                 <label for="annual_income_range" class="block text-sm text-gray-700 mb-2">Annual Income Range</label>
-                                <input type="text" name="annual_income_range" id="annual_income_range" value="{{ old('annual_income_range', $profile->annual_income_range) }}" placeholder="e.g., $50,000 - $75,000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="annual_income_range" id="annual_income_range" value="{{ old('annual_income_range', $profile->annual_income_range) }}" placeholder="e.g., $50,000 - $75,000" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
 
                             <!-- Account Purpose -->
                             <div>
                                 <label for="account_purpose" class="block text-sm text-gray-700 mb-2">Account Purpose</label>
-                                <select name="account_purpose" id="account_purpose" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <select name="account_purpose" id="account_purpose" disabled class="select2 w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                     <option value="">Select Purpose</option>
                                     <option value="Investment" {{ old('account_purpose', $profile->account_purpose) == 'Investment' ? 'selected' : '' }}>Investment</option>
                                     <option value="Trading" {{ old('account_purpose', $profile->account_purpose) == 'Trading' ? 'selected' : '' }}>Trading</option>
@@ -193,27 +193,27 @@
                             <!-- Funds Source -->
                             <div>
                                 <label for="funds_source" class="block text-sm text-gray-700 mb-2">Source of Funds</label>
-                                <textarea name="funds_source" id="funds_source" rows="3" placeholder="e.g., Salary, Business Income, Investment Returns" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">{{ old('funds_source', $profile->funds_source) }}</textarea>
+                                <textarea name="funds_source" id="funds_source" rows="3" placeholder="e.g., Salary, Business Income, Investment Returns" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">{{ old('funds_source', $profile->funds_source) }}</textarea>
                                 <p class="text-xs text-gray-500 mt-1">Separate multiple sources with commas</p>
                             </div>
 
                             <!-- Wealth Source -->
                             <div>
                                 <label for="wealth_source" class="block text-sm text-gray-700 mb-2">Source of Wealth</label>
-                                <textarea name="wealth_source" id="wealth_source" rows="3" placeholder="e.g., Employment, Business Ownership, Inheritance" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">{{ old('wealth_source', $profile->wealth_source) }}</textarea>
+                                <textarea name="wealth_source" id="wealth_source" rows="3" placeholder="e.g., Employment, Business Ownership, Inheritance" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">{{ old('wealth_source', $profile->wealth_source) }}</textarea>
                                 <p class="text-xs text-gray-500 mt-1">Separate multiple sources with commas</p>
                             </div>
 
                             <!-- Anticipated Asset Class -->
                             <div>
                                 <label for="anticipated_asset_class" class="block text-sm text-gray-700 mb-2">Anticipated Asset Class</label>
-                                <input type="text" name="anticipated_asset_class" id="anticipated_asset_class" value="{{ old('anticipated_asset_class', $profile->anticipated_asset_class) }}" placeholder="e.g., Stocks, Bonds, Real Estate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="anticipated_asset_class" id="anticipated_asset_class" value="{{ old('anticipated_asset_class', $profile->anticipated_asset_class) }}" placeholder="e.g., Stocks, Bonds, Real Estate" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
 
                             <!-- Third Party Contributions -->
                             <div>
                                 <label for="third_party_contributions" class="block text-sm text-gray-700 mb-2">Third Party Contributions</label>
-                                <textarea name="third_party_contributions" id="third_party_contributions" rows="2" placeholder="Details about any third party contributions" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">{{ old('third_party_contributions', $profile->third_party_contributions) }}</textarea>
+                                <textarea name="third_party_contributions" id="third_party_contributions" rows="2" placeholder="Details about any third party contributions" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">{{ old('third_party_contributions', $profile->third_party_contributions) }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -235,12 +235,12 @@
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label for="address_line1" class="block text-sm text-gray-700 mb-2">Address Line 1</label>
-                                    <input type="text" name="address_line1" id="address_line1" value="{{ old('address_line1', $address->address_line1) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="address_line1" id="address_line1" value="{{ old('address_line1', $address->address_line1) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="address_line2" class="block text-sm text-gray-700 mb-2">Address Line 2</label>
-                                    <input type="text" name="address_line2" id="address_line2" value="{{ old('address_line2', $address->address_line2) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="address_line2" id="address_line2" value="{{ old('address_line2', $address->address_line2) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
                             </div>
 
@@ -248,24 +248,24 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="city" class="block text-sm text-gray-700 mb-2">City</label>
-                                    <input type="text" name="city" id="city" value="{{ old('city', $address->city) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="city" id="city" value="{{ old('city', $address->city) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="state" class="block text-sm text-gray-700 mb-2">State/Province</label>
-                                    <input type="text" name="state" id="state" value="{{ old('state', $address->state) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="state" id="state" value="{{ old('state', $address->state) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="postal_code" class="block text-sm text-gray-700 mb-2">Postal Code</label>
-                                    <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code', $address->postal_code) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code', $address->postal_code) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="country" class="block text-sm text-gray-700 mb-2">Country</label>
-                                    <select name="country" id="country" class="w-ful select2  px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="country" id="country" disabled class="w-ful select2  px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                         <option value="">Select Country</option>
                                         @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                             <option value="{{$countryName}}" @selected(old('country', $address->country) == $countryName)>{{$countryName}}</option>
@@ -288,7 +288,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="country_code" class="block text-sm text-gray-700 mb-2">Country Code</label>
-                                <select id="country_code" name="country_code" class="w-full select2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <select id="country_code" name="country_code" disabled class="w-full select2 px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                     @foreach(config('constants.country_code_with_name') as $code=>$country)
                                         <option value="{{$code}}" @selected(old('country_code', $contactDetail->country_code) == $code)>{{"( ".$code." )    ".$country}}</option>
                                     @endforeach
@@ -300,7 +300,7 @@
 
                             <div>
                                 <label for="phone" class="block text-sm text-gray-700 mb-2">Phone Number</label>
-                                <input type="text" name="phone" id="phone" value="{{ old('phone', $contactDetail->phone) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="phone" id="phone" value="{{ old('phone', $contactDetail->phone) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
                         </div>
                     </div>
@@ -327,12 +327,12 @@
                                 <label class="block text-sm text-gray-700 mb-2">Dual Citizenship</label>
                                 <div class="flex items-center space-x-4">
                                     <label class="flex items-center">
-                                        <input type="radio" name="has_dual_citizenship" value="1" {{ old('has_dual_citizenship', $profile->has_dual_citizenship) == '1' ? 'checked' : '' }} class="mr-2">
-                                        <span class="text-sm text-gray-700">Yes</span>
+                                        <input type="radio" name="has_dual_citizenship" value="1" {{ old('has_dual_citizenship', $profile->has_dual_citizenship) == '1' ? 'checked' : '' }} disabled class="mr-2">
+                                        <span class="text-sm text-gray-600">Yes</span>
                                     </label>
                                     <label class="flex items-center">
-                                        <input type="radio" name="has_dual_citizenship" value="0" {{ old('has_dual_citizenship', $profile->has_dual_citizenship) == '0' ? 'checked' : '' }} class="mr-2">
-                                        <span class="text-sm text-gray-700">No</span>
+                                        <input type="radio" name="has_dual_citizenship" value="0" {{ old('has_dual_citizenship', $profile->has_dual_citizenship) == '0' ? 'checked' : '' }} disabled class="mr-2">
+                                        <span class="text-sm text-gray-600">No</span>
                                     </label>
                                 </div>
                             </div>
@@ -342,12 +342,12 @@
                                 <label class="block text-sm text-gray-700 mb-2">Hong Kong Tax Resident</label>
                                 <div class="flex items-center space-x-4">
                                     <label class="flex items-center">
-                                        <input type="radio" name="is_hong_kong_tax_resident" value="1" {{ old('is_hong_kong_tax_resident', $profile->is_hong_kong_tax_resident) == '1' ? 'checked' : '' }} class="mr-2">
-                                        <span class="text-sm text-gray-700">Yes</span>
+                                        <input type="radio" name="is_hong_kong_tax_resident" value="1" {{ old('is_hong_kong_tax_resident', $profile->is_hong_kong_tax_resident) == '1' ? 'checked' : '' }} disabled class="mr-2">
+                                        <span class="text-sm text-gray-600">Yes</span>
                                     </label>
                                     <label class="flex items-center">
-                                        <input type="radio" name="is_hong_kong_tax_resident" value="0" {{ old('is_hong_kong_tax_resident', $profile->is_hong_kong_tax_resident) == '0' ? 'checked' : '' }} class="mr-2">
-                                        <span class="text-sm text-gray-700">No</span>
+                                        <input type="radio" name="is_hong_kong_tax_resident" value="0" {{ old('is_hong_kong_tax_resident', $profile->is_hong_kong_tax_resident) == '0' ? 'checked' : '' }} disabled class="mr-2">
+                                        <span class="text-sm text-gray-600">No</span>
                                     </label>
                                 </div>
                             </div>
@@ -355,19 +355,19 @@
                             <!-- Tax Identification Number -->
                             <div>
                                 <label for="tax_identification_number" class="block text-sm text-gray-700 mb-2">Tax Identification Number</label>
-                                <input type="text" name="tax_identification_number" id="tax_identification_number" value="{{ old('tax_identification_number', $profile->tax_identification_number) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="tax_identification_number" id="tax_identification_number" value="{{ old('tax_identification_number', $profile->tax_identification_number) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
 
                             <!-- TIN Not Provided Reason -->
                             <div>
                                 <label for="tin_not_provided_reason" class="block text-sm text-gray-700 mb-2">TIN Not Provided Reason</label>
-                                <textarea name="tin_not_provided_reason" id="tin_not_provided_reason" rows="2" placeholder="Reason if TIN is not provided" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">{{ old('tin_not_provided_reason', $profile->tin_not_provided_reason) }}</textarea>
+                                <textarea name="tin_not_provided_reason" id="tin_not_provided_reason" rows="2" placeholder="Reason if TIN is not provided" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">{{ old('tin_not_provided_reason', $profile->tin_not_provided_reason) }}</textarea>
                             </div>
 
                             <!-- Secondary Tax Country -->
                             <div>
                                 <label for="secondary_tax_country_id" class="block text-sm text-gray-700 mb-2">Secondary Tax Country</label>
-                                <select name="secondary_tax_country_id" id="secondary_tax_country_id" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <select name="secondary_tax_country_id" id="secondary_tax_country_id" disabled class="select2 w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                     <option value="">Select Country</option>
                                     @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                         <option value="{{$code}}" @selected(old('secondary_tax_country_id', $profile->secondary_tax_country_id) == $code)>{{$countryName}}</option>
@@ -390,18 +390,18 @@
                         <div class="space-y-4">
                             <div>
                                 <label for="registration_no" class="block text-sm text-gray-700 mb-2">Registration Number</label>
-                                <input type="text" name="registration_no" id="registration_no" value="{{ old('registration_no', $businessDetail->registration_no) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                <input type="text" name="registration_no" id="registration_no" value="{{ old('registration_no', $businessDetail->registration_no) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="registration_date" class="block text-sm text-gray-700 mb-2">Registration Date</label>
-                                    <input type="date" name="registration_date" id="registration_date" value="{{ old('registration_date', $businessDetail->registration_date?->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <input type="date" name="registration_date" id="registration_date" value="{{ old('registration_date', $businessDetail->registration_date?->format('Y-m-d')) }}" disabled class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                 </div>
 
                                 <div>
                                     <label for="business_country" class="block text-sm text-gray-700 mb-2">Business Country</label>
-                                    <select name="business_country" id="business_country" class="select2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
+                                    <select name="business_country" id="business_country" disabled class="select2 w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
                                         <option value="">Select Country</option>
                                         @foreach(config('constants.country_code_with_name') as $code=>$countryName)
                                             <option value="{{$countryName}}" @selected(old('business_country', $businessDetail->country) == $countryName)>{{$countryName}}</option>
@@ -473,7 +473,7 @@
             <!-- Submit Button -->
             <div class="flex justify-end pt-6">
                 <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200 font-medium">
-                    Save Changes
+                    Update Password
                 </button>
             </div>
         </form>

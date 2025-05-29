@@ -36,6 +36,7 @@ class ClientLoginController extends Controller
             }
             return redirect()->route('client.dashboard');
         }
+        toastr()->warning('Login details are not valid');
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
