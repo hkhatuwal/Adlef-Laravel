@@ -8,5 +8,10 @@ use Illuminate\Support\Facades\Schedule;
 //    $this->comment(Inspiring::quote());
 //})->purpose('Display an inspiring quote')->hourly();
 Schedule::call(function () {
-   \App\Jobs\UpdateFiatCurrencyPrices::dispatch();
-})->everyMinute();
+   \App\Jobs\UpdateFiatCurrencyPrices::dispatchSync();
+   \App\Jobs\UpdateCryptoPrices::dispatchSync();
+})->hourly();
+
+Schedule::call(function () {
+    \App\Jobs\PollTronTransactions::dispatchSync();
+});
