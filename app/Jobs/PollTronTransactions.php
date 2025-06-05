@@ -65,6 +65,8 @@ class PollTronTransactions implements ShouldQueue
             Log::info("Polling TRON transactions from timestamp: " . $lastPollTimestamp);
 
             // Make cURL request to TRON API
+            $currentTimestamp = Carbon::now()->timestamp * 1000; // Convert to milliseconds
+            Setting::set(self::LAST_POLL_SETTING_KEY, $currentTimestamp);
             $response = $this->makeTronApiRequest($lastPollTimestamp);
 
             if ($response && isset($response['success']) && $response['success']) {
@@ -80,8 +82,7 @@ class PollTronTransactions implements ShouldQueue
                 }
 
                 // Update the last poll timestamp to current time
-                $currentTimestamp = Carbon::now()->timestamp * 1000; // Convert to milliseconds
-                Setting::set(self::LAST_POLL_SETTING_KEY, $currentTimestamp);
+
 
                 Log::info("Updated last poll timestamp to: " . $currentTimestamp);
             } else {
