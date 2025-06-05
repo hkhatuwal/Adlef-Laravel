@@ -15,8 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        \Log::info("Starting schedule function at " . now());
-
+        $schedule->call(function () {
+            file_put_contents(storage_path('logs/cron-confirm.log'), now() . " CRON is working\n", FILE_APPEND);
+        })->everyMinute();
         // ... existing code ...
         $schedule->call(function () {
             UpdateFiatCurrencyPrices::dispatchSync();
