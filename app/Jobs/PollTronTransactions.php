@@ -153,9 +153,14 @@ class PollTronTransactions implements ShouldQueue
         Log::info("Processing transaction: " . $transaction['transaction_id']);
 
         $transfers = AssetTransfer::query()->where('from_account_type', CryptoWallet::class);
-        $transfers = $transfers->wherehas('from_account', function ($query) use ($transaction) {
-            $query->where('wallet_address', $transaction['from']);
-        })->whereHas('currency', function ($query) use ($transaction) {
+
+        $transfers = $transfers->whereHasMorph(
+            'from_account',
+            [CryptoWallet::class],
+            function ($query) use ($transaction) {
+                $query->where('wallet_address', $transaction['from']);
+            }
+        )->whereHas('currency', function ($query) use ($transaction) {
             $query->where('symbol', $transaction['token_info']['symbol']);
         })->where('status', AssetTransfer::STATUS_PENDING)->get();
 
