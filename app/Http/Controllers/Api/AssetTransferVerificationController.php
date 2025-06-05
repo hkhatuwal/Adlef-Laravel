@@ -55,39 +55,6 @@ class AssetTransferVerificationController extends Controller
         }
     }
 
-    /**
-     * Verify a transfer by wallet address
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function verifyByWalletAddress(Request $request)
-    {
-        try {
-            // Validate wallet address request
-            $validator = Validator::make($request->all(), [
-                'wallet_address' => 'required|string',
-                'signature' => 'required|string',
-                'timestamp' => 'required|integer',
-            ]);
-
-            if ($validator->fails()) {
-                throw new Exception('Validation failed: ' . json_encode($validator->errors()), 422);
-            }
-
-            // Find and verify the transfer using the service
-            $transfer = $this->verificationService->findTransferByWalletAddress($request->wallet_address);
-            $this->verificationService->verifyTransferDetails($transfer, $request);
-
-            // Complete verification
-            $this->assetTransferController->verifyTransferInApi($transfer, $request);
-
-            return $this->successResponse($transfer);
-
-        } catch (Exception $e) {
-            return $this->handleException($e, $request->wallet_address ?? null, $request->all());
-        }
-    }
 
 
     /**

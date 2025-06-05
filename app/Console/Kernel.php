@@ -16,13 +16,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // ... existing code ...
-        $schedule->call(function (){
+        $schedule->call(function () {
             UpdateFiatCurrencyPrices::dispatchSync();
             UpdateCryptoPrices::dispatchSync();
         })->hourly();
 
         // Poll TRON transactions every 2 minutes
-        $schedule->call(function (){
+        $schedule->call(function () {
+            \Log::info("Calling PollTronTransactions job at " . now());
             PollTronTransactions::dispatchSync();
         })->everyTwoMinutes();
     }
@@ -32,7 +33,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
