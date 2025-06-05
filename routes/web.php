@@ -12,6 +12,7 @@ Route::get('install', function () {
     echo 'ok';
 });
 Route::get('/run-scheduler', function () {
+    Log::info('Scheduler executed at ' . now());
     Artisan::call('schedule:run');
     return 'Scheduler executed at ' . now();
 });
