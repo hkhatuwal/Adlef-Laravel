@@ -268,13 +268,22 @@
                             {{ class_basename($transfer->from_account_type) }}
                         </h4>
                         @if($transfer->from_account)
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
-                                {{ $transfer->from_account->name ?? $transfer->from_account->bank_name ?? 'N/A' }}
-                            </p>
+
                             @if($transfer->from_account_type === 'App\\Models\\BankAccount')
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                    {{ $transfer->from_account->name ?? $transfer->from_account->bank_name ?? 'N/A' }}
+                                </p>
                                 <div class="text-sm text-slate-500 dark:text-slate-400">
                                     Account Number: {{ $transfer->from_account->account_number }}<br>
                                     SWIFT: {{ $transfer->from_account->swift }}
+                                </div>
+                            @else
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                                    {{ $transfer->from_account->alias  }}
+                                </p>
+                                <div class="text-sm text-slate-500 dark:text-slate-400">
+                                    Name: {{ $transfer->from_account->alias }}<br>
+                                    Wallet Address: {{ $transfer->from_account->wallet_address }}
                                 </div>
                             @endif
                         @else

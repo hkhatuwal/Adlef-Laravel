@@ -90,6 +90,7 @@
                             <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wallet Address</th>
                             <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Alias</th>
                             <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
@@ -118,10 +119,18 @@
                                         {{ $wallet->is_verified ? 'Verified' : 'Pending' }}
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 text-right">
+                                    <a href="{{ route('admin.users.crypto-wallets.show', ['user' => $user->id, 'cryptoWallet' => $wallet->id]) }}" 
+                                       class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 group">
+                                        <i class="material-symbols-outlined text-lg mr-1">visibility</i>
+                                        View Details
+                                        <i class="material-symbols-outlined text-lg ml-1 transition-transform group-hover:translate-x-1">arrow_forward</i>
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-sm text-slate-500 dark:text-slate-400">
+                                <td colspan="5" class="px-6 py-4 text-center text-sm text-slate-500 dark:text-slate-400">
                                     No crypto wallets found
                                 </td>
                             </tr>

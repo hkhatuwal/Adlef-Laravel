@@ -48,7 +48,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('users/{bankAccount}/verify-bank-account', [UserController::class, 'unverifyBankAccount'])->name('users.verify-bank-account');
         Route::post('users/{userProfile}/verify-document', [UserController::class, 'verifyDocument'])->name('users.verify-document');
         Route::delete('users/{userProfile}/verify-document', [UserController::class, 'unverifyDocument'])->name('users.verify-document');
-
+        Route::get('/users/{user}/crypto-wallets/{cryptoWallet}', [UserController::class, 'showCryptoWallet'])->name('users.crypto-wallets.show');
+        Route::post('/crypto-wallets/{cryptoWallet}/verify', [UserController::class, 'verifyCryptoWallet'])->name('users.verify-crypto-wallet');
+        Route::delete('/crypto-wallets/{cryptoWallet}/verify', [UserController::class, 'unverifyCryptoWallet'])->name('users.verify-crypto-wallet');
         // Deposit Account Management Routes
         Route::get('users/{user}/deposit-accounts', [UserController::class, 'depositAccounts'])->name('users.deposit-accounts');
         Route::post('users/{user}/deposit-accounts', [UserController::class, 'assignDepositAccount'])->name('users.deposit-accounts.assign');
@@ -82,7 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('help-center', [\App\Http\Controllers\Admin\HelpCenterController::class, 'index'])->name('help-center.index');
         Route::get('help-center/{helpRequest}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'show'])->name('help-center.show');
         Route::put('help-center/{helpRequest}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'update'])->name('help-center.update');
-        
+
         // Help Center Categories Routes
         Route::get('help-center-categories', [\App\Http\Controllers\Admin\HelpCenterController::class, 'categories'])->name('help-center.categories');
         Route::post('help-center-categories', [\App\Http\Controllers\Admin\HelpCenterController::class, 'storeCategory'])->name('help-center.categories.store');

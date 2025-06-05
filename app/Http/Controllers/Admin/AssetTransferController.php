@@ -145,45 +145,7 @@ class AssetTransferController extends Controller
      */
     public function verifyTransferInApi(AssetTransfer $transfer, Request $request)
     {
-        DB::beginTransaction();
-        try {
-            // Update transfer status
-            $transfer->status = 'completed';
-            $transfer->save();
 
-            // Update the user's account balance
-            $userAccount = $transfer->to_account;
-            $userAccount->balance += $transfer->amount;
-            $userAccount->save();
-
-
-
-            // Create notification
-            $this->notificationService->notify(
-                $transfer->user,
-                [
-                    'type' => 'success',
-                    'title' => 'Transfer Verified',
-                    'message' => "Your deposit of {$transfer->amount} {$transfer->currency->code} has been verified.",
-                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_IN_SUCCESS,
-                    'notifiable_id' => $transfer->id,
-                    'metadata' => [
-                        'reference_number' => $transfer->reference_number,
-                        'amount' => $transfer->amount,
-                        'currency' => $transfer->currency->symbol,
-                        'fee' => $transfer->fee,
-                        'verified_at' => now()->format('Y-m-d H:i:s'),
-                        'verified_by' => 'Admin'
-                    ]
-                ],
-                ['database', 'email']
-            );
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
     }
 
     public function reject(AssetTransfer $transfer)
@@ -229,15 +191,15 @@ class AssetTransferController extends Controller
             }
 
             $transfer->update(['status' => AssetTransfer::STATUS_HOLD]);
-            
+
             $this->notificationService->notify(
                 $transfer->user,
                 [
                     'type' => 'info',
                     'title' => 'Transfer On Hold',
                     'message' => "Your transfer ({$transfer->reference_number}) has been placed on hold.",
-                    'notifiable_type' => $transfer->transfer_type === AssetTransfer::TYPE_IN ? 
-                        AssetTransfer::NOTIFICATION_TRANSFER_IN_FAILED : 
+                    'notifiable_type' => $transfer->transfer_type === AssetTransfer::TYPE_IN ?
+                        AssetTransfer::NOTIFICATION_TRANSFER_IN_FAILED :
                         AssetTransfer::NOTIFICATION_TRANSFER_FAILED,
                     'notifiable_id' => $transfer->id,
                     'metadata' => [

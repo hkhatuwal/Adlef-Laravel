@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AssetTransferController;
 use App\Http\Controllers\Controller;
 use App\Models\AssetTransfer;
 use App\Services\NotificationService;
+use App\Services\AssetTransferVerificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -15,11 +16,17 @@ class AssetTransferVerificationController extends Controller
 {
     protected $assetTransferController;
     protected $notificationService;
+    protected $verificationService;
 
-    public function __construct(AssetTransferController $assetTransferController, NotificationService $notificationService)
+    public function __construct(
+        AssetTransferController          $assetTransferController,
+        NotificationService              $notificationService,
+        AssetTransferVerificationService $verificationService
+    )
     {
         $this->assetTransferController = $assetTransferController;
         $this->notificationService = $notificationService;
+        $this->verificationService = $verificationService;
     }
 
     /**
@@ -31,11 +38,46 @@ class AssetTransferVerificationController extends Controller
     public function verifyByReference(Request $request)
     {
         try {
-            // Run sequence of validation steps - each will throw exception if it fails
-            $validatedData = $this->validateRequest($request);
-            $transfer = $this->findTransfer($request->reference_id);
-            $this->checkAmountMatch($transfer, $request);
-            $this->checkCurrencyMatch($transfer, $request);
+            // Find and verify the transfer using the service
+            $transfer = $this->verificationService->findTransferByReference($request->reference_id);
+
+            $this->verificationService->validateRequestSignature($request);
+            $receivedAmount = $request->amount / 100;          // THE AMOUNT IS IN CENTS
+            $this->verificationService->verifyTransferDetails($transfer, $receivedAmount, strtoupper($request->currency));
+
+            // Complete verification
+            $this->verificationService->markTransferVerifiedAndNotifyUser($transfer);
+
+            return $this->successResponse($transfer);
+
+        } catch (Exception|\Throwable $e) {
+            return $this->handleException($e, $request->reference_id ?? null, $request->all());
+        }
+    }
+
+    /**
+     * Verify a transfer by wallet address
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyByWalletAddress(Request $request)
+    {
+        try {
+            // Validate wallet address request
+            $validator = Validator::make($request->all(), [
+                'wallet_address' => 'required|string',
+                'signature' => 'required|string',
+                'timestamp' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                throw new Exception('Validation failed: ' . json_encode($validator->errors()), 422);
+            }
+
+            // Find and verify the transfer using the service
+            $transfer = $this->verificationService->findTransferByWalletAddress($request->wallet_address);
+            $this->verificationService->verifyTransferDetails($transfer, $request);
 
             // Complete verification
             $this->assetTransferController->verifyTransferInApi($transfer, $request);
@@ -43,110 +85,10 @@ class AssetTransferVerificationController extends Controller
             return $this->successResponse($transfer);
 
         } catch (Exception $e) {
-            return $this->handleException($e, $request->reference_id ?? null, $request->all());
+            return $this->handleException($e, $request->wallet_address ?? null, $request->all());
         }
     }
 
-    /**
-     * Validate the incoming request
-     *
-     * @param Request $request
-     * @throws Exception
-     * @return array
-     */
-    private function validateRequest(Request $request)
-    {
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'reference_id' => 'required|string',
-            'signature' => 'required|string',
-            'timestamp' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            throw new Exception('Validation failed: ' . json_encode($validator->errors()), 422);
-        }
-
-        // Verify the request signature
-        if (!$this->verifySignature($request)) {
-            Log::warning('Invalid signature for transfer verification', [
-                'reference_id' => $request->reference_id,
-                'ip' => $request->ip()
-            ]);
-
-            throw new Exception('Invalid signature', 401);
-        }
-
-        // Check if the timestamp is within acceptable range (5 minutes)
-        if (time() - $request->timestamp > 300) {
-            throw new Exception('Request expired', 401);
-        }
-
-        return $validator->validated();
-    }
-
-    /**
-     * Find the transfer by reference number
-     *
-     * @param string $referenceId
-     * @throws Exception
-     * @return AssetTransfer
-     */
-    private function findTransfer(string $referenceId)
-    {
-        $transfer = AssetTransfer::where('reference_number', $referenceId)
-            ->where('status', 'pending')
-            ->where('transfer_type', AssetTransfer::TYPE_IN)
-            ->first();
-
-        if (!$transfer) {
-            throw new Exception('Transfer not found or not in pending state', 404);
-        }
-
-        return $transfer;
-    }
-
-    /**
-     * Check if amount matches
-     *
-     * @param AssetTransfer $transfer
-     * @param Request $request
-     * @throws Exception
-     * @return void
-     */
-    private function checkAmountMatch(AssetTransfer $transfer, Request $request)
-    {
-        $receivedAmount=$request->amount/100;          // THE AMOUNT IS IN CENTS
-        $expectedAmount=$transfer->amount;
-        $percentageDiff=100-($receivedAmount/$expectedAmount)*100;
-        if ($percentageDiff>1){
-            throw new Exception('Amount mismatch: Received ' .$receivedAmount . ' but expected ' . $expectedAmount, 422);
-        }
-
-    }
-
-    /**
-     * Check if currency matches
-     *
-     * @param AssetTransfer $transfer
-     * @param Request $request
-     * @throws Exception
-     * @return void
-     */
-    private function checkCurrencyMatch(AssetTransfer $transfer, Request $request)
-    {
-        if (isset($request->currency) && $transfer->currency) {
-            $expectedCurrency = strtoupper($transfer->currency->symbol);
-            $receivedCurrency = strtoupper($request->currency);
-
-            if ($receivedCurrency !== $expectedCurrency) {
-                throw new Exception(
-                    "Currency mismatch: Received {$receivedCurrency} but expected {$expectedCurrency}",
-                    422
-                );
-            }
-        }
-    }
 
     /**
      * Create success response
@@ -235,24 +177,5 @@ class AssetTransferVerificationController extends Controller
         );
     }
 
-    /**
-     * Verify the request signature
-     *
-     * @param Request $request
-     * @return bool
-     */
-    private function verifySignature(Request $request)
-    {
-        // Get the API secret from config
-        $apiSecret = config('services.transfer_verification.secret');
 
-        // Data to sign: reference_id + timestamp + secret
-        $dataToSign = $request->reference_id . $request->timestamp . $apiSecret;
-
-        // Generate expected signature
-        $expectedSignature = hash_hmac('sha256', $dataToSign, $apiSecret);
-
-        // Compare with provided signature (constant time comparison)
-        return hash_equals($expectedSignature, $request->signature);
-    }
 }

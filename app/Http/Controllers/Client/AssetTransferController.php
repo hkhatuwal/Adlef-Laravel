@@ -39,12 +39,22 @@ class AssetTransferController extends Controller
     {
         // Get the currency ID from the request
         $currencyId = $request->query('currency_id');
+        $currency=Currency::find($currencyId);
+
 
         // Get active currency IDs to filter accounts
+
         $activeCurrencyIds = Currency::where('active', true)->pluck('id');
 
         // Get the asset account for the current user and selected currency
-        $fromAccounts = $request->user()->bankAccounts()->where('is_verified', true)->get();
+        $fromAccounts =[];
+        if ($currency->isUSD()) {
+            $fromAccounts=$request->user()->bankAccounts()->where('is_verified', true)->get();
+        }
+        else{
+            $fromAccounts=$request->user()->cryptoWallets()->where('is_verified', true)->get();
+        }
+
 
         $assetAccount = $request->user()->assetAccounts()
             ->where('currency_id', $currencyId)
@@ -135,7 +145,7 @@ class AssetTransferController extends Controller
 
         $transfer = AssetTransfer::create([
             'from_account_id' => $request->input('from_account'),
-            'from_account_type' => $isFiat ? BankAccount::class : null,
+            'from_account_type' => $isFiat ? BankAccount::class : CryptoWallet::class,
             'to_account_type' => AssetAccount::class,
             'to_account_id' => $request->input('to_account'),
             'amount' => $request->input('amount'),

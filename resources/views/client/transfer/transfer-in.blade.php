@@ -36,7 +36,7 @@
                     <div class="space-y-4 step-content" id="step1">
                         <!-- From Account Section -->
 
-                        @if($assetAccount->currency->isFiat())
+{{--                        @if($assetAccount->currency->isFiat())--}}
                             <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <h2 class="text-lg sm:text-xl font-semibold text-gray-900">From Account</h2>
@@ -47,12 +47,19 @@
                                 <div class="space-y-4">
                                     <div class="relative">
                                         <select name="from_account" id="fromAccount" class="select2">
-                                            <option value="">Select Your Bank Account</option>
+                                            <option value="">Select Your  Account</option>
                                             @foreach($fromAccounts as $account)
-                                                <option value="{{ $account->id }}" @selected($loop->index==0)>
-                                                    {{ $account->bank_name }} - {{ $account->account_number }}
-                                                    ({{ $account->account_type }})
-                                                </option>
+                                                @if($assetAccount->currency->isUSD())
+                                                    <option value="{{ $account->id }}" @selected($loop->index==0)>
+                                                        {{ $account->bank_name }} - {{ $account->account_number }}
+                                                        ({{ $account->account_type }})
+                                                    </option>
+                                                @else
+                                                    <option value="{{ $account->id }}" @selected($loop->index==0)>
+                                                        {{ $account->alias }} - {{ $account->wallet_address }}
+                                                    </option>
+                                                @endif
+
                                             @endforeach
                                         </select>
                                         <div class="error-message hidden mt-2 text-sm text-red-600"></div>
@@ -61,7 +68,7 @@
                                 </div>
                             </div>
 
-                        @endif
+{{--                        @endif--}}
 
                         <!-- To Account Section (Recipient User) -->
                         <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6">

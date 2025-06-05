@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\BankAccount;
+use App\Models\CryptoWallet;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Models\Currency;
@@ -58,7 +59,7 @@ class UserController extends Controller
                 'metadata' => [
                     'document_type' => $userProfile->document_type ?? 'Identity Document',
                     'verified_at' => now()->format('Y-m-d H:i:s'),
-                    'verified_by' => auth()->user()->name,
+                    'verified_by' => auth()->user()->name ?? 'Admin',
                     'document_path' => $userProfile->document_path
                 ]
             ],
@@ -86,7 +87,7 @@ class UserController extends Controller
                 'metadata' => [
                     'document_type' => $userProfile->document_type ?? 'Identity Document',
                     'unverified_at' => now()->format('Y-m-d H:i:s'),
-                    'unverified_by' => auth()->user()->name,
+                    'unverified_by' => auth()->user()->name ?? 'Admin',
                     'document_path' => $userProfile->document_path,
                     'reason' => 'Administrative action - please contact support'
                 ]
@@ -124,6 +125,17 @@ class UserController extends Controller
         return view('admin.users.bank-account-details', compact('user', 'bankAccount'));
     }
 
+    public function showCryptoWallet(User $user, CryptoWallet $cryptoWallet)
+    {
+        if ($cryptoWallet->user_id !== $user->id) {
+            abort(404);
+        }
+
+        $cryptoWallet->load(['user', 'currency']);
+
+        return view('admin.users.crypto-wallet-details', compact('user', 'cryptoWallet'));
+    }
+
     public function verifyBankAccount(BankAccount $bankAccount)
     {
         $bankAccount->update([
@@ -143,7 +155,7 @@ class UserController extends Controller
                     'bank_name' => $bankAccount->bank_name,
                     'account_number' => $bankAccount->account_number,
                     'verified_at' => now()->format('Y-m-d H:i:s'),
-                    'verified_by' => auth()->user()->name
+                    'verified_by' => auth()->user()->name ?? 'Admin'
                 ]
             ],
             ['database', 'email'] // Send through database and email
@@ -178,6 +190,44 @@ class UserController extends Controller
 //        );
 
         return back()->with('success', 'Bank account verification has been revoked.');
+    }
+
+    public function verifyCryptoWallet(CryptoWallet $cryptoWallet)
+    {
+        $cryptoWallet->update([
+            'is_verified' => true
+        ]);
+
+        // Send notification through multiple channels
+        $this->notificationService->notify(
+            $cryptoWallet->user,
+            [
+                'type' => 'success',
+                'title' => 'Crypto Wallet Verified',
+                'message' => "Your crypto wallet ({$cryptoWallet->currency->name} - {$cryptoWallet->formattedAddress()}) has been verified successfully.",
+                'notifiable_type' => 'crypto_wallet_verified',
+                'notifiable_id' => $cryptoWallet->id,
+                'metadata' => [
+                    'currency' => $cryptoWallet->currency->name,
+                    'wallet_address' => $cryptoWallet->wallet_address,
+                    'alias' => $cryptoWallet->alias,
+                    'verified_at' => now()->format('Y-m-d H:i:s'),
+                    'verified_by' => auth()->user()->name ?? 'Admin'
+                ]
+            ],
+            ['database', 'email'] // Send through database and email
+        );
+
+        return back()->with('success', 'Crypto wallet has been verified successfully.');
+    }
+
+    public function unverifyCryptoWallet(CryptoWallet $cryptoWallet)
+    {
+        $cryptoWallet->update([
+            'is_verified' => false
+        ]);
+
+        return back()->with('success', 'Crypto wallet verification has been revoked.');
     }
 
     public function commissions(User $user)

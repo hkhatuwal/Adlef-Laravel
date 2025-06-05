@@ -6,7 +6,7 @@ return [
     "reference_suffix"=>"AD",
     "client_login" => [
         "email" => "himtech727@gmail.com",
-        "password" => "Pa$\$w0rd!"
+        "password" => "Pa$\$w0rd!1"
     ],
     "tin_reasons" => [
         'reason_no_issue' => 'The country where the Account Holder is liable to pay tax does not issue TINs to its residents',

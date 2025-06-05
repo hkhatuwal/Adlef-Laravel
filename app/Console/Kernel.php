@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\PollTronTransactions;
 use App\Jobs\UpdateCryptoPrices;
 use App\Jobs\UpdateFiatCurrencyPrices;
 use Illuminate\Console\Scheduling\Schedule;
@@ -19,6 +20,11 @@ class Kernel extends ConsoleKernel
             UpdateFiatCurrencyPrices::dispatchSync();
             UpdateCryptoPrices::dispatchSync();
         })->hourly();
+
+        // Poll TRON transactions every 2 minutes
+        $schedule->call(function (){
+            PollTronTransactions::dispatchSync();
+        })->everyTwoMinutes();
     }
 
     /**
