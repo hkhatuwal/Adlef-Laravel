@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        \Log::info("Starting schedule function at " . now());
+
         // ... existing code ...
         $schedule->call(function () {
             UpdateFiatCurrencyPrices::dispatchSync();
@@ -25,7 +27,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \Log::info("Calling PollTronTransactions job at " . now());
             PollTronTransactions::dispatchSync();
+            \Log::info("Completed PollTronTransactions job at " . now());
         })->everyTwoMinutes();
+
+        \Log::info("Finished schedule function at " . now());
     }
 
     /**
