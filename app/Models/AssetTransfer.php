@@ -244,5 +244,36 @@ class AssetTransfer extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the transfer out payment records for this asset transfer.
+     */
+    public function transferOutPayments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TransferOutPayment::class);
+    }
+
+    /**
+     * Get the latest transfer out payment record.
+     */
+    public function latestTransferOutPayment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(TransferOutPayment::class)->latestOfMany();
+    }
+
+    /**
+     * Create a transfer out payment record for tracking the actual transaction.
+     */
+    public function createTransferOutPayment(string $transactionId = null): ?TransferOutPayment
+    {
+        if ($this->transfer_type !== self::TYPE_OUT) {
+            return null;
+        }
+
+        return $this->transferOutPayments()->create([
+            'transaction_id' => $transactionId ?? TransferOutPayment::generateTransactionId(),
+            'payment_status' => TransferOutPayment::STATUS_PENDING,
+        ]);
+    }
+
     //
 }

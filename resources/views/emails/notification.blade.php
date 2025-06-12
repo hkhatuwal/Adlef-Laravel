@@ -52,7 +52,7 @@
         </div>
         
         <div class="notification-message">
-            {!! nl2br(e($message)) !!}
+            {!! nl2br(e($notificationMessage ?? $message ?? '')) !!}
         </div>
         
         @if(isset($metadata) && !empty($metadata))

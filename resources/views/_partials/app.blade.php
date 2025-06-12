@@ -14,6 +14,7 @@
     <link href="{{asset('common/css/select2.min.css')}}" rel="stylesheet"/>
     <link href="{{asset('common/css/fontawesome.min.css')}}" rel="stylesheet"/>
     <link rel="stylesheet" href="{{asset('common/css/toastr.min.css')}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
     <meta charset="UTF-8">

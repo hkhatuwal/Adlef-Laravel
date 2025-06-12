@@ -3,6 +3,7 @@
 namespace App\Notifications\Channels;
 
 use App\Contracts\NotificationChannel;
+use App\Mail\DefaultNotification;
 use App\Mail\DocumentVerified;
 use App\Mail\NewBankAccountAdded;
 use App\Mail\OtcTransferFailed;
@@ -90,6 +91,7 @@ class EmailChannel implements NotificationChannel
             return new TransferOutFailed($data);
         }
 
-        return new TransferinSuccess($data);
+        // Default fallback for unhandled notification types
+        return new DefaultNotification($data);
     }
 }

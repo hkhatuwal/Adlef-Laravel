@@ -62,6 +62,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('transfers/{transfer}/verify', [\App\Http\Controllers\Admin\AssetTransferController::class, 'verify'])->name('transfers.verify');
         Route::post('transfers/{transfer}/reject', [\App\Http\Controllers\Admin\AssetTransferController::class, 'reject'])->name('transfers.reject');
         Route::post('transfers/{transfer}/hold', [\App\Http\Controllers\Admin\AssetTransferController::class, 'hold'])->name('transfers.hold');
+        
+        // Payment Management Routes for Out Transfers
+        Route::post('transfers/{transfer}/create-payment', [\App\Http\Controllers\Admin\AssetTransferController::class, 'createPayment'])->name('transfers.create-payment');
+        Route::post('transfers/{transfer}/mark-payment-sent', [\App\Http\Controllers\Admin\AssetTransferController::class, 'markPaymentSent'])->name('transfers.mark-payment-sent');
+        Route::post('transfers/{transfer}/confirm-payment', [\App\Http\Controllers\Admin\AssetTransferController::class, 'confirmPayment'])->name('transfers.confirm-payment');
+        Route::post('transfers/{transfer}/retry-payment', [\App\Http\Controllers\Admin\AssetTransferController::class, 'retryPayment'])->name('transfers.retry-payment');
+        
+        // OTP-Protected Payment Routes
+        Route::post('transfers/{transfer}/request-create-otp', [\App\Http\Controllers\Admin\AssetTransferController::class, 'requestCreateOtp'])->name('transfers.request-create-otp');
+        Route::post('transfers/{transfer}/create-payment-with-otp', [\App\Http\Controllers\Admin\AssetTransferController::class, 'createPaymentWithOtp'])->name('transfers.create-payment-with-otp');
+        Route::post('transfers/{transfer}/request-send-otp', [\App\Http\Controllers\Admin\AssetTransferController::class, 'requestSendOtp'])->name('transfers.request-send-otp');
+        Route::post('transfers/{transfer}/send-payment-with-otp', [\App\Http\Controllers\Admin\AssetTransferController::class, 'sendPaymentWithOtp'])->name('transfers.send-payment-with-otp');
 
         // OTC Routes
         Route::get('otc', [OtcController::class, 'index'])->name('otc.index');

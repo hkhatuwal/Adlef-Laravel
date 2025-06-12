@@ -270,5 +270,202 @@ $(document).ready(function () {
             maximumFractionDigits: decimals
         });
     }
+
+    // OTP Modal Elements
+    const $createPaymentBtn = $('#create-payment-btn');
+    const $sendPaymentBtn = $('#send-payment-btn');
+    const $otpCreateModal = $('#otpCreateModal');
+    const $otpSendModal = $('#otpSendModal');
+
+    // Create Payment OTP Flow
+    $createPaymentBtn.on('click', function() {
+        $otpCreateModal.removeClass('hidden');
+    });
+
+    // Send Payment OTP Flow
+    $sendPaymentBtn.on('click', function() {
+        $otpSendModal.removeClass('hidden');
+    });
+
+    // Close Create OTP Modal
+    $('#close-otp-create-modal').on('click', function() {
+        $otpCreateModal.addClass('hidden');
+        resetOtpCreateModal();
+    });
+
+    // Close Send OTP Modal
+    $('#close-otp-send-modal').on('click', function() {
+        $otpSendModal.addClass('hidden');
+        resetOtpSendModal();
+    });
+
+    // Request OTP for Create Payment
+    $('#request-otp-create').on('click', function() {
+        const $button = $(this);
+        $button.prop('disabled', true);
+        $button.html('<i class="material-symbols-outlined text-[20px] mr-2 animate-spin">sync</i>Sending OTP...');
+
+        $.ajax({
+            url: $button.data('url'), // You'll need to set data-url attribute in HTML
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    $('#otp-request-section').addClass('hidden');
+                    $('#otp-verify-section').removeClass('hidden');
+                } else {
+                    alert(data.message || 'Failed to send OTP. Please try again.');
+                    $button.prop('disabled', false);
+                    $button.html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                $button.prop('disabled', false);
+                $button.html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+            }
+        });
+    });
+
+    // Request OTP for Send Payment
+    $('#request-otp-send').on('click', function() {
+        const $button = $(this);
+        $button.prop('disabled', true);
+        $button.html('<i class="material-symbols-outlined text-[20px] mr-2 animate-spin">sync</i>Sending OTP...');
+
+        $.ajax({
+            url: $button.data('url'), // You'll need to set data-url attribute in HTML
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    $('#otp-send-request-section').addClass('hidden');
+                    $('#otp-send-verify-section').removeClass('hidden');
+                } else {
+                    alert(data.message || 'Failed to send OTP. Please try again.');
+                    $button.prop('disabled', false);
+                    $button.html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                $button.prop('disabled', false);
+                $button.html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+            }
+        });
+    });
+
+    // Resend OTP for Create Payment
+    $('#resend-otp-create').on('click', function() {
+        const $button = $(this);
+        $button.prop('disabled', true);
+        $button.text('Sending...');
+
+        $.ajax({
+            url: $button.data('url'), // You'll need to set data-url attribute in HTML
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    alert('OTP sent successfully!');
+                } else {
+                    alert(data.message || 'Failed to send OTP. Please try again.');
+                }
+                $button.prop('disabled', false);
+                $button.text('Resend OTP');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                $button.prop('disabled', false);
+                $button.text('Resend OTP');
+            }
+        });
+    });
+
+    // Resend OTP for Send Payment
+    $('#resend-otp-send').on('click', function() {
+        const $button = $(this);
+        $button.prop('disabled', true);
+        $button.text('Sending...');
+
+        $.ajax({
+            url: $button.data('url'), // You'll need to set data-url attribute in HTML
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    alert('OTP sent successfully!');
+                } else {
+                    alert(data.message || 'Failed to send OTP. Please try again.');
+                }
+                $button.prop('disabled', false);
+                $button.text('Resend OTP');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                $button.prop('disabled', false);
+                $button.text('Resend OTP');
+            }
+        });
+    });
+
+    // Auto-focus and format OTP inputs
+    const otpInputs = ['#otp_code_create', '#otp_code_send'];
+    otpInputs.forEach(function(inputId) {
+        $(inputId).on('input', function() {
+            $(this).val($(this).val().replace(/\D/g, ''));
+        });
+    });
+
+    // Reset Create OTP Modal
+    function resetOtpCreateModal() {
+        $('#otp-request-section').removeClass('hidden');
+        $('#otp-verify-section').addClass('hidden');
+        $('#otp_code_create').val('');
+        $('#request-otp-create').prop('disabled', false);
+        $('#request-otp-create').html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+    }
+
+    // Reset Send OTP Modal
+    function resetOtpSendModal() {
+        $('#otp-send-request-section').removeClass('hidden');
+        $('#otp-send-verify-section').addClass('hidden');
+        $('#otp_code_send').val('');
+        $('#request-otp-send').prop('disabled', false);
+        $('#request-otp-send').html('<i class="material-symbols-outlined text-[20px] mr-2">send</i>Send OTP to Email');
+    }
+
+    // Close modals when clicking outside
+    $otpCreateModal.on('click', function(e) {
+        if (e.target === this) {
+            $(this).addClass('hidden');
+            resetOtpCreateModal();
+        }
+    });
+
+    $otpSendModal.on('click', function(e) {
+        if (e.target === this) {
+            $(this).addClass('hidden');
+            resetOtpSendModal();
+        }
+    });
+
+    console.log("OTP functionality loaded");
 });
 
