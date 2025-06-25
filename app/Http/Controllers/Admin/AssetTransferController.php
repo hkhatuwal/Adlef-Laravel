@@ -155,7 +155,7 @@ class AssetTransferController extends Controller
                 return back()->with('error', 'Payment records can only be created for outgoing transfers.');
             }
 
-            if ($transfer->latestTransferOutPayment) {
+            if ($transfer->latestTransferOutPayment()->where('payment_status', 'pending')->exists()) {
                 return back()->with('error', 'A payment record already exists for this transfer.');
             }
 
@@ -351,30 +351,7 @@ class AssetTransferController extends Controller
 
             $latestPayment->markAsConfirmed();
 
-            // Update the transfer status to completed
-            $transfer->update(['status' => AssetTransfer::STATUS_COMPLETED]);
-
-            $this->notificationService->notify(
-                $transfer->user,
-                [
-                    'type' => 'success',
-                    'title' => 'Payment Confirmed',
-                    'message' => "Your payment for transfer ({$transfer->reference_number}) has been confirmed and completed successfully.",
-                    'notifiable_type' => AssetTransfer::NOTIFICATION_TRANSFER_SUCCESS,
-                    'notifiable_id' => $transfer->id,
-                    'metadata' => [
-                        'reference_number' => $transfer->reference_number,
-                        'transaction_id' => $latestPayment->transaction_id,
-                        'amount' => $transfer->amount,
-                        'currency' => $transfer->currency->symbol,
-                        'confirmed_at' => now()->format('Y-m-d H:i:s'),
-                        'confirmed_by' => 'Admin'
-                    ]
-                ],
-                ['database', 'email']
-            );
-
-            return back()->with('success', 'Payment confirmed successfully. Transfer has been completed.');
+            return back()->with('success', 'Payment confirmed successfully. You can Mark the transfer as verified now.');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to confirm payment: ' . $e->getMessage());
         }
@@ -509,7 +486,7 @@ class AssetTransferController extends Controller
                 ], 400);
             }
 
-            if ($transfer->latestTransferOutPayment) {
+            if ($transfer->latestTransferOutPayment()->where('payment_status', 'pending')->exists()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'A payment record already exists for this transfer.'
@@ -519,7 +496,7 @@ class AssetTransferController extends Controller
             // Generate OTP and store in session/cache
             $otp = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
             $cacheKey = 'create_payment_otp_' . $transfer->id . '_' . Auth::id();
-            
+
             // Store OTP in cache for 10 minutes
             cache()->put($cacheKey, $otp, now()->addMinutes(10));
 
@@ -611,7 +588,7 @@ class AssetTransferController extends Controller
             // Generate OTP and store in session/cache
             $otp = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
             $cacheKey = 'send_payment_otp_' . $transfer->id . '_' . Auth::id();
-            
+
             // Store OTP in cache for 10 minutes
             cache()->put($cacheKey, $otp, now()->addMinutes(10));
 

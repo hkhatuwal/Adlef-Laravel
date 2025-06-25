@@ -129,8 +129,8 @@ $notifications = auth()->user()->unreadNotifications()->take(5)->get();
                     @foreach($menuItems as $item)
                         <li>
                             <a href="{{ route($item['route']) }}"
-                               class="flex items-center px-3 py-2 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-all group text-sm {{ request()->routeIs($item['route']) ? 'bg-gray-100 text-black font-semibold' : '' }}">
-                                <span class="inline-flex mr-3 {{ request()->routeIs($item['route']) ? 'text-black' : 'text-gray-400' }} group-hover:text-black transition-colors text-sm">
+                               class="flex items-center px-3 py-2 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-all group text-sm {{ request()->routeIs($item['route']) || ($item['route'] === 'client.payment-gateway.index' && request()->routeIs('client.payment-gateway.*')) ? 'bg-gray-100 text-black font-semibold' : '' }}">
+                                <span class="inline-flex mr-3 {{ request()->routeIs($item['route']) || ($item['route'] === 'client.payment-gateway.index' && request()->routeIs('client.payment-gateway.*')) ? 'text-black' : 'text-gray-400' }} group-hover:text-black transition-colors text-sm">
                                     {!! $item['icon'] !!}
                                 </span>
                                 {{ $item['title'] }}

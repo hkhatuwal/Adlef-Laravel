@@ -102,5 +102,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('help-center-categories', [\App\Http\Controllers\Admin\HelpCenterController::class, 'storeCategory'])->name('help-center.categories.store');
         Route::put('help-center-categories/{category}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'updateCategory'])->name('help-center.categories.update');
         Route::delete('help-center-categories/{category}', [\App\Http\Controllers\Admin\HelpCenterController::class, 'destroyCategory'])->name('help-center.categories.destroy');
+
+        // API Client Management
+        Route::resource('api-clients', \App\Http\Controllers\Admin\ApiClientController::class);
+        Route::post('api-clients/{apiClient}/regenerate-credentials', [\App\Http\Controllers\Admin\ApiClientController::class, 'regenerateCredentials'])
+            ->name('api-clients.regenerate-credentials');
+        Route::post('api-clients/{apiClient}/toggle-status', [\App\Http\Controllers\Admin\ApiClientController::class, 'toggleStatus'])
+            ->name('api-clients.toggle-status');
+        Route::post('api-clients/{apiClient}/reset-usage', [\App\Http\Controllers\Admin\ApiClientController::class, 'resetUsage'])
+            ->name('api-clients.reset-usage');
+        Route::get('api-clients/{apiClient}/transactions', [\App\Http\Controllers\Admin\ApiClientController::class, 'getTransactions'])
+            ->name('api-clients.transactions');
     });
 });

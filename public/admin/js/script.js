@@ -274,11 +274,15 @@ $(document).ready(function () {
     // OTP Modal Elements
     const $createPaymentBtn = $('#create-payment-btn');
     const $sendPaymentBtn = $('#send-payment-btn');
+    const $retryPaymentBtn = $('#retry-payment-btn');
     const $otpCreateModal = $('#otpCreateModal');
     const $otpSendModal = $('#otpSendModal');
 
     // Create Payment OTP Flow
     $createPaymentBtn.on('click', function() {
+        $otpCreateModal.removeClass('hidden');
+    });
+    $retryPaymentBtn.on('click', function() {
         $otpCreateModal.removeClass('hidden');
     });
 

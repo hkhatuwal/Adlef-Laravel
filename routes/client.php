@@ -26,6 +26,27 @@ Route::middleware('guest')->group(function () {
 });
 Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Auth\Middleware\Authenticate::class])->name('client.')->group(function ($app) {
 
+    // API Client Management for authenticated users
+    Route::resource('api-clients', \App\Http\Controllers\Client\ApiClientController::class);
+    Route::post('api-clients/{apiClient}/regenerate-credentials', [\App\Http\Controllers\Client\ApiClientController::class, 'regenerateCredentials'])
+        ->name('api-clients.regenerate-credentials');
+    Route::post('api-clients/{apiClient}/toggle-sandbox', [\App\Http\Controllers\Client\ApiClientController::class, 'toggleSandbox'])
+        ->name('api-clients.toggle-sandbox');
+    Route::get('api-clients/{apiClient}/statistics', [\App\Http\Controllers\Client\ApiClientController::class, 'statistics'])
+        ->name('api-clients.statistics');
+
+    // Payment Gateway Management
+    Route::prefix('payment-gateway')->name('payment-gateway.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'index'])->name('index');
+        Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
+
+        // API Keys Management
+        Route::post('/api-keys', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'storeApiKey'])->name('api-keys.store');
+        Route::post('/api-keys/{apiClient}/regenerate', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'regenerateApiKey'])->name('api-keys.regenerate');
+        Route::post('/api-keys/{apiClient}/toggle', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'toggleApiClientStatus'])->name('api-keys.toggle');
+        Route::delete('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'deleteApiClient'])->name('api-keys.delete');
+    });
+
     Route::middleware([\App\Http\Middleware\ClientVerifyMiddleware::class])->group(function ($app) {
         Route::get('/logout', [ClientLogoutController::class, 'logout'])->name('client-logout');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -95,9 +116,6 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
     // Notification Routes
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
-
-
-
 
 
 });

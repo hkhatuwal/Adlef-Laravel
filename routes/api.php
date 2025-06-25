@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AssetTransferVerificationController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +24,24 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::post('/transfers/verify', [AssetTransferVerificationController::class, 'verifyByReference']); 
+Route::post('/transfers/verify', [AssetTransferVerificationController::class, 'verifyByReference']);
+
+// Payment Gateway API routes with client authentication
+Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
+    // Payop routes
+    Route::prefix('payop')->group(function () {
+        Route::post('/create', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'createPayment']);
+        Route::get('/payment-methods', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getPaymentMethods']);
+        Route::get('/currencies', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getSupportedCurrencies']);
+        Route::get('/config', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getConfigStatus']);
+        
+        // Transaction management
+        Route::get('/transactions', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransactions']);
+        Route::get('/transactions/{transactionId}', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransaction']);
+    });
+});
+
+// Webhook routes (no authentication required as they come from payment gateways)
+Route::prefix('webhooks')->group(function () {
+    Route::post('/payop', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'handleWebhook']);
+});

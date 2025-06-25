@@ -64,6 +64,7 @@
     </div>
 </div>
 
+@yield('modals')
 
 </body>
 @yield('pre-script')

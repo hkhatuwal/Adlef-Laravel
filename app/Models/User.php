@@ -85,6 +85,11 @@ class User extends Authenticatable
         return $this->hasOne(ContactDetail::class);
     }
 
+    public function apiClients()
+    {
+        return $this->hasMany(\App\Models\ApiClient::class);
+    }
+
     public function areDetailsVerified(): bool
     {
         return isset($this->contactDetails ) && isset($this->profile) && $this->profile->document_verified &&  $this->contactDetails->is_email_verified && $this->contactDetails->is_phone_verified ;
