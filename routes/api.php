@@ -28,6 +28,10 @@ Route::post('/transfers/verify', [AssetTransferVerificationController::class, 'v
 
 // Payment Gateway API routes with client authentication
 Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
+    // New payment generation endpoint
+    Route::post('/generate', [\App\Http\Controllers\Api\PaymentController::class, 'generatePaymentLink']);
+    Route::get('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
+    
     // Payop routes
     Route::prefix('payop')->group(function () {
         Route::post('/create', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'createPayment']);

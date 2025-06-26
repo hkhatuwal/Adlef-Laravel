@@ -5,6 +5,7 @@ use App\Http\Controllers\Client\ClientLoginController;
 use App\Http\Controllers\Client\CryptoWalletController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Admin\UserController;
 
 Route::get('install', function () {
@@ -52,6 +53,14 @@ Route::get('/users/{user}/commissions', [UserController::class, 'commissions'])-
 Route::post('/users/{user}/commissions', [UserController::class, 'updateCommissions'])->name('users.commissions.update');
 
 Route::get('/users/{user}/accounts', [UserController::class, 'accounts'])->name('users.accounts');
+
+// Payment Checkout Routes (No authentication required for public checkout)
+Route::prefix('payment')->name('payment.')->group(function () {
+    Route::get('/checkout/{session}', [\App\Http\Controllers\CheckoutController::class, 'show'])->name('checkout');
+    Route::post('/checkout/{session}/select', [\App\Http\Controllers\CheckoutController::class, 'selectPaymentMethod'])->name('checkout.select');
+    Route::get('/success', [\App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
+    Route::get('/failed', [\App\Http\Controllers\CheckoutController::class, 'failed'])->name('failed');
+});
 
 
 

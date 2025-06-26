@@ -359,7 +359,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
             'publicKey' => $this->config['public_key'],
             'order' => [
                 'id' => $orderId,
-                'amount' => $paymentData['amount'] , // Convert to cents
+                'amount' => floatval($paymentData['amount']) , // Convert to cents
                 'currency' => strtoupper($paymentData['currency'] ?? 'USD'),
                 'description' => $paymentData['description'] ?? 'Payment via Payop',
                 'items' => $paymentData['items'] ?? [
@@ -378,7 +378,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
             'language' => $paymentData['language'] ?? 'en',
             'resultUrl' => $paymentData['return_url'] ?? url('/payment/result'),
             'failPath' => $paymentData['cancel_url'] ?? url('/payment/cancel'),
-            'signature' => $this->generateSignature($orderId, $paymentData['amount'], strtoupper($paymentData['currency'] ?? 'USD')),
+            'signature' => $this->generateSignature($orderId, floatval($paymentData['amount']), strtoupper($paymentData['currency'] ?? 'USD')),
         ];
 
 
