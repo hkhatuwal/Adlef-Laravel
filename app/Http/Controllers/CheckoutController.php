@@ -74,10 +74,11 @@ class CheckoutController extends Controller
             'gateway_name' => $gatewayName,
             'status' => PaymentTransaction::STATUS_PENDING,
             'stage' => PaymentTransaction::STAGE_GATEWAY_PROCESSING,
+            'payment_method' => $paymentMethod,
         ]);
 
         // Generate payment URL based on selected method
-        $paymentUrl = $this->generatePaymentUrl($transaction, $paymentMethod);
+        $paymentUrl = $this->generatePaymentUrl($transaction, $gatewayName);
 
         $transaction->update(['payment_url' => $paymentUrl]);
 
@@ -92,7 +93,7 @@ class CheckoutController extends Controller
     {
         return match ($paymentMethod) {
             'credit_card' => 'payop',
-            'crypto' => 'crypto_gateway',
+            'crypto' => 'trongrid',
             default => 'payop'
         };
     }
@@ -100,7 +101,7 @@ class CheckoutController extends Controller
     /**
      * Generate payment URL based on payment method
      */
-    private function generatePaymentUrl(PaymentTransaction $transaction, string $paymentMethod): string
+    private function generatePaymentUrl(PaymentTransaction $transaction, string $gatewayName): string
     {
 
         $paymentData = [
@@ -116,7 +117,7 @@ class CheckoutController extends Controller
             'metadata' => $transaction->metadata ?? [],
         ];
 
-        $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData);
+        $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData,$gatewayName,$transaction);
         return $result['data']['payment_url'];
     }
 
@@ -127,12 +128,63 @@ class CheckoutController extends Controller
     {
         $transactionId = $request->query('transaction_id');
         $transaction = null;
-        
+
         if ($transactionId) {
             $transaction = PaymentTransaction::where('transaction_id', $transactionId)->first();
         }
 
         return view('checkout.success', compact('transaction'));
+    }
+
+    /**
+     * Display crypto checkout page
+     */
+    public function cryptoCheckout(Request $request, string $walletAddress): View
+    {
+        $transaction = PaymentTransaction::where('gateway_transaction_id', $walletAddress)
+            ->where('gateway_name', 'trongrid')
+            ->first();
+
+        if (!$transaction) {
+            abort(404, 'Crypto payment session not found');
+        }
+
+        // Check if transaction is expired (24 hours)
+        if ($transaction->created_at->addHours(24)->isPast()) {
+            abort(410, 'Payment session has expired');
+        }
+
+        // Check if transaction is already processed
+        if (!$transaction->isCheckoutPending() && $transaction->status !== PaymentTransaction::STATUS_PENDING) {
+            abort(400, 'Payment session is no longer valid');
+        }
+
+        return view('checkout.crypto', compact('transaction', 'walletAddress'));
+    }
+
+
+
+    /**
+     * Check payment Status
+     */
+    public function checkPaymentStatus(Request $request,  $transactionId)
+    {
+        $transaction = PaymentTransaction::findOrFail($transactionId);
+
+        if (!$transaction) {
+            abort(404, 'Payment not found');
+        }
+
+        // Check if transaction is expired (24 hours)
+        if ($transaction->created_at->addHours(24)->isPast()) {
+            abort(410, 'Payment session has expired');
+        }
+
+
+        return response()->json([
+            "success" => true,
+            "data"=>$transaction
+        ]);
     }
 
     /**
@@ -143,7 +195,7 @@ class CheckoutController extends Controller
         $transactionId = $request->query('transaction_id');
         $transaction = null;
         $errorMessage = $request->query('error', 'Payment could not be processed');
-        
+
         if ($transactionId) {
             $transaction = PaymentTransaction::where('transaction_id', $transactionId)->first();
         }

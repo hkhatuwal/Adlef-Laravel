@@ -63,10 +63,10 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         $this->logActivity('process_payment', $paymentData);
 
         // Generate unique order ID
-        $orderId =$this->getOrderId($paymentData);
+        $generateInvoiceId =$this->generateInvoiceId($paymentData);
 
         $data = [
-            'invoiceIdentifier' =>$orderId,
+            'invoiceIdentifier' =>$generateInvoiceId,
             'customer' => [
                 'email' => $paymentData['customer_email'] ?? '',
                 'name' => $paymentData['customer_name'] ?? '',
@@ -96,14 +96,11 @@ class PayopPaymentGateway extends AbstractPaymentGateway
             );
         }
 
-        $paymentUrl=$this->getPaymentUrl($orderId);
-
         return $this->createSuccessResponse([
             'transaction_id' => $response['data']['txid'] ,
             'status' => strtolower($response['data']['isSuccess'] ?? 'pending'),
             'amount' => $paymentData['amount'],
-            'payment_url' => $paymentUrl,
-
+            'payment_url' => $this->getPaymentUrl($generateInvoiceId),
             'currency' => $paymentData['currency'] ?? 'USD',
             'message' => 'Payment order created successfully',
             'raw_response' => $response
@@ -352,9 +349,9 @@ class PayopPaymentGateway extends AbstractPaymentGateway
      * @throws \Exception
      */
 
-    private function getOrderId(array $paymentData): string
+    private function generateInvoiceId(array $paymentData): string
     {
-        $orderId='PAYOP'.Str::random(8);
+        $orderId=$paymentData['order_id'];
         $data = [
             'publicKey' => $this->config['public_key'],
             'order' => [

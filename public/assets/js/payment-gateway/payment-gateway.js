@@ -16,6 +16,22 @@ $(document).ready(function() {
         $('.tab-content').addClass('hidden');
         $('#' + tabName + '-tab').removeClass('hidden');
     });
+
+    // Copy functionality for API documentation
+    $('.copy-btn').on('click', function() {
+        const copyType = $(this).data('copy');
+        let textToCopy = '';
+
+        if (copyType === 'curl') {
+            textToCopy = $('#curl-example code').text();
+        } else if (copyType === 'headers') {
+            textToCopy = `X-API-Key: your_api_key_here
+X-Secret-Key: your_secret_key_here
+Content-Type: application/json`;
+        }
+
+        copyToClipboard(textToCopy);
+    });
 });
 
 // Copy to clipboard function

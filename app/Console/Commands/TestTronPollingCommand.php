@@ -27,18 +27,13 @@ class TestTronPollingCommand extends Command
     public function handle()
     {
         $this->info('Starting TRON transaction polling test...');
-        
-        try {
-            // Dispatch the job synchronously for testing
-            PollTronTransactions::dispatchSync();
-            
-            $this->info('TRON transaction polling completed successfully!');
-            $this->info('Check the log files for detailed output.');
-        } catch (\Exception $e) {
-            $this->error('Error running TRON polling job: ' . $e->getMessage());
-            return 1;
-        }
+
+
+        // Dispatch the job synchronously for testing
+        PollTronTransactions::dispatch();
+//            PollTronTransactions::dispatchSync();
+
 
         return 0;
     }
-} 
+}

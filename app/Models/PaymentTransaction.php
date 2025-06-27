@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentTransaction extends Model
@@ -39,6 +40,7 @@ class PaymentTransaction extends Model
         'return_url',
         'cancel_url',
         'status',
+        'payment_method',
         'stage',
         'gateway_status',
         'gateway_response',
@@ -146,6 +148,8 @@ class PaymentTransaction extends Model
         if ($failureReason) {
             $updateData['failure_reason'] = $failureReason;
         }
+        Log::info("Updated data");
+        Log::info(json_encode($updateData));
 
         $this->update($updateData);
     }
@@ -207,4 +211,4 @@ class PaymentTransaction extends Model
             'updated_at' => $this->updated_at->toISOString(),
         ];
     }
-} 
+}

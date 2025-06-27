@@ -24,7 +24,7 @@ class ClientPaymentService
     /**
      * Create a payment for a client
      */
-    public function createPayment(ApiClient $client, array $paymentData, string $gatewayName = 'payop'): array
+    public function createPayment(ApiClient $client, array $paymentData, string $gatewayName = 'payop',PaymentTransaction $paymentTransaction=null): array
     {
         // Validate client can make payment
         if (!$client->isCurrencyAllowed($paymentData['currency'])) {
@@ -45,14 +45,15 @@ class ClientPaymentService
 
         try {
             // Create transaction record
-            $transaction = $this->createTransactionRecord($client, $paymentData, $gatewayName);
+            $transaction =$paymentTransaction ?? $this->createTransactionRecord($client, $paymentData, $gatewayName);
 
             // Process payment with gateway
             $gateway = $this->gatewayFactory->create($gatewayName);
-            
+
+
             // Prepare gateway payment data
             $gatewayPaymentData = $this->prepareGatewayPaymentData($paymentData, $transaction);
-            
+
             $gatewayResponse = $gateway->processPayment($gatewayPaymentData);
 
             if ($gatewayResponse->isSuccessful()) {
@@ -60,7 +61,9 @@ class ClientPaymentService
                 $transaction->update([
                     'gateway_transaction_id' => $gatewayResponse->getTransactionId(),
                     'payment_url' => $gatewayResponse->paymentUrl ?? null,
-                    'status' => PaymentTransaction::STATUS_PROCESSING,
+                    'status' => PaymentTransaction::STATUS_PENDING,
+                    'amount' =>$gatewayResponse->getAmount(),
+                    'currency' =>$gatewayResponse->getCurrency(),
                     'gateway_status' => $gatewayResponse->getStatus(),
                     'gateway_response' => [
                         'transaction_id' => $gatewayResponse->getTransactionId(),
@@ -197,25 +200,20 @@ class ClientPaymentService
 
     /**
      * Find transaction from webhook data
+     * @throws Exception
      */
     protected function findTransactionFromWebhook(string $gatewayName, array $webhookData): ?PaymentTransaction
     {
-        $gatewayTransactionId = $webhookData['data']['id'] ?? $webhookData['id'] ?? null;
-        $orderId = $webhookData['data']['order_id'] ?? $webhookData['order_id'] ?? null;
-
-        if ($gatewayTransactionId) {
-            return PaymentTransaction::where('gateway_transaction_id', $gatewayTransactionId)
-                ->where('gateway_name', $gatewayName)
-                ->first();
+        $transactionId = $webhookData['transaction']['order']['id'];
+        if (!$transactionId) {
+            throw new Exception("Transaction id not found");
         }
 
-        if ($orderId) {
-            return PaymentTransaction::where('transaction_id', $orderId)
-                ->where('gateway_name', $gatewayName)
-                ->first();
-        }
 
-        return null;
+        return PaymentTransaction::where('transaction_id', $transactionId)
+            ->where('gateway_name', $gatewayName)
+            ->first();
+
     }
 
     /**
@@ -223,35 +221,19 @@ class ClientPaymentService
      */
     protected function updateTransactionFromWebhook(PaymentTransaction $transaction, array $webhookData): void
     {
-        $eventType = $webhookData['type'] ?? $webhookData['event'] ?? 'unknown';
-        $transactionData = $webhookData['data'] ?? $webhookData;
+        $receivedStatus = $webhookData['invoice']['status'];
+        $status = match ($receivedStatus) {
+            1 => PaymentTransaction::STATUS_COMPLETED,
+            default => PaymentTransaction::STATUS_FAILED,
+        };
 
-        $status = PaymentTransaction::STATUS_PENDING;
-        
-        switch ($eventType) {
-            case 'invoice.paid':
-            case 'payment.success':
-                $status = PaymentTransaction::STATUS_COMPLETED;
-                break;
-
-            case 'invoice.failed':
-            case 'payment.failed':
-                $status = PaymentTransaction::STATUS_FAILED;
-                break;
-
-            case 'invoice.refunded':
-            case 'refund.success':
-                $status = PaymentTransaction::STATUS_REFUNDED;
-                break;
-        }
-
-        $transaction->updateStatus($status, $transactionData);
+        $transaction->updateStatus($status, $webhookData);
 
         Log::info('Transaction updated from webhook', [
             'transaction_id' => $transaction->transaction_id,
             'old_status' => $transaction->getOriginal('status'),
             'new_status' => $status,
-            'event_type' => $eventType
+            'event_type' => "payment"
         ]);
     }
 
@@ -322,11 +304,23 @@ class ClientPaymentService
     }
 
     /**
-     * Get client transactions with pagination
+     * Get paginated transactions for a user's API clients
      */
-    public function getClientTransactions(ApiClient $client, array $filters = [], int $perPage = 15): array
+    public function getTransactionsForUser($user, array $filters = [], int $perPage = 15)
     {
-        $query = $client->paymentTransactions()->latest();
+        // Get user's API client IDs
+        $clientIds = ApiClient::where('user_id', $user->id)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($clientIds)) {
+            return PaymentTransaction::whereRaw('1 = 0')->paginate($perPage); // Empty result
+        }
+
+        $query = PaymentTransaction::query()
+            ->whereIn('api_client_id', $clientIds)
+            ->with(['apiClient:id,name']) // Eager load client info
+            ->latest();
 
         // Apply filters
         if (!empty($filters['status'])) {
@@ -345,16 +339,65 @@ class ClientPaymentService
             $query->whereDate('created_at', '<=', $filters['to_date']);
         }
 
-        $transactions = $query->paginate($perPage);
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Get transaction statistics for a user's API clients
+     */
+    public function getTransactionStatsForUser($user): array
+    {
+        $clientIds = ApiClient::where('user_id', $user->id)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($clientIds)) {
+            return [
+                'total_transactions' => 0,
+                'successful_transactions' => 0,
+                'failed_transactions' => 0,
+                'pending_transactions' => 0,
+                'total_amount' => 0,
+                'currencies' => []
+            ];
+        }
+
+        // Get aggregated stats in a single query
+        $stats = PaymentTransaction::whereIn('api_client_id', $clientIds)
+            ->selectRaw('
+                COUNT(*) as total_transactions,
+                SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as successful_transactions,
+                SUM(CASE WHEN status = "failed" THEN 1 ELSE 0 END) as failed_transactions,
+                SUM(CASE WHEN status IN ("pending", "processing") THEN 1 ELSE 0 END) as pending_transactions,
+                SUM(CASE WHEN status = "completed" THEN amount ELSE 0 END) as total_amount
+            ')
+            ->first();
+
+        // Get unique currencies
+        $currencies = PaymentTransaction::whereIn('api_client_id', $clientIds)
+            ->select('currency')
+            ->distinct()
+            ->pluck('currency')
+            ->toArray();
 
         return [
-            'data' => $transactions->items(),
-            'pagination' => [
-                'current_page' => $transactions->currentPage(),
-                'per_page' => $transactions->perPage(),
-                'total' => $transactions->total(),
-                'last_page' => $transactions->lastPage(),
-            ]
+            'total_transactions' => $stats->total_transactions ?? 0,
+            'successful_transactions' => $stats->successful_transactions ?? 0,
+            'failed_transactions' => $stats->failed_transactions ?? 0,
+            'pending_transactions' => $stats->pending_transactions ?? 0,
+            'total_amount' => $stats->total_amount ?? 0,
+            'currencies' => $currencies
         ];
     }
-} 
+
+    /**
+     * Get user's API clients
+     */
+    public function getApiClientsForUser($user)
+    {
+        return ApiClient::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+}

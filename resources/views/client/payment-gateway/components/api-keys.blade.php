@@ -24,14 +24,14 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $client->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                     {{ $client->is_active ? 'Active' : 'Inactive' }}
                                 </span>
-                                @if($client->is_sandbox)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        Sandbox
-                                    </span>
-                                @endif
+{{--                                @if($client->is_sandbox)--}}
+{{--                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">--}}
+{{--                                        Sandbox--}}
+{{--                                    </span>--}}
+{{--                                @endif--}}
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-4">
                                 <div>
                                     <label class="text-sm font-medium text-gray-700">API Key</label>
                                     <div class="mt-1 flex items-center space-x-2">

@@ -46,6 +46,13 @@ return [
                 'mobile_payment'
             ],
         ],
+        'trongrid' => [
+            'secret_key' => env('TRON_NODE_SECRET'),
+            'sandbox' => env('TRON_NODE_SANDBOX', false),
+            'supported_payment_methods' => [
+                'crypto',
+            ],
+        ],
 
         'stripe' => [
             'secret_key' => env('STRIPE_SECRET_KEY'),
@@ -263,4 +270,4 @@ return [
         'connection' => env('PAYMENT_CONNECTION_TIMEOUT', 10),
         'request' => env('PAYMENT_REQUEST_TIMEOUT', 30),
     ],
-]; 
+];

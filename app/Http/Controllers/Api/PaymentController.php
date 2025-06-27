@@ -149,4 +149,45 @@ class PaymentController extends Controller
             'data' => $transaction->toApiResponse()
         ]);
     }
+
+    /**
+     * Check payment status for crypto checkout page (public endpoint)
+     */
+    public function checkPaymentStatus(string $transactionId): JsonResponse
+    {
+        $transaction = PaymentTransaction::where('transaction_id', $transactionId)->first();
+
+        if (!$transaction) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaction not found',
+                'error_code' => 'TRANSACTION_NOT_FOUND'
+            ], 404);
+        }
+
+        // Check if transaction is expired (24 hours)
+        if ($transaction->created_at->addHours(24)->isPast()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'transaction_id' => $transaction->transaction_id,
+                    'status' => 'expired',
+                    'message' => 'Payment session has expired'
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'transaction_id' => $transaction->transaction_id,
+                'status' => strtolower($transaction->status),
+                'amount' => $transaction->amount,
+                'currency' => $transaction->currency,
+                'gateway_name' => $transaction->gateway_name,
+                'created_at' => $transaction->created_at->toISOString(),
+                'updated_at' => $transaction->updated_at->toISOString(),
+            ]
+        ]);
+    }
 }

@@ -14,4 +14,6 @@ Schedule::call(function () {
 
 Schedule::call(function () {
     \App\Jobs\PollTronTransactions::dispatchSync();
-});
+})->everyThirtySeconds();
+
+

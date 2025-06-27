@@ -5,43 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Payment Successful - {{ config('app.name') }}</title>
-    
+
     @vite('resources/css/app.css')
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{asset('assets/css/aos.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/google-fonts.css')}}">
     <link href="{{asset('common/css/fontawesome.min.css')}}" rel="stylesheet"/>
-    
+
     <!-- Custom Styles -->
     <style>
         .success-card {
             background: white;
             border: 1px solid #e5e7eb;
         }
-        
+
         .logo-container {
             background: #10b981;
         }
-        
+
         .success-icon {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             animation: successPulse 2s infinite;
         }
-        
+
         @keyframes successPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        
+
         .amount-highlight {
             color: #059669;
             font-weight: 700;
         }
-        
+
         .success-checkmark {
             animation: checkmarkDraw 0.8s ease-in-out;
         }
-        
+
         @keyframes checkmarkDraw {
             0% { opacity: 0; transform: scale(0.3); }
             50% { opacity: 1; transform: scale(1.1); }
@@ -74,7 +74,7 @@
                         <span>Confirmed</span>
                     </div>
                 </div>
-                
+
                 <div class="space-y-4">
                     <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span class="text-gray-600 text-sm">Amount Paid</span>
@@ -82,7 +82,7 @@
                             {{ number_format($transaction->amount, 2) }} {{ strtoupper($transaction->currency) }}
                         </span>
                     </div>
-                    
+
                     @if($transaction->description)
                     <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span class="text-gray-600 text-sm">Description</span>
@@ -91,28 +91,28 @@
                         </span>
                     </div>
                     @endif
-                    
+
                     <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span class="text-gray-600 text-sm">Transaction ID</span>
                         <span class="text-gray-900 font-mono text-xs bg-gray-100 px-3 py-1 rounded">
                             {{ $transaction->transaction_id }}
                         </span>
                     </div>
-                    
+
                     <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span class="text-gray-600 text-sm">Payment Method</span>
                         <span class="text-gray-900 text-sm font-medium">
-                            {{ ucfirst(str_replace('_', ' ', $transaction->gateway_name ?? 'N/A')) }}
+                            {{ ucfirst(str_replace('_', ' ', $transaction->payment_method ?? 'N/A')) }}
                         </span>
                     </div>
-                    
+
                     <div class="flex justify-between items-center py-2">
                         <span class="text-gray-600 text-sm">Date & Time</span>
                         <span class="text-gray-900 text-sm">
                             {{ $transaction->updated_at->format('M d, Y h:i A') }}
                         </span>
                     </div>
-                    
+
                     @if($transaction->customer_email)
                     <div class="flex justify-between items-center py-2">
                         <span class="text-gray-600 text-sm">Email</span>
@@ -138,7 +138,7 @@
                     Return to Merchant
                 </a>
                 @endif
-                
+
                 <button onclick="window.print()" class="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-200 shadow-sm hover:shadow-md">
                     <i class="fas fa-download mr-2"></i>
                     Download Receipt
@@ -181,7 +181,7 @@
                 easing: 'ease-in-out',
                 once: true
             });
-            
+
             // Auto-redirect after 10 seconds if return URL exists
             @if($transaction && $transaction->return_url)
             setTimeout(function() {
@@ -193,4 +193,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

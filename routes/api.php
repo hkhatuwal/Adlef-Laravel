@@ -31,21 +31,24 @@ Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
     // New payment generation endpoint
     Route::post('/generate', [\App\Http\Controllers\Api\PaymentController::class, 'generatePaymentLink']);
     Route::get('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
-    
+
     // Payop routes
     Route::prefix('payop')->group(function () {
         Route::post('/create', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'createPayment']);
         Route::get('/payment-methods', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getPaymentMethods']);
         Route::get('/currencies', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getSupportedCurrencies']);
         Route::get('/config', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getConfigStatus']);
-        
+
         // Transaction management
         Route::get('/transactions', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransactions']);
         Route::get('/transactions/{transactionId}', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransaction']);
     });
 });
 
+// Public payment status check (no authentication required for checkout page)
+Route::get('/payment/status/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'checkPaymentStatus']);
+
 // Webhook routes (no authentication required as they come from payment gateways)
 Route::prefix('webhooks')->group(function () {
-    Route::post('/payop', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'handleWebhook']);
+    Route::any('/payop', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'handleWebhook']);
 });

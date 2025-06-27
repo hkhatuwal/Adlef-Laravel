@@ -194,27 +194,9 @@ class PayopController extends Controller
         $payload = $request->getContent();
         $signature = $request->header('X-Payop-Signature') ?? $request->header('signature');
 
-        if (!$signature) {
-            Log::warning('Payop webhook received without signature');
-            return response()->json(['message' => 'Invalid signature'], 400);
-        }
 
         try {
-            $isValid = $this->paymentService->verifyWebhookSignature('payop', $payload, $signature);
-
-            if (!$isValid) {
-                Log::warning('Invalid Payop webhook signature');
-                return response()->json(['message' => 'Invalid signature'], 400);
-            }
-
             $data = json_decode($payload, true);
-
-            Log::info('Payop webhook received and verified', [
-                'event_type' => $data['type'] ?? $data['event'] ?? 'unknown',
-                'transaction_id' => $data['data']['id'] ?? $data['id'] ?? null,
-                'status' => $data['data']['status'] ?? $data['status'] ?? null
-            ]);
-
             // Handle webhook through client payment service
             $this->clientPaymentService->handleGatewayWebhook('payop', $data);
 

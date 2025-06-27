@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentTransaction;
 use App\Services\ClientPaymentService;
 use App\Models\ApiClient;
 use Illuminate\Http\Request;
@@ -23,83 +24,30 @@ class PaymentGatewayController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
-        // Get user's API clients for the transactions
-        $apiClients = ApiClient::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
-        
-        // Get transactions for all user's API clients
-        $transactions = collect();
-        $totalTransactions = 0;
-        
-        foreach ($apiClients as $client) {
-            $clientTransactions = $this->paymentService->getClientTransactions($client, [
-                'status' => $request->get('status'),
-                'currency' => $request->get('currency'),
-                'from_date' => $request->get('from_date'),
-                'to_date' => $request->get('to_date'),
-            ], 50);
-            
-            $transactions = $transactions->merge($clientTransactions['data']);
-            $totalTransactions += $clientTransactions['pagination']['total'];
-        }
-        
-        // Sort transactions by created_at desc
-        $transactions = $transactions->sortByDesc('created_at');
-        
-        // Get summary statistics
-        $stats = $this->getTransactionStats($apiClients);
-        
+
+        // Get pagination parameters and filters
+        $perPage = 15;
+        $filters = [
+            'status' => $request->get('status'),
+            'currency' => $request->get('currency'),
+            'from_date' => $request->get('from_date'),
+            'to_date' => $request->get('to_date'),
+        ];
+
+        // Use service methods to get data
+        $transactions = $this->paymentService->getTransactionsForUser($user, $filters, $perPage);
+        $apiClients = $this->paymentService->getApiClientsForUser($user);
+        $stats = $this->paymentService->getTransactionStatsForUser($user);
+
         return view('client.payment-gateway.index', compact(
-            'transactions', 
-            'apiClients', 
-            'stats', 
-            'totalTransactions'
+            'transactions',
+            'apiClients',
+            'stats',
+            'filters'
         ));
     }
 
-    /**
-     * Get transaction statistics
-     */
-    private function getTransactionStats($apiClients)
-    {
-        $stats = [
-            'total_transactions' => 0,
-            'successful_transactions' => 0,
-            'failed_transactions' => 0,
-            'pending_transactions' => 0,
-            'total_amount' => 0,
-            'currencies' => []
-        ];
 
-        foreach ($apiClients as $client) {
-            $clientStats = $client->paymentTransactions()
-                ->selectRaw('
-                    COUNT(*) as total,
-                    SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as successful,
-                    SUM(CASE WHEN status = "failed" THEN 1 ELSE 0 END) as failed,
-                    SUM(CASE WHEN status IN ("pending", "processing") THEN 1 ELSE 0 END) as pending,
-                    SUM(CASE WHEN status = "completed" THEN amount ELSE 0 END) as total_amount
-                ')
-                ->first();
-
-            $stats['total_transactions'] += $clientStats->total ?? 0;
-            $stats['successful_transactions'] += $clientStats->successful ?? 0;
-            $stats['failed_transactions'] += $clientStats->failed ?? 0;
-            $stats['pending_transactions'] += $clientStats->pending ?? 0;
-            $stats['total_amount'] += $clientStats->total_amount ?? 0;
-
-            // Get currencies
-            $currencies = $client->paymentTransactions()
-                ->select('currency')
-                ->distinct()
-                ->pluck('currency')
-                ->toArray();
-            
-            $stats['currencies'] = array_unique(array_merge($stats['currencies'], $currencies));
-        }
-
-        return $stats;
-    }
 
     /**
      * Show transaction details
@@ -107,22 +55,20 @@ class PaymentGatewayController extends Controller
     public function showTransaction(Request $request, $transactionId)
     {
         $user = Auth::user();
+        $apiClients = $this->paymentService->getApiClientsForUser($user);
         $transaction = null;
-        
-        // Find transaction in user's API clients
-        $apiClients = ApiClient::where('user_id', $user->id)->get();
-        
+
         foreach ($apiClients as $client) {
             $transaction = $this->paymentService->getTransactionForClient($client, $transactionId);
             if ($transaction) {
                 break;
             }
         }
-        
+
         if (!$transaction) {
             abort(404, 'Transaction not found');
         }
-        
+
         return view('client.payment-gateway.transaction-details', compact('transaction'));
     }
 
@@ -132,7 +78,7 @@ class PaymentGatewayController extends Controller
     public function storeApiKey(Request $request)
     {
         $user = Auth::user();
-        
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -196,13 +142,13 @@ class PaymentGatewayController extends Controller
     public function regenerateApiKey(ApiClient $apiClient)
     {
         $user = Auth::user();
-        
+
         if ($apiClient->user_id !== $user->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
         $credentials = ApiClient::generateCredentials();
-        
+
         $apiClient->update([
             'api_key' => $credentials['api_key'],
             'secret_key' => $credentials['secret_key'],
@@ -220,7 +166,7 @@ class PaymentGatewayController extends Controller
     public function toggleApiClientStatus(Request $request, ApiClient $apiClient)
     {
         $user = Auth::user();
-        
+
         if ($apiClient->user_id !== $user->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
@@ -235,8 +181,8 @@ class PaymentGatewayController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $validated['is_active'] 
-                ? 'API key activated successfully' 
+            'message' => $validated['is_active']
+                ? 'API key activated successfully'
                 : 'API key deactivated successfully'
         ]);
     }
@@ -247,7 +193,7 @@ class PaymentGatewayController extends Controller
     public function deleteApiClient(ApiClient $apiClient)
     {
         $user = Auth::user();
-        
+
         if ($apiClient->user_id !== $user->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
@@ -259,4 +205,4 @@ class PaymentGatewayController extends Controller
             'message' => 'API key deleted successfully'
         ]);
     }
-} 
+}
