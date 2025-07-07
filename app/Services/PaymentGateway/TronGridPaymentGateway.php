@@ -4,6 +4,7 @@ namespace App\Services\PaymentGateway;
 
 use App\Contracts\PaymentResponse;
 use App\Models\Currency;
+use App\Models\TGTemporaryWallet;
 use App\Services\TronService;
 use App\Utils\CurrencyConverter;
 use Illuminate\Support\Str;
@@ -77,7 +78,10 @@ class TronGridPaymentGateway extends AbstractPaymentGateway
         $this->logActivity('process_payment', $paymentData);
 
         // Generate unique wallet address for this transaction
-        $walletAddress = $this->generateTemporaryWallet();
+
+        $temporaryWallet = $this->generateTemporaryWallet();
+
+        $walletAddress = $temporaryWallet->wallet_address;
 
         // Generate the payment URL for the crypto checkout page
         $paymentUrl = url('/payment/crypto/' . $walletAddress);
@@ -118,12 +122,6 @@ class TronGridPaymentGateway extends AbstractPaymentGateway
     public function refundPayment(string $transactionId, float $amount, array $options = []): PaymentResponse
     {
         return $this->createSuccessResponse([
-            'transaction_id' => $response['data']['id'] ?? $response['id'],
-            'status' => strtolower($response['data']['status'] ?? $response['status']),
-            'amount' => $amount,
-            'currency' => $options['currency'] ?? 'USD',
-            'message' => 'Refund processed successfully',
-            'raw_response' => $response
         ]);
     }
 
@@ -176,11 +174,19 @@ class TronGridPaymentGateway extends AbstractPaymentGateway
      * @throws \Exception
      */
 
-    private function generateTemporaryWallet(): string
+    private function generateTemporaryWallet(): TGTemporaryWallet
     {
         $wallet = $this->tronService->createTronAccount();
-
-        return $wallet['address']['base58'];
+        if (!isset($wallet)) {
+            throw new \Exception("TronAccount creation failed");
+        }
+        return TGTemporaryWallet::create([
+            'public_key' => $wallet['publicKey'],
+            'private_key' => $wallet['privateKey'],
+            'wallet_address' => $wallet['address']['base58'],
+            'wallet_address_hex' => $wallet['address']['hex'],
+            'raw_response' => $wallet
+        ]);
 
 
     }
