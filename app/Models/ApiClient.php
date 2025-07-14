@@ -98,14 +98,17 @@ class ApiClient extends Model
      */
     public function isIpAllowed(string $ip): bool
     {
-        $allowedIps=json_decode($this->allowed_ips);
+        $allowedIps = is_array($this->allowed_ips)
+            ? $this->allowed_ips
+            : json_decode($this->allowed_ips, true);
+
         if (empty($allowedIps)) {
             return true; // No IP restriction
         }
 
-
         return in_array($ip, $allowedIps);
     }
+
 
     /**
      * Check if currency is allowed
@@ -185,7 +188,7 @@ class ApiClient extends Model
         if (!$this->daily_limit || $this->daily_limit <= 0) {
             return 0;
         }
-        
+
         return min(($this->daily_used / $this->daily_limit) * 100, 100);
     }
 
@@ -197,7 +200,7 @@ class ApiClient extends Model
         if (!$this->monthly_limit || $this->monthly_limit <= 0) {
             return 0;
         }
-        
+
         return min(($this->monthly_used / $this->monthly_limit) * 100, 100);
     }
 
@@ -233,11 +236,11 @@ class ApiClient extends Model
         if (!$this->is_active) {
             return 'red';
         }
-        
+
         if ($this->isExpired()) {
             return 'orange';
         }
-        
+
         return 'green';
     }
 
