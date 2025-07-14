@@ -127,6 +127,87 @@ Content-Type: application/json</code></pre>
         </div>
     </div>
 
+    <!-- Get Payment Details API -->
+    <div class="bg-white border rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fa-solid fa-search text-blue-600 mr-2"></i>
+            Get Payment Details
+        </h3>
+
+        <div class="space-y-4">
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Endpoint</h4>
+                <div class="bg-gray-50 rounded-lg p-3 border">
+                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm font-mono">GET</span>
+                    <span class="ml-3 font-mono text-gray-700">{{ url('/api/v1/payment/details/{transactionId}') }}</span>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Path Parameters</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Parameter</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Required</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-4 py-3 text-sm font-mono text-gray-900">transactionId</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">string</td>
+                            <td class="px-4 py-3 text-sm text-red-600">Required</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">Transaction ID (e.g., txn_tIO5XClz1fmjQ57a)</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Example Request</h4>
+                <div class="bg-gray-900 rounded-lg p-4 relative">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-green-400 text-sm font-medium">cURL Example</span>
+                        <button class="copy-btn text-green-400 hover:text-green-300 text-sm" data-copy="curl-details">
+                            <i class="fa-solid fa-copy mr-1"></i>Copy
+                        </button>
+                    </div>
+                    <pre class="text-green-400 text-sm overflow-x-auto" id="curl-details-example"><code>curl --location '{{ url('/api/v1/payment/details/txn_tIO5XClz1fmjQ57a') }}' \
+--header 'X-API-Key: ak_BOV8leQRfljCq68WcHB9Zm6dzMM9eEZH' \
+--header 'X-Secret-Key: sk_Ov0yxZwW5gnxFbfDCaudJWp2ADSxE6Fo' \
+--header 'Content-Type: application/json'</code></pre>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Response Format</h4>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <pre class="text-sm text-gray-800"><code>{
+    "success": true,
+    "data": {
+        "transaction_id": "txn_tIO5XClz1fmjQ57a",
+        "status": "pending",
+        "amount": "9.99",
+        "currency": "USDT",
+        "description": "Test payment",
+        "customer_email": "customer@example.com",
+        "customer_name": null,
+        "payment_url": "http://localhost:8000/payment/crypto/TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
+        "gateway_transaction_id": "TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
+        "client_order_id": null,
+        "created_at": "2025-06-30T11:51:35.000000Z",
+        "updated_at": "2025-06-30T11:51:41.000000Z"
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Response Codes Section -->
     <div class="bg-white border rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
