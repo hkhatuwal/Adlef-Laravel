@@ -208,6 +208,134 @@ Content-Type: application/json</code></pre>
         </div>
     </div>
 
+    <!-- Webhooks Section -->
+    <div class="bg-white border rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fa-solid fa-webhook text-orange-600 mr-2"></i>
+            Webhooks
+        </h3>
+
+        <div class="space-y-6">
+            <div>
+                <p class="text-gray-700 mb-4">
+                    Webhooks are HTTP callbacks that notify your application when payment events occur.
+                    Our system will automatically send webhook notifications to your registered webhook URLs
+                    when payment status changes.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Webhook Configuration</h4>
+                <p class="text-gray-700 mb-4">
+                    Configure your webhook URLs in the API Keys section. You can add multiple webhook URLs
+                    to receive notifications at different endpoints.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Webhook Request Format</h4>
+                <p class="text-gray-700 mb-4">
+                    When a payment event occurs, we'll send a POST request to your webhook URL with the following headers:
+                </p>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-900">Webhook Headers</span>
+                        <button class="copy-btn text-sm text-blue-600 hover:text-blue-800" data-copy="webhook-headers">
+                            <i class="fa-solid fa-copy mr-1"></i>Copy
+                        </button>
+                    </div>
+                    <pre class="text-sm text-gray-800 bg-white p-3 rounded border"><code>X-Signature: generated_signature_hash
+X-Event-Type: payment.{status}
+Content-Type: application/json</code></pre>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Event Types</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-200 rounded-lg">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Event Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-4 py-3 text-sm font-mono text-gray-900">payment.pending</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">Payment is awaiting completion</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-4 py-3 text-sm font-mono text-gray-900">payment.completed</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">Payment has been successfully completed</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-sm font-mono text-gray-900">payment.failed</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">Payment has failed</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-4 py-3 text-sm font-mono text-gray-900">payment.expired</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">Payment has expired</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Webhook Payload</h4>
+                <p class="text-gray-700 mb-4">
+                    The webhook payload contains the complete transaction information:
+                </p>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-900">Example Webhook Payload</span>
+                        <button class="copy-btn text-sm text-blue-600 hover:text-blue-800" data-copy="webhook-payload">
+                            <i class="fa-solid fa-copy mr-1"></i>Copy
+                        </button>
+                    </div>
+                    <pre class="text-sm text-gray-800 bg-white p-3 rounded border"><code>{
+    "transaction_id": "txn_tIO5XClz1fmjQ57a",
+    "status": "completed",
+    "amount": "9.99",
+    "currency": "USDT",
+    "description": "Test payment",
+    "customer_email": "customer@example.com",
+    "customer_name": null,
+    "payment_url": "http://localhost:8000/payment/crypto/TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
+    "gateway_transaction_id": "TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
+    "client_order_id": null,
+    "created_at": "2025-06-30T11:51:35.000000Z",
+    "updated_at": "2025-06-30T11:51:41.000000Z"
+}</code></pre>
+                </div>
+            </div>
+
+
+
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Webhook Response</h4>
+                <p class="text-gray-700 mb-4">
+                    Your webhook endpoint should respond with a 200 status code to acknowledge receipt.
+                    If we don't receive a 200 response within 30 seconds, we'll consider the webhook delivery failed.
+                </p>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="fa-solid fa-exclamation-triangle text-yellow-600 mr-2 mt-1"></i>
+                        <div>
+                            <h5 class="font-medium text-yellow-800">Important Notes</h5>
+                            <ul class="text-sm text-yellow-700 mt-1 space-y-1">
+                                <li>• Webhook delivery timeout is 30 seconds</li>
+                                <li>• Handle duplicate webhook deliveries gracefully</li>
+                                <li>• Respond with 200 status code for successful processing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Response Codes Section -->
     <div class="bg-white border rounded-lg p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
