@@ -33,16 +33,16 @@ Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
     Route::get('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
 
     // Payop routes
-    Route::prefix('payop')->group(function () {
-        Route::post('/create', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'createPayment']);
-        Route::get('/payment-methods', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getPaymentMethods']);
-        Route::get('/currencies', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getSupportedCurrencies']);
-        Route::get('/config', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getConfigStatus']);
-
-        // Transaction management
-        Route::get('/transactions', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransactions']);
-        Route::get('/transactions/{transactionId}', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransaction']);
-    });
+//    Route::prefix('payop')->group(function () {
+//        Route::post('/create', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'createPayment']);
+//        Route::get('/payment-methods', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getPaymentMethods']);
+//        Route::get('/currencies', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getSupportedCurrencies']);
+//        Route::get('/config', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getConfigStatus']);
+//
+//        // Transaction management
+//        Route::get('/transactions', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransactions']);
+//        Route::get('/transactions/{transactionId}', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'getTransaction']);
+//    });
 });
 
 // Public payment status check (no authentication required for checkout page)

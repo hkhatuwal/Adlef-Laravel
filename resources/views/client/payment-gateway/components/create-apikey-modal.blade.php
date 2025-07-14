@@ -24,8 +24,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Environment</label>
                             <select name="is_sandbox"
                                     class="w-full px-3 py-2 text-sm border-gray-300 rounded-md focus:ring-black focus:border-black">
-                                <option value="1">Sandbox</option>
-{{--                                <option value="0">Production</option>--}}
+{{--                                <option value="1">Sandbox</option>--}}
+                                <option value="0">Production</option>
                             </select>
                         </div>
                     </div>
