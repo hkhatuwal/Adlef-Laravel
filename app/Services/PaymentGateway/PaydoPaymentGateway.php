@@ -5,7 +5,7 @@ namespace App\Services\PaymentGateway;
 use App\Contracts\PaymentResponse;
 use Illuminate\Support\Str;
 
-class PayopPaymentGateway extends AbstractPaymentGateway
+class PaydoPaymentGateway extends AbstractPaymentGateway
 {
     protected array $supportedFeatures = [
         'refunds',
@@ -22,7 +22,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
      */
     public function getProviderName(): string
     {
-        return 'payop';
+        return 'paydo';
     }
 
     /**
@@ -36,14 +36,14 @@ class PayopPaymentGateway extends AbstractPaymentGateway
 
         foreach ($requiredKeys as $key) {
             if (empty($this->config[$key])) {
-                throw new \InvalidArgumentException("Payop configuration missing required key: {$key}");
+                throw new \InvalidArgumentException("Paydo configuration missing required key: {$key}");
             }
         }
 
-        // Payop API base URL
+        // Paydo API base URL
         $this->baseUrl = $this->config['sandbox'] ?? false
-            ? 'https://sandbox.payop.com/v1'
-            : 'https://api.payop.com/v1';
+            ? 'https://sandbox.paydo.com/v1'
+            : 'https://api.paydo.com/v1';
 
         $this->headers = [
             'Content-Type' => 'application/json',
@@ -63,42 +63,31 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         $this->logActivity('process_payment', $paymentData);
 
         // Generate unique order ID
-        $generateInvoiceId =$this->generateInvoiceId($paymentData);
+        $generateInvoiceId = $this->generateInvoiceId($paymentData);
 
-        $data = [
-            'invoiceIdentifier' =>$generateInvoiceId,
-            'customer' => [
-                'email' => $paymentData['customer_email'] ?? '',
-                'name' => $paymentData['customer_name'] ?? '',
-                'phone' => $paymentData['customer_phone'] ?? '',
-                'ip' => $paymentData['customer_ip'] ?? '192.168.1.1',
-            ],
-            'paymentMethod' => '700001',
-            "checkStatusUrl"=> "https://your.site/check-status/{{txid}}"
-        ];
 
         // Add metadata if provided
         if (isset($paymentData['metadata'])) {
             $data['metadata'] = $paymentData['metadata'];
         }
 
-        $response = $this->makeRequest('post', '/checkout/create', $data);
+        $response = $this->makeRequest('get', '/invoices/'.$generateInvoiceId);
 
         if ($response === null) {
-            return $this->createErrorResponse('Failed to process payment', 'PAYOP_API_ERROR');
+            return $this->createErrorResponse('Failed to process payment', 'PAYDO_API_ERROR');
         }
 
         if (isset($response['error']) || (isset($response['status']) && $response['status'] === 'error')) {
             return $this->createErrorResponse(
                 $response['message'] ?? $response['error']['message'] ?? 'Payment failed',
-                $response['error']['code'] ?? 'PAYOP_ERROR',
+                $response['error']['code'] ?? 'PAYDO_ERROR',
                 $response
             );
         }
 
         return $this->createSuccessResponse([
-            'transaction_id' => $response['data']['txid'] ,
-            'status' => strtolower($response['data']['isSuccess'] ?? 'pending'),
+            'transaction_id' => $response['data']['orderIdentifier'],
+            'status' => strtolower($response['data']['status'] ?? 'pending'),
             'amount' => $paymentData['amount'],
             'payment_url' => $this->getPaymentUrl($generateInvoiceId),
             'currency' => $paymentData['currency'] ?? 'USD',
@@ -124,7 +113,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         ]);
 
         $data = [
-            'amount' => $amount , // Convert to cents
+            'amount' => $amount,
             'currency' => strtoupper($options['currency'] ?? 'USD'),
             'description' => $options['description'] ?? 'Refund processed',
         ];
@@ -136,13 +125,13 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         $response = $this->makeRequest('post', "/transactions/{$transactionId}/refund", $data);
 
         if ($response === null) {
-            return $this->createErrorResponse('Failed to process refund', 'PAYOP_API_ERROR');
+            return $this->createErrorResponse('Failed to process refund', 'PAYDO_API_ERROR');
         }
 
         if (isset($response['error']) || (isset($response['status']) && $response['status'] === 'error')) {
             return $this->createErrorResponse(
                 $response['message'] ?? $response['error']['message'] ?? 'Refund failed',
-                $response['error']['code'] ?? 'PAYOP_ERROR',
+                $response['error']['code'] ?? 'PAYDO_ERROR',
                 $response
             );
         }
@@ -168,13 +157,13 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         $response = $this->makeRequest('get', "/invoices/{$transactionId}");
 
         if ($response === null) {
-            return $this->createErrorResponse('Failed to fetch payment status', 'PAYOP_API_ERROR');
+            return $this->createErrorResponse('Failed to fetch payment status', 'PAYDO_API_ERROR');
         }
 
         if (isset($response['error']) || (isset($response['status']) && $response['status'] === 'error')) {
             return $this->createErrorResponse(
                 $response['message'] ?? $response['error']['message'] ?? 'Failed to fetch payment status',
-                $response['error']['code'] ?? 'PAYOP_ERROR',
+                $response['error']['code'] ?? 'PAYDO_ERROR',
                 $response
             );
         }
@@ -184,7 +173,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         return $this->createSuccessResponse([
             'transaction_id' => $data['id'],
             'status' => strtolower($data['status']),
-            'amount' => ($data['amount'] ?? 0), // Convert from cents
+            'amount' => ($data['amount'] ?? 0),
             'currency' => $data['currency'] ?? 'USD',
             'message' => 'Payment status retrieved successfully',
             'raw_response' => $response
@@ -201,7 +190,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
      */
     public function verifyWebhookSignature(string $payload, string $signature, string $secret): bool
     {
-        // Payop webhook signature verification
+        // Paydo webhook signature verification
         $expectedSignature = hash_hmac('sha256', $payload, $secret);
         return hash_equals($expectedSignature, $signature);
     }
@@ -232,7 +221,7 @@ class PayopPaymentGateway extends AbstractPaymentGateway
     }
 
     /**
-     * Generate signature for Payop API
+     * Generate signature for Paydo API
      *
      * @param string $orderId
      * @param int $amount
@@ -267,9 +256,9 @@ class PayopPaymentGateway extends AbstractPaymentGateway
             'publicKey' => $this->config['public_key'],
             'order' => [
                 'id' => $orderId,
-                'amount' => $paymentData['amount'] ,
+                'amount' => $paymentData['amount'],
                 'currency' => strtoupper($paymentData['currency'] ?? 'USD'),
-                'description' => $paymentData['description'] ?? 'Payment via Payop',
+                'description' => $paymentData['description'] ?? 'Payment via Paydo',
             ],
             'payer' => [
                 'email' => $paymentData['customer_email'] ?? '',
@@ -283,14 +272,15 @@ class PayopPaymentGateway extends AbstractPaymentGateway
 
         $response = $this->makeRequest('post', '/checkout/create', $data);
 
+
         if ($response === null) {
-            return $this->createErrorResponse('Failed to create hosted payment', 'PAYOP_API_ERROR');
+            return $this->createErrorResponse('Failed to create hosted payment', 'PAYDO_API_ERROR');
         }
 
         if (isset($response['error'])) {
             return $this->createErrorResponse(
                 $response['error']['message'] ?? 'Failed to create hosted payment',
-                $response['error']['code'] ?? 'PAYOP_ERROR',
+                $response['error']['code'] ?? 'PAYDO_ERROR',
                 $response
             );
         }
@@ -341,31 +331,29 @@ class PayopPaymentGateway extends AbstractPaymentGateway
         ];
     }
 
-
     /**
      * Generates An Order Id For the Payment
      * @param array $paymentData
      * @return string
      * @throws \Exception
      */
-
     private function generateInvoiceId(array $paymentData): string
     {
-        $orderId=$paymentData['order_id'];
+        $orderId = $paymentData['order_id'];
         $data = [
             'publicKey' => $this->config['public_key'],
             'order' => [
                 'id' => $orderId,
-                'amount' => floatval($paymentData['amount']) , // Convert to cents
+                'amount' => floatval($paymentData['amount']),
                 'currency' => strtoupper($paymentData['currency'] ?? 'USD'),
-                'description' => $paymentData['description'] ?? 'Payment via Payop',
+                'description' => $paymentData['description'] ?? 'Payment via Paydo',
                 'items' => $paymentData['items'] ?? [
-                        [
-                            'id' => '1',
-                            'name' => $paymentData['description'] ?? 'Payment',
-                            'price' => $paymentData['amount']
-                        ]
+                    [
+                        'id' => '1',
+                        'name' => $paymentData['description'] ?? 'Payment',
+                        'price' => $paymentData['amount']
                     ]
+                ]
             ],
             'payer' => [
                 'email' => $paymentData['customer_email'] ?? '',
@@ -373,23 +361,20 @@ class PayopPaymentGateway extends AbstractPaymentGateway
                 'phone' => $paymentData['customer_phone'] ?? '',
             ],
             'language' => $paymentData['language'] ?? 'en',
+            'paymentMethod' => '700001',
             'resultUrl' => $paymentData['return_url'] ?? url('/payment/result'),
             'failPath' => $paymentData['cancel_url'] ?? url('/payment/cancel'),
             'signature' => $this->generateSignature($orderId, floatval($paymentData['amount']), strtoupper($paymentData['currency'] ?? 'USD')),
         ];
 
+        $response = $this->makeRequest('post', '/invoices/create', $data);
 
-      $response= $this->makeRequest('post', '/invoices/create', $data);
+        if ($response === null) {
+            throw new \Exception( 'Failed to create payment');
+        }
 
-      if($response === null) {
-        throw new \Exception('Failed to create  payment');
-      }
-
-      return  $response['data'];
-
-
+        return $response['data'];
     }
-
 
     /**
      * Get Payment Url
@@ -397,16 +382,9 @@ class PayopPaymentGateway extends AbstractPaymentGateway
      * @return string
      * @throws \Exception
      */
-
     private function getPaymentUrl(string $orderId): string
     {
-      $response= $this->makeRequest('get', '/checkout/check-invoice-status/'.$orderId);
-
-      if($response === null) {
-        throw new \Exception('Failed to get payment url');
-      }
-
-      return  $response['data']['url'];
+        return 'https://checkout.paydo.com/en-IN/payment/'.$orderId;
     }
 
     /**
@@ -418,31 +396,33 @@ class PayopPaymentGateway extends AbstractPaymentGateway
      */
     public function parseWebhookData(array $webhookData): \App\Contracts\WebhookData
     {
-        // Extract transaction ID from Payop webhook structure
-        $transactionId = $webhookData['transaction']['order']['id'] ?? null;
+        // Extract transaction ID from Paydo webhook structure
+        // Note: This structure may need to be adjusted based on actual Paydo webhook format
+        $transactionId = $webhookData['order_id'] ?? $webhookData['transaction_id'] ?? null;
         if (!$transactionId) {
-            throw new \Exception('Transaction ID not found in Payop webhook data');
+            throw new \Exception('Transaction ID not found in Paydo webhook data');
         }
 
-        // Extract status from Payop webhook structure
-        $payopStatus = $webhookData['invoice']['status'] ?? null;
-        if ($payopStatus === null) {
-            throw new \Exception('Invoice status not found in Payop webhook data');
+        // Extract status from Paydo webhook structure
+        $paydoStatus = $webhookData['status'] ?? null;
+        if ($paydoStatus === null) {
+            throw new \Exception('Status not found in Paydo webhook data');
         }
 
-        // Map Payop status to standardized status
-        $status = match ($payopStatus) {
-            1 => 'completed',
-            2 => 'failed',
-            3 => 'cancelled',
+        // Map Paydo status to standardized status
+        // Note: This mapping may need to be adjusted based on actual Paydo status values
+        $status = match (strtolower($paydoStatus)) {
+            'success', 'completed', 'paid' => 'completed',
+            'failed', 'error', 'declined' => 'failed',
+            'cancelled', 'canceled' => 'cancelled',
             default => 'pending',
         };
 
         // Extract additional data
-        $amount = $webhookData['invoice']['amount'] ?? null;
-        $currency = $webhookData['invoice']['currency'] ?? null;
-        $gatewayTransactionId = $webhookData['transaction']['id'] ?? null;
-        $eventType = $webhookData['type'] ?? 'payment';
+        $amount = $webhookData['amount'] ?? null;
+        $currency = $webhookData['currency'] ?? null;
+        $gatewayTransactionId = $webhookData['gateway_transaction_id'] ?? $webhookData['id'] ?? null;
+        $eventType = $webhookData['type'] ?? $webhookData['event'] ?? 'payment';
 
         return new \App\Contracts\WebhookData(
             transactionId: $transactionId,

@@ -41,6 +41,14 @@ interface PaymentGateway
     public function verifyWebhookSignature(string $payload, string $signature, string $secret): bool;
 
     /**
+     * Parse webhook data and return standardized webhook information
+     *
+     * @param array $webhookData
+     * @return WebhookData
+     */
+    public function parseWebhookData(array $webhookData): WebhookData;
+
+    /**
      * Get supported payment methods
      *
      * @return array

@@ -423,7 +423,7 @@
                     <img src="{{ asset('assets/images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 mx-auto object-contain border-2 w-full">
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 mb-1">Cryptocurrency Payment</h1>
-                <p class="text-gray-600 text-sm">Send payment to the address below</p>
+                <p class="text-gray-600 text-sm">Send exact amount to the address below</p>
             </div>
 
             <!-- Warning Message -->
@@ -482,15 +482,21 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Amount to Send</label>
-                            <div class="text-2xl font-bold text-gray-900">
-                                {{ number_format($transaction->amount, 2) }} {{ strtoupper($transaction->currency) }}
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Exact Amount to Send</label>
+                            <div class="text-2xl font-bold text-orange-600 mb-1">
+                                {{ number_format($cryptoOrder->fingerprint_amount, 1) }} {{ strtoupper($cryptoOrder->payment_currency) }}
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Original: {{ number_format($cryptoOrder->original_amount, 2) }} {{ strtoupper($cryptoOrder->original_currency) }}
+                            </div>
+                            <div class="text-xs text-red-600 font-medium mt-1">
+                                ⚠️ Send EXACTLY this amount (including all decimals)
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Network</label>
-                            <div class="text-gray-900 font-medium">TRON (TRX)</div>
+                            <div class="text-gray-900 font-medium">{{ $cryptoOrder->network }} ({{ $cryptoOrder->payment_currency }})</div>
                         </div>
                     </div>
                 </div>
@@ -505,9 +511,10 @@
                 <ol class="list-decimal list-inside space-y-2 text-gray-700">
                     <li>Copy the wallet address above or scan the QR code</li>
                     <li>Open your crypto wallet (Trust Wallet, TronLink, etc.)</li>
-                    <li>Send exactly <strong>{{ number_format($transaction->amount, 2) }} {{ strtoupper($transaction->currency) }}</strong> to the provided address</li>
-                    <li>Use TRON network (TRC20) for the transaction</li>
+                    <li><strong class="text-red-600">CRITICAL:</strong> Send exactly <strong class="text-orange-600">{{ number_format($cryptoOrder->fingerprint_amount, 8) }} {{ strtoupper($cryptoOrder->payment_currency) }}</strong> (including all 8 decimals)</li>
+                    <li>Use TRON network (TRC20) for USDT transactions</li>
                     <li>Payment confirmation may take 1-5 minutes</li>
+                    <li><strong>Important:</strong> Sending any other amount will result in payment failure</li>
                 </ol>
             </div>
 
@@ -517,30 +524,44 @@
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600 text-sm">Amount</span>
-                        <span class="text-lg font-bold amount-highlight">
-                            {{ number_format($transaction->amount, 2) }} {{ strtoupper($transaction->currency) }}
+                        <span class="text-gray-600 text-sm">Original Amount</span>
+                        <span class="text-lg font-semibold text-gray-700">
+                            {{ number_format($cryptoOrder->original_amount, 2) }} {{ strtoupper($cryptoOrder->original_currency) }}
                         </span>
                     </div>
 
-                    @if($transaction->description)
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 text-sm">Exact Amount to Send</span>
+                        <span class="text-lg font-bold text-orange-600">
+                            {{ number_format($cryptoOrder->fingerprint_amount, 8) }} {{ strtoupper($cryptoOrder->payment_currency) }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 text-sm">Fingerprint Code</span>
+                        <span class="text-gray-900 font-mono text-xs bg-yellow-100 px-2 py-1 rounded">
+                            #{{ $cryptoOrder->fingerprint_code }}
+                        </span>
+                    </div>
+
+                    @if($cryptoOrder->description)
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 text-sm">Description</span>
-                        <span class="text-gray-900 text-sm font-medium">{{ Str::limit($transaction->description, 30) }}</span>
+                        <span class="text-gray-900 text-sm font-medium">{{ Str::limit($cryptoOrder->description, 30) }}</span>
                     </div>
                     @endif
 
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600 text-sm">Transaction ID</span>
+                        <span class="text-gray-600 text-sm">Order ID</span>
                         <span class="text-gray-900 font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                            {{ Str::limit($transaction->transaction_id, 20) }}
+                            {{ Str::limit($cryptoOrder->order_id, 20) }}
                         </span>
                     </div>
 
-                    @if($transaction->customer_email)
+                    @if($cryptoOrder->customer_email)
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 text-sm">Email</span>
-                        <span class="text-gray-900 text-sm">{{ $transaction->customer_email }}</span>
+                        <span class="text-gray-900 text-sm">{{ $cryptoOrder->customer_email }}</span>
                     </div>
                     @endif
 
@@ -548,7 +569,7 @@
                         <span class="text-gray-600 text-sm">Payment Method</span>
                         <span class="text-gray-900 text-sm font-medium">
                             <i class="fab fa-bitcoin mr-1"></i>
-                            Cryptocurrency (TRON)
+                            Cryptocurrency ({{ $cryptoOrder->network }})
                         </span>
                     </div>
                 </div>
@@ -561,8 +582,8 @@
                     Check Payment Status
                 </button>
 
-                @if($transaction->cancel_url)
-                <a href="{{ $transaction->cancel_url }}" class="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors text-center">
+                @if($cryptoOrder->cancel_url)
+                <a href="{{ $cryptoOrder->cancel_url }}" class="flex-1 bg-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors text-center">
                     <i class="fas fa-times mr-2"></i>
                     Cancel Payment
                 </a>
@@ -591,12 +612,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
-        // Timer variables - Calculate remaining time based on transaction updated_at
-        const transactionUpdatedAt = new Date('{{ \Carbon\Carbon::parse($transaction->updated_at)->toISOString() }}');
+        // Timer variables - Calculate remaining time based on crypto order created_at
+        const orderCreatedAt = new Date('{{ \Carbon\Carbon::parse($cryptoOrder->created_at)->toISOString() }}');
         const currentTime = new Date(); // already in local time
 
         // Get both timestamps in UTC by using `.getTime()` (returns milliseconds since epoch UTC)
-        const elapsedSeconds = Math.floor((currentTime.getTime() - transactionUpdatedAt.getTime()) / 1000);
+        const elapsedSeconds = Math.floor((currentTime.getTime() - orderCreatedAt.getTime()) / 1000);
 
         const totalTimeLimit = 30 * 60; // 30 minutes in seconds
         let timeLeft = Math.max(0, totalTimeLimit - elapsedSeconds);
@@ -634,14 +655,29 @@
 
         function generateQRCode() {
             const walletAddress = '{{ $walletAddress }}';
+            const amount = '{{ number_format($cryptoOrder->fingerprint_amount, 8, '.', '') }}';
+            const currency = '{{ $cryptoOrder->payment_currency }}';
             const qrcode = document.getElementById('qrcode');
 
+            // Create TRON payment URI with amount for better UX
+            const paymentUri = `tron:${walletAddress}?amount=${amount}&token=${currency}`;
 
-            console.log('Generating QR code for wallet address:', walletAddress);
+            console.log('Generating QR code for payment URI:', paymentUri);
 
-            new QRCode(qrcode, walletAddress);
-
-
+            try {
+                new QRCode(qrcode, {
+                    text: paymentUri,
+                    width: 192,
+                    height: 192,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch (error) {
+                console.error('QR code generation failed, using fallback:', error);
+                // Fallback to simple wallet address
+                new QRCode(qrcode, walletAddress);
+            }
         }
 
 
@@ -762,7 +798,7 @@
             }
 
             // Make API call to check payment status
-            fetch(`/payment/checkout/status/{{ $transaction->id }}`, {
+            fetch(`/payment/checkout/status/{{ $cryptoOrder->order_id }}`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -781,7 +817,7 @@
                 if (response.success && response.data) {
                     const data = response.data;
 
-                    if (data.status === 'completed') {
+                    if (data.status === 'paid') {
                         if (typeof toastr !== 'undefined') {
                             toastr.success('Payment confirmed! Redirecting...');
                         }
@@ -835,7 +871,7 @@
 
             // Redirect to failed page with timeout error
             setTimeout(() => {
-                redirectWithNavigation(`/payment/failed?transaction_id={{ $transaction->transaction_id }}&error=timeout`);
+                redirectWithNavigation(`/payment/failed?transaction_id={{ $cryptoOrder->order_id }}&error=timeout`);
             }, 3000);
         }
 

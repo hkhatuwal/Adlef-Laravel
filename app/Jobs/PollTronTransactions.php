@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\AssetTransfer;
 use App\Models\CryptoWallet;
 use App\Models\PaymentTransaction;
+use App\Models\CryptoPaymentOrder;
 use App\Models\Setting;
 use App\Services\AssetTransferVerificationService;
 use App\Services\PaymentGateway\TronGridPaymentGateway;
@@ -12,6 +13,7 @@ use App\Services\TronService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -41,7 +43,7 @@ class PollTronTransactions implements ShouldQueue
     public function handle(): void
     {
         try {
-            $this->pollTronTransferInTransactions();
+//            $this->pollTronTransferInTransactions();
             $this->pollTrongridPaymentGatewayTransactions();
             Log::info('TRON transactions polling completed successfully at ' . Carbon::now()->toDateTimeLocalString());
         } catch (\Exception $e) {
@@ -107,6 +109,7 @@ class PollTronTransactions implements ShouldQueue
     }
 
     /**
+     * Poll TRON transactions for crypto payment orders using fingerprinting system
      * @throws \Exception
      */
     protected function pollTrongridPaymentGatewayTransactions(): void
@@ -114,6 +117,7 @@ class PollTronTransactions implements ShouldQueue
         try {
             // Get the last polling timestamp
             $lastPollTimestamp = Setting::get(self::LAST_POLL_PAYMENT_GATEWAY_SETTING_KEY);
+//            $lastPollTimestamp = Carbon::now()->subDays(2)->timestamp * 1000; // Convert to milliseconds
 
             if (!$lastPollTimestamp) {
                 $lastPollTimestamp = Carbon::now()->subDays(5)->timestamp * 1000; // Convert to milliseconds
@@ -121,18 +125,38 @@ class PollTronTransactions implements ShouldQueue
 
             Log::info("Polling TRON transactions from timestamp: " . $lastPollTimestamp);
 
-            $paymentTransactions = PaymentTransaction::query()->where('gateway_name', 'trongrid');
-            $paymentTransactions = $paymentTransactions->whereNotNull('gateway_transaction_id');
-            $paymentTransactions = $paymentTransactions->where('status', 'pending')->where('updated_at', '>', Carbon::now()->subMinutes(30))->get();
+            // Get pending crypto payment orders (new fingerprinting system)
+            $cryptoOrders = CryptoPaymentOrder::where('status', CryptoPaymentOrder::STATUS_PENDING)
+                ->where('gateway_name', 'trongrid')
+                ->where('created_at', '>', Carbon::now()->subMinutes(1000))
+                ->get();
+
+
+
             $currentTimestamp = Carbon::now()->timestamp * 1000; // Convert to milliseconds
             $totalTransactionsFound = 0;
-            Log::info("Polling transactions for wallet: ");
-            Log::info($paymentTransactions);
 
-            // Poll each wallet address
-            foreach ($paymentTransactions as $paymentTransaction) {
-                $walletAddress = $paymentTransaction->gateway_transaction_id;
+
+            // Get unique wallet addresses from all orders
+            $walletAddresses = collect();
+
+            // Add wallet addresses from crypto orders
+            foreach ($cryptoOrders as $order) {
+                if (!$walletAddresses->contains($order->wallet_address)) {
+                    $walletAddresses->push($order->wallet_address);
+                }
+            }
+
+
+
+            Log::info("Polling " . $walletAddresses->count() . " unique wallet addresses");
+
+            // Poll each unique wallet address
+            foreach ($walletAddresses as $walletAddress) {
+                Log::info("Polling wallet: " . $walletAddress);
+
                 $response = $this->tronService->fetchTransactions($walletAddress, $lastPollTimestamp);
+
                 if ($response && isset($response['success']) && $response['success']) {
                     $transactions = $response['data'] ?? [];
                     $transactionCount = count($transactions);
@@ -140,12 +164,15 @@ class PollTronTransactions implements ShouldQueue
 
                     Log::info("Found " . $transactionCount . " transactions for wallet " . $walletAddress);
 
-                    // Loop through transactions
+                    // Process each transaction
                     foreach ($transactions as $transaction) {
                         try {
-                            $this->processPaymentGatewayTransaction($paymentTransaction, $transaction);
+                            // Try to match with crypto orders first (new system)
+                            $this->processCryptoOrderTransaction($cryptoOrders, $transaction, $walletAddress);
+
                         } catch (Throwable $e) {
                             Log::error('Failed to process transaction: ' . $e->getMessage());
+                            Log::error('Transaction data: ' . json_encode($transaction));
                         }
                     }
                 } else {
@@ -155,10 +182,10 @@ class PollTronTransactions implements ShouldQueue
 
             // Update the last poll timestamp to current time after processing all wallets
             Setting::set(self::LAST_POLL_PAYMENT_GATEWAY_SETTING_KEY, $currentTimestamp);
-            Log::info("Updated last poll for payment gateway  timestamp to: " . $currentTimestamp);
+            Log::info("Updated last poll for payment gateway timestamp to: " . $currentTimestamp);
             Log::info("Total transactions found across all wallets: " . $totalTransactionsFound);
         } catch (\Exception $e) {
-            Log::error('Error in pollTronTransactions: ' . $e->getMessage());
+            Log::error('Error in pollTrongridPaymentGatewayTransactions: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -211,7 +238,84 @@ class PollTronTransactions implements ShouldQueue
 
 
     /**
-     * Process individual transaction
+     * Process transaction for crypto payment orders using fingerprinting
+     * @throws Throwable
+     */
+    private function processCryptoOrderTransaction($cryptoOrders, array $transaction, string $walletAddress): void
+    {
+        $decimals = $transaction['token_info']['decimals'];
+        $transactionAmount = $transaction['value'] / pow(10, $decimals);
+
+        Log::info("Processing transaction amount: " . $transactionAmount . " for wallet: " . $walletAddress);
+
+        // Find matching crypto order by fingerprinted amount and wallet address
+        $matchingOrder = $cryptoOrders->first(function ($order) use ($transactionAmount, $walletAddress) {
+            return $order->wallet_address === $walletAddress
+                && abs($order->fingerprint_amount - $transactionAmount) < 0.00000001 && $order->status==CryptoPaymentOrder::STATUS_PENDING; // Very precise match for fingerprinted amounts
+        });
+
+        if ($matchingOrder) {
+            Log::info("Found matching crypto order: " . $matchingOrder->order_id . " for amount: " . $transactionAmount);
+
+            // Check if already processed to avoid duplicate processing
+            if ($matchingOrder->status !== CryptoPaymentOrder::STATUS_PENDING) {
+                Log::info("Order " . $matchingOrder->order_id . " already processed, skipping");
+                return;
+            }
+
+            // Update the order status
+            $matchingOrder->markAsPaid(
+                $transaction['transaction_id'],
+                [
+                    'transaction_hash' => $transaction['transaction_id'],
+                    'from_address' => $transaction['from'],
+                    'to_address' => $transaction['to'],
+                    'amount' => $transactionAmount,
+                    'token_symbol' => $transaction['token_info']['symbol'],
+                    'block_timestamp' => $transaction['block_timestamp'],
+                    'processed_at' => Carbon::now()->toISOString(),
+                ]
+            );
+            $this->callWebhook($matchingOrder,$transaction,$transactionAmount);
+
+
+
+            Log::info("Crypto order processed successfully: " . json_encode([
+                'order_id' => $matchingOrder->order_id,
+                'transaction_id' => $transaction['transaction_id'],
+                'fingerprint_amount' => $matchingOrder->fingerprint_amount,
+                'actual_amount' => $transactionAmount,
+                'fingerprint_code' => $matchingOrder->fingerprint_code,
+                'wallet_address' => $walletAddress,
+            ]));
+        } else {
+            Log::info("No matching crypto order found for amount: " . $transactionAmount . " and wallet: " . $walletAddress);
+
+            // Log all pending amounts for debugging
+            $pendingAmounts = $cryptoOrders->where('wallet_address', $walletAddress)->pluck('fingerprint_amount')->toArray();
+            Log::info("Pending fingerprint amounts for this wallet: " . json_encode($pendingAmounts));
+        }
+    }
+
+    private function callWebhook($matchingOrder,$transaction,$transactionAmount)
+    {
+        $res=  Http::post(config('app.url').'/api/webhooks/trongrid',[
+            'transaction_id' => $matchingOrder->order_id,
+            'status'=>CryptoPaymentOrder::STATUS_COMPLETED,
+            'from_address' => $transaction['from'],
+            'to_address' => $transaction['to'],
+            'amount' => $transactionAmount,
+            'currency' => 'USDT',
+            'token_symbol' => $transaction['token_info']['symbol'],
+            'block_timestamp' => $transaction['block_timestamp'],
+            'processed_at' => Carbon::now()->toISOString(),
+        ]);
+        Log::info("Transaction processed: " . json_encode([$res->body()]));
+
+    }
+
+    /**
+     * Process individual transaction (legacy system - for backward compatibility)
      * @throws Throwable
      */
     private function processPaymentGatewayTransaction(PaymentTransaction $paymentTransaction, array $transaction): void
@@ -219,20 +323,17 @@ class PollTronTransactions implements ShouldQueue
         $decimals = $transaction['token_info']['decimals'];
         $amount = $transaction['value'] / pow(10, $decimals);
 
-
         if (abs(round($amount, 2) - round($paymentTransaction->amount, 2)) <= 0.1) {
             $paymentTransaction->update([
                 'status' => PaymentTransaction::STATUS_COMPLETED,
             ]);
-            Log::info("Transaction processed: " . json_encode([
-                    "id" => $paymentTransaction->id,
-                    "amount" => $amount,
-                ]));
+            Log::info("Legacy payment transaction processed: " . json_encode([
+                "id" => $paymentTransaction->id,
+                "amount" => $amount,
+            ]));
         } else {
-            Log::error("Transaction failed to process : amount mismatch ");
+            Log::debug("Legacy transaction amount mismatch - Expected: " . $paymentTransaction->amount . ", Got: " . $amount);
         }
-
-
     }
 
 

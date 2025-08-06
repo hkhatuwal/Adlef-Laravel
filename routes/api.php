@@ -51,4 +51,6 @@ Route::get('/payment/status/{transactionId}', [\App\Http\Controllers\Api\Payment
 // Webhook routes (no authentication required as they come from payment gateways)
 Route::prefix('webhooks')->group(function () {
     Route::any('/payop', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'handleWebhook']);
+    Route::any('/paydo', [\App\Http\Controllers\Api\PaymentGateway\PaydoController::class, 'handleWebhook']);
+    Route::any('/trongrid', [\App\Http\Controllers\Api\PaymentGateway\TronGridController::class, 'handleWebhook']);
 });

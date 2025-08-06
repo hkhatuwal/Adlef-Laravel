@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ApiClient;
 use App\Models\PaymentTransaction;
 use App\Contracts\PaymentGatewayFactory;
+use App\Contracts\WebhookData;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -172,19 +173,27 @@ class ClientPaymentService
     public function handleGatewayWebhook(string $gatewayName, array $webhookData): void
     {
         try {
-            // Find transaction by gateway transaction ID or our transaction ID
-            $transaction = $this->findTransactionFromWebhook($gatewayName, $webhookData);
+            // Create gateway instance once
+            $gateway = $this->gatewayFactory->create($gatewayName);
+            
+            // Parse webhook data once
+            $parsedData = $gateway->parseWebhookData($webhookData);
+            
+            // Find transaction using parsed data
+            $transaction = $this->findTransactionFromParsedData($gatewayName, $parsedData);
 
             if (!$transaction) {
                 Log::warning('Transaction not found for webhook', [
                     'gateway' => $gatewayName,
+                    'transaction_id' => $parsedData->getTransactionId(),
+                    'parsed_data' => $parsedData->toArray(),
                     'webhook_data' => $webhookData
                 ]);
                 return;
             }
 
-            // Update transaction status based on webhook
-            $this->updateTransactionFromWebhook($transaction, $webhookData);
+            // Update transaction status using parsed data
+            $this->updateTransactionFromParsedData($transaction, $parsedData);
 
             // Send webhook to client
             $this->sendClientWebhook($transaction);
@@ -199,41 +208,55 @@ class ClientPaymentService
     }
 
     /**
-     * Find transaction from webhook data
+     * Find transaction from parsed webhook data
      * @throws Exception
      */
-    protected function findTransactionFromWebhook(string $gatewayName, array $webhookData): ?PaymentTransaction
+    protected function findTransactionFromParsedData(string $gatewayName, WebhookData $parsedData): ?PaymentTransaction
     {
-        $transactionId = $webhookData['transaction']['order']['id'];
-        if (!$transactionId) {
-            throw new Exception("Transaction id not found");
-        }
-
-
-        return PaymentTransaction::where('transaction_id', $transactionId)
+        return PaymentTransaction::where('transaction_id', $parsedData->getTransactionId())
             ->where('gateway_name', $gatewayName)
             ->first();
-
     }
 
     /**
-     * Update transaction from webhook
+     * Update transaction from parsed webhook data
      */
-    protected function updateTransactionFromWebhook(PaymentTransaction $transaction, array $webhookData): void
+    protected function updateTransactionFromParsedData(PaymentTransaction $transaction, WebhookData $parsedData): void
     {
-        $receivedStatus = $webhookData['invoice']['status'];
-        $status = match ($receivedStatus) {
-            1 => PaymentTransaction::STATUS_COMPLETED,
-            default => PaymentTransaction::STATUS_FAILED,
+        // Map the parsed status to our transaction status constants
+        $status = match ($parsedData->getStatus()) {
+            'completed' => PaymentTransaction::STATUS_COMPLETED,
+            'failed' => PaymentTransaction::STATUS_FAILED,
+            'cancelled' => PaymentTransaction::STATUS_CANCELLED,
+            default => PaymentTransaction::STATUS_PENDING,
         };
 
-        $transaction->updateStatus($status, $webhookData);
+        // Update transaction with parsed data
+        $updateData = [
+            'status' => $status,
+            'gateway_status' => $parsedData->getStatus(),
+            'gateway_response' => $parsedData->toArray()
+        ];
+
+        // Update amount and currency if provided in webhook
+        if ($parsedData->getAmount() !== null) {
+            $updateData['amount'] = $parsedData->getAmount();
+        }
+        if ($parsedData->getCurrency() !== null) {
+            $updateData['currency'] = $parsedData->getCurrency();
+        }
+        if ($parsedData->getGatewayTransactionId() !== null) {
+            $updateData['gateway_transaction_id'] = $parsedData->getGatewayTransactionId();
+        }
+
+        $transaction->update($updateData);
 
         Log::info('Transaction updated from webhook', [
             'transaction_id' => $transaction->transaction_id,
             'old_status' => $transaction->getOriginal('status'),
             'new_status' => $status,
-            'event_type' => "payment"
+            'gateway' => $transaction->gateway_name,
+            'event_type' => $parsedData->getEventType() ?? 'payment'
         ]);
     }
 

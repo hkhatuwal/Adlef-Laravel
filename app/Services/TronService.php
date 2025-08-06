@@ -9,6 +9,7 @@ class TronService
 {
     private const TRON_WALLET_ADDRESSES = [
         'TETRZNcZwB4RAneyBytqm6KFdMuC6Ug47C',
+        'TDKgrEpcMdw4gbA8HugJGVnpt8Q1w4715P',
         // Add more wallet addresses here as needed
     ];
     private const TRON_API_KEY = 'a840beed-cc41-45de-9e58-c538671ed053';

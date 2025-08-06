@@ -46,9 +46,40 @@ return [
                 'mobile_payment'
             ],
         ],
+        'paydo' => [
+            'public_key' => env('PAYDO_PUBLIC_KEY'),
+            'secret_key' => env('PAYDO_SECRET_KEY'),
+            'sandbox' => env('PAYDO_SANDBOX', true),
+            'webhook_secret' => env('PAYDO_WEBHOOK_SECRET'),
+            'supported_payment_methods' => [
+                'card',
+                'bank_transfer',
+                'wallet',
+                'crypto',
+                'qiwi',
+                'webmoney',
+                'yandex_money',
+                'perfect_money',
+                'advcash',
+                'payeer',
+                'skrill',
+                'neteller',
+                'paysafecard',
+                'mobile_payment'
+            ],
+        ],
+        'ngenius' => [
+            'api_key' => env('NGENIUS_API_KEY'),
+            'sandbox' => env('NGENIUS_SANDBOX', false),
+            'webhook_secret' => env('NGENIUS_WEBHOOK_SECRET'),
+            'supported_payment_methods' => [
+                'card',
+            ],
+        ],
         'trongrid' => [
             'secret_key' => env('TRON_NODE_SECRET'),
             'sandbox' => env('TRON_NODE_SANDBOX', false),
+            'main_wallet_address' => env('TRON_RECEVING_WALLET', false),
             'supported_payment_methods' => [
                 'crypto',
             ],

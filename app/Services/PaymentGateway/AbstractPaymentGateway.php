@@ -4,6 +4,7 @@ namespace App\Services\PaymentGateway;
 
 use App\Contracts\PaymentGateway;
 use App\Contracts\PaymentResponse;
+use App\Contracts\WebhookData;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -28,6 +29,14 @@ abstract class AbstractPaymentGateway implements PaymentGateway
      * @throws \InvalidArgumentException
      */
     abstract protected function validateConfig(): void;
+
+    /**
+     * Parse webhook data and return standardized webhook information
+     *
+     * @param array $webhookData
+     * @return WebhookData
+     */
+    abstract public function parseWebhookData(array $webhookData): WebhookData;
 
     /**
      * Get the API base URL

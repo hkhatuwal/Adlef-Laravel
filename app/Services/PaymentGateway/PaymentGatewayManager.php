@@ -23,6 +23,7 @@ class PaymentGatewayManager implements PaymentGatewayFactory
     {
         // Register built-in providers
         $this->registerProvider('payop', PayopPaymentGateway::class);
+        $this->registerProvider('paydo', PaydoPaymentGateway::class);
         $this->registerProvider('trongrid', TronGridPaymentGateway::class);
 
     }

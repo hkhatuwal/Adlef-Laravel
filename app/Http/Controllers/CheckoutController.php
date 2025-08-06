@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\PaymentGatewayFactory;
 use App\Models\ApiClient;
 use App\Models\PaymentTransaction;
+use App\Models\CryptoPaymentOrder;
 use App\Services\ClientPaymentService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
@@ -92,7 +93,7 @@ class CheckoutController extends Controller
     private function mapPaymentMethodToGateway(string $paymentMethod): string
     {
         return match ($paymentMethod) {
-            'credit_card' => 'payop',
+            'credit_card' => 'paydo',
             'crypto' => 'trongrid',
             default => 'payop'
         };
@@ -139,27 +140,30 @@ class CheckoutController extends Controller
     /**
      * Display crypto checkout page
      */
-    public function cryptoCheckout(Request $request, string $walletAddress): View
+    public function cryptoCheckout(Request $request, string $orderId): View
     {
-        $transaction = PaymentTransaction::where('gateway_transaction_id', $walletAddress)
-            ->where('gateway_name', 'trongrid')
-            ->first();
+        // Find the crypto payment order by order ID
+        $cryptoOrder = CryptoPaymentOrder::where('order_id', $orderId)->first();
 
-        if (!$transaction) {
-            abort(404, 'Crypto payment session not found');
+        if (!$cryptoOrder) {
+            abort(404, 'Crypto payment order not found');
         }
 
-        // Check if transaction is expired (24 hours)
-        if ($transaction->created_at->addHours(24)->isPast()) {
+        // Check if payment order is expired
+        if ($cryptoOrder->isExpired()) {
+            $cryptoOrder->markAsExpired();
             abort(410, 'Payment session has expired');
         }
 
-        // Check if transaction is already processed
-        if (!$transaction->isCheckoutPending() && $transaction->status !== PaymentTransaction::STATUS_PENDING) {
+        // Check if payment order is no longer awaiting payment
+        if (!$cryptoOrder->isAwaitingPayment()) {
             abort(400, 'Payment session is no longer valid');
         }
 
-        return view('checkout.crypto', compact('transaction', 'walletAddress'));
+        // Get the main wallet address from the order
+        $walletAddress = $cryptoOrder->wallet_address;
+
+        return view('checkout.crypto', compact('cryptoOrder', 'walletAddress'));
     }
 
 
@@ -167,9 +171,40 @@ class CheckoutController extends Controller
     /**
      * Check payment Status
      */
-    public function checkPaymentStatus(Request $request,  $transactionId)
+    public function checkPaymentStatus(Request $request, $transactionId)
     {
-        $transaction = PaymentTransaction::findOrFail($transactionId);
+        // First try to find as a crypto payment order (new system)
+        $cryptoOrder = CryptoPaymentOrder::where('order_id', $transactionId)->first();
+
+        if ($cryptoOrder) {
+            // Check if payment has expired
+            if ($cryptoOrder->isExpired()) {
+                $cryptoOrder->markAsExpired();
+            }
+
+            return response()->json([
+                "success" => true,
+                "data" => [
+                    "transaction_id" => $cryptoOrder->order_id,
+                    "status" => $cryptoOrder->status,
+                    "amount" => $cryptoOrder->fingerprint_amount,
+                    "original_amount" => $cryptoOrder->original_amount,
+                    "currency" => $cryptoOrder->payment_currency,
+                    "original_currency" => $cryptoOrder->original_currency,
+                    "wallet_address" => $cryptoOrder->wallet_address,
+                    "payment_url" => $cryptoOrder->payment_url,
+                    "expires_at" => $cryptoOrder->expires_at?->toISOString(),
+                    "paid_at" => $cryptoOrder->paid_at?->toISOString(),
+                    "gateway_transaction_id" => $cryptoOrder->gateway_transaction_id,
+                    "fingerprint_code" => $cryptoOrder->fingerprint_code,
+                    "is_expired" => $cryptoOrder->isExpired(),
+                    "is_awaiting_payment" => $cryptoOrder->isAwaitingPayment(),
+                ]
+            ]);
+        }
+
+        // Fallback to old PaymentTransaction system for backward compatibility
+        $transaction = PaymentTransaction::where('transaction_id', $transactionId)->first();
 
         if (!$transaction) {
             abort(404, 'Payment not found');
@@ -180,10 +215,9 @@ class CheckoutController extends Controller
             abort(410, 'Payment session has expired');
         }
 
-
         return response()->json([
             "success" => true,
-            "data"=>$transaction
+            "data" => $transaction
         ]);
     }
 
