@@ -16,77 +16,141 @@
     </section>
 
 
-    {{-- Section 2--}}
-    <section>
-        <div class="container mx-auto px-4 md:p-10 mt-10">
-            <div class="flex flex-col mb-10 gap-14  font-visuletProLight">
-                <div class="grid grid-cols-1 md:grid-cols-2 md:w-11/12 mx-auto">
-                    <!-- Top Left -->
-                    <div class="flex flex-col  p-8">
-                        <div class="mb-4">
-                            <!-- Icon 1 -->
-                            <img src="{{asset('assets/images/commercial.svg')}}" alt="">
+    {{-- Section 2 - Services Showcase --}}
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="space-y-32 font-visuletProLight">
+                
+                <!-- OTC Services - Left Aligned -->
+                <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+                    <div class="lg:w-1/2 space-y-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <img src="{{asset('assets/images/commercial.svg')}}" alt="OTC Services" class="w-8 h-8">
+                            </div>
+                            <div>
+                                <h3 class="text-3xl lg:text-4xl font-bold text-white">OTC Services</h3>
+                                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mt-2"></div>
+                            </div>
                         </div>
-                        <h3 class="text-2xl font-semibold">OTC Servcies </h3>
-                        <p class=" font-inter   mt-2 text-start">
-                            With our Digital Asset OTC (Over The Counter)  Services, we're committed to improve liquidity and financial innovation. These services enable secure, large-scale digital assets transactions. With advanced risk and treasury systems, CFOs and finance teams can explore new growth opportunities while maintaining transparency, regulatory compliance, and cash flow control.
-
+                        <p class="text-lg text-gray-300 leading-relaxed font-inter">
+                            With our Digital Asset OTC (Over The Counter) Services, we're committed to improve liquidity and financial innovation. These services enable secure, large-scale digital assets transactions. With advanced risk and treasury systems, CFOs and finance teams can explore new growth opportunities while maintaining transparency, regulatory compliance, and cash flow control.
                         </p>
                     </div>
-                    <div class="flex flex-col  p-8 ">
-                        <div class="mb-4">
-                            <!-- Icon 1 -->
-                            <img src="{{asset('assets/images/asset.svg')}}" alt="">
+                    <div class="lg:w-1/2">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=OTC+Trading+Dashboard" 
+                                 alt="OTC Services Dashboard" 
+                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
                         </div>
-                        <h3 class="text-2xl font-semibold">FX Solutions</h3>
-                        <p class="text-white mt-2  font-inter text-start">
-                            Our FX Solutions empower multinational companies to manage foreign exchange and currency risks more effectively, meeting the growing demand for sophisticated financial strategies. We offer the tools needed to handle currency exposure and optimize global cash flow, including real-time monitoring, hedging, and forecasting. CFOs and treasury teams can navigate the complexities of global markets with ease, ensuring regulatory compliance and maintaining transparency in the process.
+                    </div>
+                </div>
 
+                <!-- FX Solutions - Right Aligned -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-20">
+                    <div class="lg:w-1/2 space-y-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                                <img src="{{asset('assets/images/asset.svg')}}" alt="FX Solutions" class="w-8 h-8">
+                            </div>
+                            <div>
+                                <h3 class="text-3xl lg:text-4xl font-bold text-white">FX Solutions</h3>
+                                <div class="w-24 h-1 bg-gradient-to-r from-green-500 to-teal-600 mt-2"></div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-gray-300 leading-relaxed font-inter">
+                            Our FX Solutions empower multinational companies to manage foreign exchange and currency risks more effectively, meeting the growing demand for sophisticated financial strategies. We offer the tools needed to handle currency exposure and optimize global cash flow, including real-time monitoring, hedging, and forecasting.
                         </p>
                     </div>
-                    <div class="flex flex-col  p-8 ">
-                        <div class="mb-4">
-                            <!-- Icon 1 -->
-                            <img src="{{asset('assets/images/platform.svg')}}" alt="">
+                    <div class="lg:w-1/2">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=FX+Trading+Platform" 
+                                 alt="FX Solutions Platform" 
+                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
                         </div>
-                        <h3 class="text-2xl font-semibold">Cross-Border Payments
-                        </h3>
-                        <p class="text-white mt-2 font-inter text-start">
-                            Our Cross-Border Payments solutions are designed to meet the increasing demand for seamless international transactions across various currencies and regions. By providing the infrastructure to support these financial needs, we streamline payments to make them faster, more secure, and cost-effective. With automated workflows, real-time transaction tracking, and adherence to global regulations, these services minimize risks associated with currency fluctuations and payment delays. Finance teams gain better visibility and control, optimizing cash flow in international markets.
+                    </div>
+                </div>
 
+                <!-- Cross-Border Payments - Left Aligned -->
+                <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+                    <div class="lg:w-1/2 space-y-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center">
+                                <img src="{{asset('assets/images/platform.svg')}}" alt="Cross-Border Payments" class="w-8 h-8">
+                            </div>
+                            <div>
+                                <h3 class="text-3xl lg:text-4xl font-bold text-white">Cross-Border Payments</h3>
+                                <div class="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-600 mt-2"></div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-gray-300 leading-relaxed font-inter">
+                            Our Cross-Border Payments solutions are designed to meet the increasing demand for seamless international transactions across various currencies and regions. By providing the infrastructure to support these financial needs, we streamline payments to make them faster, more secure, and cost-effective.
                         </p>
                     </div>
-                    <div class="flex flex-col  p-8 ">
-                        <div class="mb-4">
-                            <!-- Icon 1 -->
-                            <img src="{{asset('assets/images/hnwi.svg')}}" alt="">
+                    <div class="lg:w-1/2">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=Payment+Processing+System" 
+                                 alt="Cross-Border Payments System" 
+                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
                         </div>
-                        <h3 class="text-2xl font-semibold">Payment Gateway
-                        </h3>
-                        <p class="text-white mt-2 font-inter text-start">
-                            Our Payment Gateway APIs cater to the increasing demand for secure and versatile payment processing across various platforms. As businesses adapt to new financial assets, our solutions support credit/debit cards, digital wallets, and bank transfers with instant approval and settlement. These APIs are flexible and scalable, integrating seamlessly into e-commerce sites, mobile apps, and subscription services. With robust security, fraud protection, and adherence to industry standards, businesses can ensure safe transactions without disrupting the customer experience.
+                    </div>
+                </div>
+
+                <!-- Payment Gateway - Right Aligned -->
+                <div class="flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-20">
+                    <div class="lg:w-1/2 space-y-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                                <img src="{{asset('assets/images/hnwi.svg')}}" alt="Payment Gateway" class="w-8 h-8">
+                            </div>
+                            <div>
+                                <h3 class="text-3xl lg:text-4xl font-bold text-white">Payment Gateway</h3>
+                                <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-600 mt-2"></div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-gray-300 leading-relaxed font-inter">
+                            Our Payment Gateway APIs cater to the increasing demand for secure and versatile payment processing across various platforms. As businesses adapt to new financial assets, our solutions support credit/debit cards, digital wallets, and bank transfers with instant approval and settlement.
                         </p>
                     </div>
-                    <div class="flex flex-col  p-8 ">
-                        <div class="mb-4">
-                            <!-- Icon 1 -->
-                            <img src="{{asset('assets/images/commercial.svg')}}" alt="">
+                    <div class="lg:w-1/2">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=Payment+Gateway+API" 
+                                 alt="Payment Gateway API" 
+                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
                         </div>
-                        <h3 class="text-2xl font-semibold">Bespoke Solutions
-                        </h3>
-                        <p class="text-white mt-2 font-inter text-start">
-                            We offer tailored solutions to meet the unique needs of your company, aligning perfectly with your objectives. By working closely with your finance and treasury teams, we create customized solutions that optimize cash flow, reduce risks, and improve financial results. We provide the flexibility and precision you need for specialized reporting, customized system integration, or unique financial arrangements. Ensure continuous growth and operational efficiency with bespoke solutions that grow with your business.
-
-                        </p>
                     </div>
+                </div>
 
-
+                <!-- Bespoke Solutions - Centered Feature -->
+                <div class="text-center">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex flex-col items-center gap-8 mb-12">
+                            <div class="w-20 h-20 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-full flex items-center justify-center">
+                                <img src="{{asset('assets/images/commercial.svg')}}" alt="Bespoke Solutions" class="w-10 h-10">
+                            </div>
+                            <div>
+                                <h3 class="text-4xl lg:text-5xl font-bold text-white mb-4">Bespoke Solutions</h3>
+                                <div class="w-32 h-1 bg-gradient-to-r from-indigo-500 to-cyan-600 mx-auto"></div>
+                            </div>
+                        </div>
+                        <p class="text-xl text-gray-300 leading-relaxed font-inter mb-12 max-w-3xl mx-auto">
+                            We offer tailored solutions to meet the unique needs of your company, aligning perfectly with your objectives. By working closely with your finance and treasury teams, we create customized solutions that optimize cash flow, reduce risks, and improve financial results.
+                        </p>
+                        <div class="relative group max-w-2xl mx-auto">
+                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                            <img src="https://via.placeholder.com/800x500/1f2937/ffffff?text=Custom+Financial+Solutions" 
+                                 alt="Bespoke Solutions" 
+                                 class="relative rounded-3xl shadow-2xl w-full h-96 object-cover border border-gray-700/50">
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
-
-
     </section>
 
 
@@ -143,3 +207,4 @@
 
 
 @endsection
+

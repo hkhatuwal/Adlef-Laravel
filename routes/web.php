@@ -32,6 +32,10 @@ Route::group(['as' => 'frontend.'], function () {
     Route::get('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class, 'businessEnquiry'])->name('contact-us.business-enquiry');
     Route::get('/contact-us', [\App\Http\Controllers\Frontend\ContactUsController::class, 'contactUs'])->name('contact-us');
     Route::post('/contact-us/business-enquiry', [\App\Http\Controllers\Frontend\ContactUsController::class, 'store'])->name('contact-us.business-enquiry');
+    Route::get('/privacy-policy', [\App\Http\Controllers\Frontend\PrivacyPolicyController::class, 'index'])->name('privacy-policy');
+    Route::get('/cookie-policy', [\App\Http\Controllers\Frontend\CookiePolicyController::class, 'index'])->name('cookie-policy');
+    Route::get('/terms-of-use', [\App\Http\Controllers\Frontend\TermsOfUseController::class, 'index'])->name('terms-of-use');
+    Route::get('/faq', [\App\Http\Controllers\Frontend\FAQController::class, 'index'])->name('faq');
 
     // Help Center Routes
 

@@ -12,7 +12,7 @@
                     <span>&#10140;</span>
                 </button>
             </div>
-            <p class="mt-4 text-gray-500 text-sm">By submitting this form, you acknowledge that you have reviewed the terms of our <a href="#" class="text-gray-700 underline">Privacy Policy</a>.</p>
+            <p class="mt-4 text-gray-500 text-sm">By submitting this form, you acknowledge that you have reviewed the terms of our <a href="{{ route('frontend.privacy-policy') }}" class="text-gray-700 underline">Privacy Policy</a>.</p>
         </div>
 
         <!-- Right section -->
@@ -20,24 +20,25 @@
             <div class="mb-6">
                 <h3 class="font-bold text-black">Solutions</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="#" class="text-black block">Open Trust APIs</a></li>
+                    <li><a href="{{ route('frontend.opentrust-apis-page') }}" class="text-black block">Open Trust APIs</a></li>
                 </ul>
             </div>
             <div class="mb-6">
                 <h3 class="font-bold text-black">Company</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="#" class="text-black block">About Us</a></li>
-                    <li><a href="#" class="text-black block">Careers</a></li>
-                    <li><a href="#" class="text-black block">Contact Us</a></li>
-                    <li><a href="#" class="text-black block">News & Insights</a></li>
+                    <li><a href="{{ route('frontend.about') }}" class="text-black block">About Us</a></li>
+                    <li><a href="{{ route('frontend.careers') }}" class="text-black block">Careers</a></li>
+                    <li><a href="{{ route('frontend.contact-us') }}" class="text-black block">Contact Us</a></li>
+                    <li><a href="{{ route('frontend.news-insights') }}" class="text-black block">News & Insights</a></li>
                 </ul>
             </div>
             <div class="mb-6">
-                <h3 class="font-bold text-black">Compliance</h3>
+                <h3 class="font-bold text-black">Legal</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="#" class="text-black block">Privacy Policy</a></li>
-                    <li><a href="#" class="text-black block">Legal & Regulatory</a></li>
-                    <li><a href="#" class="text-black block">Security</a></li>
+                    <li><a href="{{ route('frontend.privacy-policy') }}" class="text-black block">Privacy Policy</a></li>
+                    <li><a href="{{ route('frontend.cookie-policy') }}" class="text-black block">Cookie Policy</a></li>
+                    <li><a href="{{ route('frontend.terms-of-use') }}" class="text-black block">Terms of Use</a></li>
+                    <li><a href="{{ route('frontend.faq') }}" class="text-black block">FAQ</a></li>
                 </ul>
             </div>
             <div class="mb-6">
