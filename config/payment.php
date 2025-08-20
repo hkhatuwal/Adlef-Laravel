@@ -70,10 +70,18 @@ return [
         ],
         'ngenius' => [
             'api_key' => env('NGENIUS_API_KEY'),
-            'sandbox' => env('NGENIUS_SANDBOX', false),
+            'outlet_reference' => env('NGENIUS_OUTLET_REFERENCE'),
+            'sandbox' => env('NGENIUS_SANDBOX', true),
             'webhook_secret' => env('NGENIUS_WEBHOOK_SECRET'),
             'supported_payment_methods' => [
                 'card',
+                'wallet',
+                'apple_pay',
+                'samsung_pay',
+                'visa',
+                'mastercard',
+                'american_express',
+                'diners_club'
             ],
         ],
         'trongrid' => [
@@ -161,6 +169,15 @@ return [
             'direct_integration',
             'hosted_payment',
             'crypto_payments'
+        ],
+        'ngenius' => [
+            'refunds',
+            'webhooks',
+            'multi_currency',
+            'direct_integration',
+            'hosted_payment',
+            'authorization',
+            'capture'
         ],
         'stripe' => [
             'refunds',
@@ -250,6 +267,7 @@ return [
     'webhooks' => [
         'routes' => [
             'payop' => '/api/webhooks/payop',
+            'ngenius' => '/api/webhooks/ngenius',
             'stripe' => '/api/webhooks/stripe',
             'paypal' => '/api/webhooks/paypal',
             'razorpay' => '/api/webhooks/razorpay',

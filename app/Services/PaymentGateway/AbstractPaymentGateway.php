@@ -5,6 +5,8 @@ namespace App\Services\PaymentGateway;
 use App\Contracts\PaymentGateway;
 use App\Contracts\PaymentResponse;
 use App\Contracts\WebhookData;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -72,11 +74,9 @@ abstract class AbstractPaymentGateway implements PaymentGateway
         try {
             $headers = array_merge($this->getHeaders(), $headers);
             $url = $this->getBaseUrl() . $endpoint;
-
-            $response = Http::withHeaders($headers)
-                ->timeout(30)
-                ->$method($url, $data);
-
+            $client = new Client();
+            $request = new Request('POST', 'https://api-gateway.sandbox.ngenius-payments.com/identity/auth/access-token', $headers);
+            $response = $client->sendAsync($request)->wait();
             if ($response->successful()) {
                 return $response->json();
             }

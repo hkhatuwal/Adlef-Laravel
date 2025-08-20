@@ -12,3 +12,5 @@ class CookiePolicyController extends Controller
         return view('frontend.cookie-policy.cookie-policy');
     }
 }
+
+

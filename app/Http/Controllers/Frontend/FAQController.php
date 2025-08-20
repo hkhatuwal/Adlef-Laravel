@@ -12,3 +12,5 @@ class FAQController extends Controller
         return view('frontend.faq.faq');
     }
 }
+
+

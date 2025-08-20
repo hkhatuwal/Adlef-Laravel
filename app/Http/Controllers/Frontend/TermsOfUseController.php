@@ -12,3 +12,5 @@ class TermsOfUseController extends Controller
         return view('frontend.terms-of-use.terms-of-use');
     }
 }
+
+

@@ -2,149 +2,458 @@
 
 namespace App\Services\PaymentGateway;
 
-use App\Services\PaymentGateway\AbstractPaymentGateway;
+use App\Contracts\PaymentResponse;
+use App\Contracts\WebhookData;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Str;
 
 class NgeniusPaymentGateway extends AbstractPaymentGateway
 {
+    protected array $supportedFeatures = [
+        'refunds',
+        'webhooks',
+        'multi_currency',
+        'direct_integration',
+        'hosted_payment'
+    ];
+
+    protected ?string $accessToken = null;
+    protected int $tokenExpiresAt = 0;
 
     /**
-     * @throws Exception
+     * Get provider name
+     *
+     * @return string
+     */
+    public function getProviderName(): string
+    {
+        return 'ngenius';
+    }
+
+    /**
+     * Validate the configuration
+     *
+     * @throws \InvalidArgumentException
      */
     protected function validateConfig(): void
     {
-        if (!isset($this->config['api_key'])) {
-            throw new \Exception('NGENIUS API KEY is required.');
+        $requiredKeys = ['api_key', 'outlet_reference'];
+
+        foreach ($requiredKeys as $key) {
+            if (empty($this->config[$key])) {
+                throw new \InvalidArgumentException("N-Genius configuration missing required key: {$key}");
+            }
         }
+
+        // N-Genius API base URL
         $this->baseUrl = $this->config['sandbox'] ?? false
             ? 'https://api-gateway.sandbox.ngenius-payments.com'
             : 'https://api-gateway.ngenius-payments.com';
 
         $this->headers = [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
+            'Content-Type' => 'application/vnd.ni-identity.v1+json',
+            'Accept' => 'application/vnd.ni-identity.v1+json',
         ];
-
-
     }
 
-
-//$paymentData = [
-//'amount' => $request->amount,
-//'currency' => strtoupper($request->currency),
-//'description' => $request->description,
-//'customer_email' => $request->customer_email ?? '',
-//'customer_name' => $request->customer_name ?? '',
-//'customer_phone' => $request->customer_phone ?? '',
-//'order_id' => $request->order_id,
-//'language' => $request->language ?? 'en',
-//'return_url' => $request->return_url,
-//'cancel_url' => $request->cancel_url,
-//'metadata' => $request->metadata ?? [],
-//];
-
-    public function processPayment(array $paymentData): \App\Contracts\PaymentResponse
+    /**
+     * Get or refresh access token
+     *
+     * @return string
+     * @throws \Exception
+     */
+    protected function getAccessToken(): string
     {
-        $accessToken = $this->getAccessToken();
-        $payload = [
-            "action" => "SALE",
-            "amount" => [
+        // Check if we have a valid token
+        if ($this->accessToken && time() < $this->tokenExpiresAt) {
+            return $this->accessToken;
+        }
 
-                "currencyCode" => $paymentData['currency'],
-                "value" => $paymentData['amount'],
-                "emailAddress" => $paymentData['customer_email'],
-            ],
-        ];
-        $response = $this->makeRequest('POST', '/identity/auth/access-token', $payload, [
-            "Content-Type" => "application/vnd.ni-payment.v2+json",
-            "Authorization" => "Basic " . $accessToken,
-            "Accept" => "application/vnd.ni-payment.v2+json",
+        $this->logActivity('get_access_token', []);
+
+        $response = $this->makeRequest('POST', '/identity/auth/access-token', [], [
+            'Authorization' => 'Basic YTllNTI4ZGUtOWU5YS00NGNmLTk2NTAtZGI0NDVlNTY2YTc1OjIyN2MzYzY0LTdjZWUtNDYzZS1iYjFkLTg5NjQ4MzQwY2M3Nw==',
+            'Cookie' => 'fdfdf; _abck=84B74DB46E87283E926B5F7022CCCB45~-1~YAAQJrYRYBXlQq2YAQAA5RkZyA7ySMo30BRAVKpLFaT4RHxbFQMQjsmt13r0b4PxfR1LpH4Mimk1KQ72e/lQ+9LzOYCHRO38mWSs8J88OVgnlaT4lduZL8S3ffOK3sdYCXkNDpIJ2Q//LSaU5JkspcG78qVSP+YOMkxqz0U87dnQeaQsCmmir7SHqefuyw/e0Al0o1JmD6axUriVDYpTUUVtxcU+ZRe8iyGv27mY4LeHD5GczRkLDziEPBGrd6ZtcuaNEDrDlLCBrnkQ65xSCb02KD5gcVn21IbJauooQIPRKi7Nu0GCELCTMe0LaOry/8mCKkrx20Iv0o8hFEP1tDNjFuYPGrmuST2Z5OV3eUb/P7Tjaevb0VvvQJE/u0ozIGryFaFkRPXQUoI6TbNdbd42mOYaOGfJqPOLiSvo2dn3bjMxH/UDffj8FKZhnb4QhgKx7NYnzKVGmEPyEuPr~-1~-1~-1; bm_sz=61673EE9E4DEED67A00F4718C8BC1FA9~YAAQJrYRYBblQq2YAQAA5RkZyByeeQU29s4UgIRZtgmaW4qhdM+PreWg8neUbOl/4IHpf+ZLQ6fF/sRYF4cC4qJDHn2BK1Jvh/wYnkKCMptSTY31cl8N5UTzfWChCqb/bQX2X1HRcacAFccKTmysGyt2JTnYw17gk2I5vaCx4gUqr15amoKKAqFZ8T/lWp4b46OOeN2RaE+XGyxiK98ulVHBzqpZin+FQZCTLEbcaWdpBF1EklNctaFjfxP939/y1u5SWCAchDhfOkPsVuF5R2zxczyWqaBGG+IwIqn9dxBhAtu8Bzt2RYDbsDBWUGisfFdyhoI+yNoDeYmCUNG99ooFnO55aKmGdacPvZC6gviCSOQUrAo=~4600642~3551810',
+            'Content-Type' => 'application/vnd.ni-identity.v1+json',
         ]);
 
+
+        if ($response === null || !isset($response['access_token'])) {
+            throw new \Exception('Failed to obtain N-Genius access token');
+        }
+
+        $this->accessToken = $response['access_token'];
+        // Set expiry time (subtract 30 seconds for safety)
+        $this->tokenExpiresAt = time() + ($response['expires_in'] ?? 300) - 30;
+
+        return $this->accessToken;
+    }
+
+    /**
+     * Process a payment
+     *
+     * @param array $paymentData
+     * @return PaymentResponse
+     * @throws \Exception
+     */
+    public function processPayment(array $paymentData): PaymentResponse
+    {
+        $this->logActivity('process_payment', $paymentData);
+
+        // Get access token
+        $accessToken = $this->getAccessToken();
+
+        // Prepare order data
+        $orderData = [
+            'action' => $paymentData['action'] ?? 'PURCHASE', // PURCHASE, AUTH, or SALE
+            'amount' => [
+                'currencyCode' => strtoupper($paymentData['currency'] ?? 'AED'),
+                'value' => (int)($paymentData['amount'] * 100), // Convert to minor units (cents)
+            ],
+        ];
+
+        // Add optional fields
+        if (!empty($paymentData['customer_email'])) {
+            $orderData['emailAddress'] = $paymentData['customer_email'];
+        }
+
+        if (!empty($paymentData['description'])) {
+            $orderData['merchantOrderReference'] = $paymentData['description'];
+        }
+
+        if (!empty($paymentData['return_url'])) {
+            $orderData['merchantAttributes']['redirectUrl'] = $paymentData['return_url'];
+        }
+
+        if (!empty($paymentData['language'])) {
+            $orderData['language'] = $paymentData['language'];
+        }
+
+        // Add billing information if available
+        if (!empty($paymentData['customer_name']) || !empty($paymentData['customer_phone'])) {
+            $orderData['billingAddress'] = [];
+
+            if (!empty($paymentData['customer_name'])) {
+                $nameParts = explode(' ', $paymentData['customer_name'], 2);
+                $orderData['billingAddress']['firstName'] = $nameParts[0];
+                $orderData['billingAddress']['lastName'] = $nameParts[1] ?? '';
+            }
+        }
+
+        // Create order
+        $outletReference = $this->config['outlet_reference'];
+        $response = $this->makeRequest(
+            'post',
+            "/transactions/outlets/{$outletReference}/orders",
+            $orderData,
+            [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/vnd.ni-payment.v2+json',
+                'Accept' => 'application/vnd.ni-payment.v2+json',
+            ]
+        );
+
+        if ($response === null) {
+            return $this->createErrorResponse('Failed to create N-Genius order', 'NGENIUS_API_ERROR');
+        }
+
+        if (isset($response['errors']) || isset($response['error'])) {
+            $errorMessage = $response['errors'][0]['message'] ?? $response['error']['message'] ?? 'Order creation failed';
+            return $this->createErrorResponse($errorMessage, 'NGENIUS_ORDER_ERROR', $response);
+        }
+
+        // Extract payment URL
+        $paymentUrl = $response['_links']['payment']['href'] ?? null;
+        $orderId = $response['_id'] ?? null;
+        $reference = $response['reference'] ?? null;
+
+        if (!$paymentUrl) {
+            return $this->createErrorResponse('Payment URL not found in response', 'NGENIUS_PAYMENT_URL_ERROR', $response);
+        }
+
         return $this->createSuccessResponse([
-            'transaction_id' => $response['data']['id'] ?? $orderId,
+            'transaction_id' => $reference ?? $orderId,
             'status' => 'pending',
             'amount' => $paymentData['amount'],
-            'currency' => $paymentData['currency'] ?? 'USD',
-            'message' => 'Hosted payment created successfully',
-            'payment_url' => $response['data']['url'] ?? $response['url'],
+            'currency' => $paymentData['currency'] ?? 'AED',
+            'payment_url' => $paymentUrl,
+            'message' => 'N-Genius order created successfully',
             'raw_response' => $response
         ]);
     }
 
-    public function refundPayment(string $transactionId, float $amount, array $options = []): \App\Contracts\PaymentResponse
+    /**
+     * Refund a payment
+     *
+     * @param string $transactionId
+     * @param float $amount
+     * @param array $options
+     * @return PaymentResponse
+     */
+    public function refundPayment(string $transactionId, float $amount, array $options = []): PaymentResponse
     {
-        // TODO: Implement refundPayment() method.
+        $this->logActivity('refund_payment', [
+            'transaction_id' => $transactionId,
+            'amount' => $amount,
+            'options' => $options
+        ]);
+
+        try {
+            $accessToken = $this->getAccessToken();
+
+            $refundData = [
+                'amount' => [
+                    'currencyCode' => strtoupper($options['currency'] ?? 'AED'),
+                    'value' => (int)($amount * 100), // Convert to minor units
+                ]
+            ];
+
+            if (isset($options['reason'])) {
+                $refundData['reason'] = $options['reason'];
+            }
+
+            $outletReference = $this->config['outlet_reference'];
+            $response = $this->makeRequest(
+                'post',
+                "/transactions/outlets/{$outletReference}/orders/{$transactionId}/refund",
+                $refundData,
+                [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/vnd.ni-payment.v2+json',
+                    'Accept' => 'application/vnd.ni-payment.v2+json',
+                ]
+            );
+
+            if ($response === null) {
+                return $this->createErrorResponse('Failed to process refund', 'NGENIUS_API_ERROR');
+            }
+
+            if (isset($response['errors']) || isset($response['error'])) {
+                $errorMessage = $response['errors'][0]['message'] ?? $response['error']['message'] ?? 'Refund failed';
+                return $this->createErrorResponse($errorMessage, 'NGENIUS_REFUND_ERROR', $response);
+            }
+
+            return $this->createSuccessResponse([
+                'transaction_id' => $response['_id'] ?? $transactionId,
+                'status' => strtolower($response['state'] ?? 'pending'),
+                'amount' => $amount,
+                'currency' => $options['currency'] ?? 'AED',
+                'message' => 'Refund processed successfully',
+                'raw_response' => $response
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->createErrorResponse('Refund processing failed: ' . $e->getMessage(), 'NGENIUS_REFUND_EXCEPTION');
+        }
     }
 
-    public function getPaymentStatus(string $transactionId): \App\Contracts\PaymentResponse
+    /**
+     * Get payment status
+     *
+     * @param string $transactionId
+     * @return PaymentResponse
+     */
+    public function getPaymentStatus(string $transactionId): PaymentResponse
     {
-        // TODO: Implement getPaymentStatus() method.
+        try {
+            $accessToken = $this->getAccessToken();
+            $outletReference = $this->config['outlet_reference'];
+
+            $response = $this->makeRequest(
+                'get',
+                "/transactions/outlets/{$outletReference}/orders/{$transactionId}",
+                [],
+                [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Accept' => 'application/vnd.ni-payment.v2+json',
+                ]
+            );
+
+            if ($response === null) {
+                return $this->createErrorResponse('Failed to fetch payment status', 'NGENIUS_API_ERROR');
+            }
+
+            if (isset($response['errors']) || isset($response['error'])) {
+                $errorMessage = $response['errors'][0]['message'] ?? $response['error']['message'] ?? 'Failed to fetch payment status';
+                return $this->createErrorResponse($errorMessage, 'NGENIUS_STATUS_ERROR', $response);
+            }
+
+            // Map N-Genius state to standardized status
+            $state = $response['state'] ?? 'unknown';
+            $status = $this->mapNgeniusStatus($state);
+
+            $amount = isset($response['amount']['value']) ? $response['amount']['value'] / 100 : 0;
+
+            return $this->createSuccessResponse([
+                'transaction_id' => $response['reference'] ?? $transactionId,
+                'status' => $status,
+                'amount' => $amount,
+                'currency' => $response['amount']['currencyCode'] ?? 'AED',
+                'message' => 'Payment status retrieved successfully',
+                'raw_response' => $response
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->createErrorResponse('Status check failed: ' . $e->getMessage(), 'NGENIUS_STATUS_EXCEPTION');
+        }
     }
 
+    /**
+     * Verify webhook signature
+     *
+     * @param string $payload
+     * @param string $signature
+     * @param string $secret
+     * @return bool
+     */
     public function verifyWebhookSignature(string $payload, string $signature, string $secret): bool
     {
-        // TODO: Implement verifyWebhookSignature() method.
-    }
-
-    public function getProviderName(): string
-    {
-        return "Ngenius";
-    }
-
-    private function getAccessToken(): string
-    {
-        $response = $this->makeRequest('POST', '/identity/auth/access-token', [], [
-            "Content-Type" => "application/vnd.ni-identity.v1+json",
-            "Authorization" => "Basic " . $this->config['api_key'],
-        ]);
-        return $response['access_token'] ?? '';
+        // N-Genius webhook signature verification
+        // Note: This implementation may need to be adjusted based on actual N-Genius webhook signature method
+        $expectedSignature = hash_hmac('sha256', $payload, $secret);
+        return hash_equals($expectedSignature, $signature);
     }
 
     /**
      * Parse webhook data and return standardized webhook information
      *
      * @param array $webhookData
-     * @return \App\Contracts\WebhookData
+     * @return WebhookData
      * @throws \Exception
      */
-    public function parseWebhookData(array $webhookData): \App\Contracts\WebhookData
+    public function parseWebhookData(array $webhookData): WebhookData
     {
-        // Extract transaction ID from Ngenius webhook structure
-        // Note: This structure may need to be adjusted based on actual Ngenius webhook format
-        $transactionId = $webhookData['orderReference'] ?? $webhookData['order_id'] ?? null;
+        // Extract transaction ID from N-Genius webhook structure
+        $transactionId = $webhookData['order']['reference'] ?? $webhookData['order']['id'] ?? null;
         if (!$transactionId) {
-            throw new \Exception('Transaction ID not found in Ngenius webhook data');
+            throw new \Exception('Transaction ID not found in N-Genius webhook data');
         }
 
-        // Extract status from Ngenius webhook structure
-        $ngeniusStatus = $webhookData['state'] ?? $webhookData['status'] ?? null;
-        if ($ngeniusStatus === null) {
-            throw new \Exception('Status not found in Ngenius webhook data');
-        }
+        // Extract event type
+        $eventType = $webhookData['event'] ?? 'unknown';
 
-        // Map Ngenius status to standardized status
-        // Note: This mapping may need to be adjusted based on actual Ngenius status values
-        $status = match (strtolower($ngeniusStatus)) {
-            'captured', 'success', 'completed' => 'completed',
-            'failed', 'error', 'declined' => 'failed',
-            'cancelled', 'canceled', 'voided' => 'cancelled',
-            default => 'pending',
-        };
+        // Map N-Genius event to standardized status
+        $status = $this->mapWebhookEventToStatus($eventType);
 
         // Extract additional data
-        $amount = $webhookData['amount']['value'] ?? $webhookData['amount'] ?? null;
-        $currency = $webhookData['amount']['currencyCode'] ?? $webhookData['currency'] ?? null;
-        $gatewayTransactionId = $webhookData['id'] ?? $webhookData['paymentId'] ?? null;
-        $eventType = $webhookData['eventName'] ?? $webhookData['type'] ?? 'payment';
+        $amount = null;
+        $currency = null;
+        if (isset($webhookData['order']['amount'])) {
+            $amount = $webhookData['order']['amount']['value'] / 100; // Convert from minor units
+            $currency = $webhookData['order']['amount']['currencyCode'];
+        }
 
-        return new \App\Contracts\WebhookData(
+        $gatewayTransactionId = $webhookData['transaction']['id'] ?? null;
+
+        return new WebhookData(
             transactionId: $transactionId,
             status: $status,
-            amount: $amount ? (float) $amount : null,
+            amount: $amount,
             currency: $currency,
             gatewayTransactionId: $gatewayTransactionId,
             rawData: $webhookData,
             eventType: $eventType
         );
+    }
+
+    /**
+     * Map N-Genius status to standardized status
+     *
+     * @param string $ngeniusStatus
+     * @return string
+     */
+    protected function mapNgeniusStatus(string $ngeniusStatus): string
+    {
+        return match (strtoupper($ngeniusStatus)) {
+            'CAPTURED', 'PURCHASED' => 'completed',
+            'AUTHORISED' => 'authorized',
+            'DECLINED', 'PURCHASE_DECLINED' => 'failed',
+            'CANCELLED', 'VOIDED' => 'cancelled',
+            'REFUNDED', 'PARTIALLY_REFUNDED' => 'refunded',
+            'STARTED', 'PENDING' => 'pending',
+            default => 'pending',
+        };
+    }
+
+    /**
+     * Map webhook event to status
+     *
+     * @param string $event
+     * @return string
+     */
+    protected function mapWebhookEventToStatus(string $event): string
+    {
+        return match (strtoupper($event)) {
+            'AUTHORISED' => 'authorized',
+            'PURCHASED', 'CAPTURED' => 'completed',
+            'DECLINED', 'PURCHASE_DECLINED', 'AUTHORISATION_FAILED', 'PURCHASE_FAILED' => 'failed',
+            'CANCELLED', 'FULL_AUTH_REVERSED', 'PURCHASE_REVERSED' => 'cancelled',
+            'REFUNDED', 'PARTIALLY_REFUNDED' => 'refunded',
+            default => 'pending',
+        };
+    }
+
+    /**
+     * Get supported payment methods
+     *
+     * @return array
+     */
+    public function getSupportedPaymentMethods(): array
+    {
+        return [
+            'card',
+            'wallet',
+            'apple_pay',
+            'samsung_pay',
+            'visa',
+            'mastercard',
+            'american_express',
+            'diners_club'
+        ];
+    }
+
+    /**
+     * Get supported currencies
+     *
+     * @return array
+     */
+    public function getSupportedCurrencies(): array
+    {
+        return [
+            'AED', 'USD', 'EUR', 'GBP', 'SAR', 'KWD', 'BHD', 'OMR', 'QAR',
+            'JOD', 'EGP', 'LBP', 'TND', 'MAD', 'DZD', 'IQD', 'LYD', 'SDG',
+            'SYP', 'YER', 'MRU', 'SOS', 'DJF', 'KMF', 'XOF', 'XAF', 'CDF',
+            'ETB', 'RWF', 'UGX', 'KES', 'TZS', 'MWK', 'ZMW', 'BWP', 'SZL',
+            'LSL', 'NAD', 'ZAR', 'MZN', 'AOA', 'CVE', 'GHS', 'GMD', 'GNF',
+            'LRD', 'SLL', 'NGN', 'XOF', 'BIF', 'SCR', 'MUR', 'MGA', 'KMF'
+        ];
+    }
+
+    /**
+     * Create hosted payment page
+     *
+     * @param array $paymentData
+     * @return PaymentResponse
+     */
+    public function createHostedPayment(array $paymentData): PaymentResponse
+    {
+        // For N-Genius, the processPayment method already creates a hosted payment
+        return $this->processPayment($paymentData);
+    }
+
+    /**
+     * Get available payment methods for a specific currency
+     *
+     * @param string $currency
+     * @return array
+     */
+    public function getAvailablePaymentMethods(string $currency = 'AED'): array
+    {
+        // This would typically require an API call to get available methods for currency
+        // For now, return the supported methods
+        return $this->getSupportedPaymentMethods();
     }
 }

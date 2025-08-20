@@ -175,10 +175,10 @@ class ClientPaymentService
         try {
             // Create gateway instance once
             $gateway = $this->gatewayFactory->create($gatewayName);
-            
+
             // Parse webhook data once
             $parsedData = $gateway->parseWebhookData($webhookData);
-            
+
             // Find transaction using parsed data
             $transaction = $this->findTransactionFromParsedData($gatewayName, $parsedData);
 

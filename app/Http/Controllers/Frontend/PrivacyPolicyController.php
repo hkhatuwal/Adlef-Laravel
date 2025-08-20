@@ -12,3 +12,4 @@ class PrivacyPolicyController extends Controller
         return view('frontend.privacy-policy.privacy-policy');
     }
 }
+
