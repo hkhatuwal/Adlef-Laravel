@@ -4,6 +4,7 @@ namespace App\Services\PaymentGateway;
 
 use App\Contracts\PaymentResponse;
 use App\Contracts\WebhookData;
+use Dflydev\DotAccessData\Data;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -54,8 +55,7 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
             : 'https://api-gateway.ngenius-payments.com';
 
         $this->headers = [
-            'Content-Type' => 'application/vnd.ni-identity.v1+json',
-            'Accept' => 'application/vnd.ni-identity.v1+json',
+
         ];
     }
 
@@ -75,9 +75,9 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
         $this->logActivity('get_access_token', []);
 
         $response = $this->makeRequest('POST', '/identity/auth/access-token', [], [
-            'Authorization' => 'Basic YTllNTI4ZGUtOWU5YS00NGNmLTk2NTAtZGI0NDVlNTY2YTc1OjIyN2MzYzY0LTdjZWUtNDYzZS1iYjFkLTg5NjQ4MzQwY2M3Nw==',
-            'Cookie' => 'fdfdf; _abck=84B74DB46E87283E926B5F7022CCCB45~-1~YAAQJrYRYBXlQq2YAQAA5RkZyA7ySMo30BRAVKpLFaT4RHxbFQMQjsmt13r0b4PxfR1LpH4Mimk1KQ72e/lQ+9LzOYCHRO38mWSs8J88OVgnlaT4lduZL8S3ffOK3sdYCXkNDpIJ2Q//LSaU5JkspcG78qVSP+YOMkxqz0U87dnQeaQsCmmir7SHqefuyw/e0Al0o1JmD6axUriVDYpTUUVtxcU+ZRe8iyGv27mY4LeHD5GczRkLDziEPBGrd6ZtcuaNEDrDlLCBrnkQ65xSCb02KD5gcVn21IbJauooQIPRKi7Nu0GCELCTMe0LaOry/8mCKkrx20Iv0o8hFEP1tDNjFuYPGrmuST2Z5OV3eUb/P7Tjaevb0VvvQJE/u0ozIGryFaFkRPXQUoI6TbNdbd42mOYaOGfJqPOLiSvo2dn3bjMxH/UDffj8FKZhnb4QhgKx7NYnzKVGmEPyEuPr~-1~-1~-1; bm_sz=61673EE9E4DEED67A00F4718C8BC1FA9~YAAQJrYRYBblQq2YAQAA5RkZyByeeQU29s4UgIRZtgmaW4qhdM+PreWg8neUbOl/4IHpf+ZLQ6fF/sRYF4cC4qJDHn2BK1Jvh/wYnkKCMptSTY31cl8N5UTzfWChCqb/bQX2X1HRcacAFccKTmysGyt2JTnYw17gk2I5vaCx4gUqr15amoKKAqFZ8T/lWp4b46OOeN2RaE+XGyxiK98ulVHBzqpZin+FQZCTLEbcaWdpBF1EklNctaFjfxP939/y1u5SWCAchDhfOkPsVuF5R2zxczyWqaBGG+IwIqn9dxBhAtu8Bzt2RYDbsDBWUGisfFdyhoI+yNoDeYmCUNG99ooFnO55aKmGdacPvZC6gviCSOQUrAo=~4600642~3551810',
+            'Authorization' => 'Basic '.$this->config['api_key'],
             'Content-Type' => 'application/vnd.ni-identity.v1+json',
+            'Accept' => 'application/vnd.ni-identity.v1+json',
         ]);
 
 
@@ -108,9 +108,9 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
 
         // Prepare order data
         $orderData = [
-            'action' => $paymentData['action'] ?? 'PURCHASE', // PURCHASE, AUTH, or SALE
+            "action"=>"PURCHASE",
             'amount' => [
-                'currencyCode' => strtoupper($paymentData['currency'] ?? 'AED'),
+                'currencyCode' => strtoupper( 'AED'),
                 'value' => (int)($paymentData['amount'] * 100), // Convert to minor units (cents)
             ],
         ];
@@ -120,28 +120,6 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
             $orderData['emailAddress'] = $paymentData['customer_email'];
         }
 
-        if (!empty($paymentData['description'])) {
-            $orderData['merchantOrderReference'] = $paymentData['description'];
-        }
-
-        if (!empty($paymentData['return_url'])) {
-            $orderData['merchantAttributes']['redirectUrl'] = $paymentData['return_url'];
-        }
-
-        if (!empty($paymentData['language'])) {
-            $orderData['language'] = $paymentData['language'];
-        }
-
-        // Add billing information if available
-        if (!empty($paymentData['customer_name']) || !empty($paymentData['customer_phone'])) {
-            $orderData['billingAddress'] = [];
-
-            if (!empty($paymentData['customer_name'])) {
-                $nameParts = explode(' ', $paymentData['customer_name'], 2);
-                $orderData['billingAddress']['firstName'] = $nameParts[0];
-                $orderData['billingAddress']['lastName'] = $nameParts[1] ?? '';
-            }
-        }
 
         // Create order
         $outletReference = $this->config['outlet_reference'];

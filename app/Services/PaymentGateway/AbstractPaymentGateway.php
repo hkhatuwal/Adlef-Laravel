@@ -75,16 +75,17 @@ abstract class AbstractPaymentGateway implements PaymentGateway
             $headers = array_merge($this->getHeaders(), $headers);
             $url = $this->getBaseUrl() . $endpoint;
             $client = new Client();
-            $request = new Request('POST', 'https://api-gateway.sandbox.ngenius-payments.com/identity/auth/access-token', $headers);
-            $response = $client->sendAsync($request)->wait();
-            if ($response->successful()) {
-                return $response->json();
+            $request = new Request($method, $url, $headers,!empty($data)?json_encode($data):null);
+            $response = $client->send($request);
+
+            if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+                return json_decode($response->getBody()->getContents(), true);
             }
 
             Log::error("Payment gateway API HTTP error", [
                 'provider' => $this->getProviderName(),
-                'status' => $response->status(),
-                'response' => $response->body(),
+                'status' => $response->getStatusCode(),
+                'response' => $response->getBody()->getContents(),
                 'url' => $url,
                 'method' => $method
             ]);
