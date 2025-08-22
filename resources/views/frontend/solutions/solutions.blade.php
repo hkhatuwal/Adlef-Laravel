@@ -142,7 +142,7 @@
                         </p>
                         <div class="relative group max-w-2xl mx-auto">
                             <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/800x500/1f2937/ffffff?text=Custom+Financial+Solutions"
+                            <img src="{{asset('assets/images/dashboard.png')}}"
                                  alt="Bespoke Solutions"
                                  class="relative rounded-3xl shadow-2xl w-full h-96 object-cover border border-gray-700/50">
                         </div>
