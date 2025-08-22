@@ -125,44 +125,88 @@ class NgeniusController extends Controller
     /**
      * Handle N-Genius webhook
      *
+     * Supported webhook events:
+     * - AUTHORISED: Payment has been authorized
+     * - DECLINED: Authorization declined by issuing bank
+     * - APM_PAYMENT_ACCEPTED: APM payment success response
+     * - AUTHORISATION_FAILED: Authorization process failed
+     * - FULL_AUTH_REVERSED: Authorization reversed
+     * - FULL_AUTH_REVERSAL_FAILED: Authorization reversal failed
+     * - PURCHASED: Purchase process succeeded
+     * - PURCHASE_DECLINED: Purchase process declined
+     * - PURCHASE_FAILED: Purchase process failed
+     * - PURCHASE_REVERSED: Previous purchase reversed
+     * - PURCHASE_REVERSAL_FAILED: Purchase reversal failed
+     * - CAPTURED: Authorized payment captured in full
+     * - CAPTURE_FAILED: Capture process failed
+     * - CAPTURE_VOIDED: Previous capture cancelled/voided
+     * - CAPTURE_VOID_FAILED: Capture void request failed
+     * - CANCELLATION_REQUESTED: APM payment cancellation requested
+     * - CANCELLATION_FAILED: APM payment cancellation failed
+     * - CANCELLED: APM payment cancellation succeeded
+     * - ORDER_CLOSED: Order marked as closed
+     * - PARTIALLY_CAPTURED: Authorized payment partially captured
+     * - PARTIAL_CAPTURE_FAILED: Partial capture request failed
+     * - REFUNDED: Captured payment refunded
+     * - REFUND_FAILED: Refund request failed
+     * - PARTIALLY_REFUNDED: Captured payment partially refunded
+     * - REFUND_REQUESTED: Refund requested to APM system
+     * - REFUND_REQUEST_FAILED: Refund request to APM failed
+     * - PARTIAL_REFUND_FAILED: Partial refund request failed
+     * - PARTIAL_REFUND_REQUEST_FAILED: Partial refund request to APM failed
+     * - PARTIAL_REFUND_REQUESTED: Partial refund requested to APM system
+     * - REFUND_VOIDED: Refund cancelled/voided
+     * - REFUND_VOID_FAILED: Refund void request failed
+     * - REFUND_VOID_REQUESTED: Cancel refund requested to APM system
+     * - GATEWAY_RISK_PRE_AUTH_REJECTED: Rejected by pre-authorization risk rules
+     * - PRE_AUTH_FRAUD_CHECK_REJECTED: Rejected by pre-authorization fraud screening
+     * - POST_AUTH_FRAUD_CHECK_REJECTED: Rejected by post-authorization fraud screening
+     * - POST_AUTH_FRAUD_CHECK_REVIEW: Post auth check pending
+     * - POST_AUTH_FRAUD_CHECK_ACCEPTED: Post auth check success
+     *
      * @param Request $request
      * @return JsonResponse
      */
-    public function webhook(Request $request): JsonResponse
+    public function handleWebhook(Request $request): JsonResponse
     {
-        try {
-            Log::info('N-Genius webhook received', [
-                'headers' => $request->headers->all(),
-                'payload' => $request->all()
-            ]);
+        $payload = $request->getContent();
 
-            // Get webhook payload
-            $payload = $request->getContent();
-            $webhookData = json_decode($payload, true);
+        Log::info($payload);
+
+        try {
+            $data = json_decode($payload, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::error('N-Genius webhook: Invalid JSON payload');
-                return response()->json(['error' => 'Invalid JSON'], 400);
+                Log::error('N-Genius webhook: Invalid JSON payload', [
+                    'payload' => $payload,
+                    'json_error' => json_last_error_msg()
+                ]);
+                return response()->json(['message' => 'Invalid JSON payload'], 400);
             }
 
-            // Process webhook using client payment service
-            $this->clientPaymentService->handleGatewayWebhook('ngenius', $webhookData);
-            $result = ['success' => true];
+            // Log the webhook data for debugging
+            Log::info('N-Genius webhook received', [
+                'event' => $data['event'] ?? 'unknown',
+                'order_id' => $data['order']['id'] ?? null,
+                'order_reference' => $data['order']['reference'] ?? null,
+                'transaction_id' => $data['transaction']['id'] ?? null,
+                'transaction_state' => $data['transaction']['state'] ?? null,
+                'full_payload' => $data
+            ]);
 
-            if ($result['success']) {
-                return response()->json(['status' => 'success'], 200);
-            }
+            // Handle webhook through client payment service
+            $this->clientPaymentService->handleGatewayWebhook('ngenius', $data);
 
-            return response()->json(['error' => $result['message'] ?? 'Webhook processing failed'], 400);
+            return response()->json(['message' => 'Webhook processed successfully']);
 
         } catch (\Exception $e) {
             Log::error('N-Genius webhook processing failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'payload' => $request->all()
+                'payload' => $payload
             ]);
 
-            return response()->json(['error' => 'Internal server error'], 500);
+            return response()->json(['message' => 'Webhook processing failed'], 500);
         }
     }
 

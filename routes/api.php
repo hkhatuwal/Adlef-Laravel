@@ -53,4 +53,5 @@ Route::prefix('webhooks')->group(function () {
     Route::any('/payop', [\App\Http\Controllers\Api\PaymentGateway\PayopController::class, 'handleWebhook']);
     Route::any('/paydo', [\App\Http\Controllers\Api\PaymentGateway\PaydoController::class, 'handleWebhook']);
     Route::any('/trongrid', [\App\Http\Controllers\Api\PaymentGateway\TronGridController::class, 'handleWebhook']);
+    Route::any('/ngenius', [\App\Http\Controllers\Api\PaymentGateway\NgeniusController::class, 'handleWebhook']);
 });

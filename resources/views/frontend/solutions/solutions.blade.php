@@ -20,7 +20,7 @@
     <section class="py-20">
         <div class="container mx-auto px-4">
             <div class="space-y-32 font-visuletProLight">
-                
+
                 <!-- OTC Services - Left Aligned -->
                 <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
                     <div class="lg:w-1/2 space-y-6">
@@ -40,9 +40,9 @@
                     <div class="lg:w-1/2">
                         <div class="relative group">
                             <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=OTC+Trading+Dashboard" 
-                                 alt="OTC Services Dashboard" 
-                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
+                            <img src="{{asset('assets/images/otc.png')}}"
+                                 alt="OTC Services Dashboard"
+                                 class="relative rounded-2xl shadow-2xl w-full h-[400px] object-cover border border-gray-700/50">
                         </div>
                     </div>
                 </div>
@@ -66,9 +66,9 @@
                     <div class="lg:w-1/2">
                         <div class="relative group">
                             <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=FX+Trading+Platform" 
-                                 alt="FX Solutions Platform" 
-                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
+                            <img src="{{asset('assets/images/fx-services.png')}}"
+                                 alt="FX Solutions Platform"
+                                 class="relative rounded-2xl shadow-2xl w-full max-h-[400px]] object-cover border border-gray-700/50">
                         </div>
                     </div>
                 </div>
@@ -92,9 +92,9 @@
                     <div class="lg:w-1/2">
                         <div class="relative group">
                             <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=Payment+Processing+System" 
-                                 alt="Cross-Border Payments System" 
-                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
+                            <img src="{{asset('assets/images/otc.png')}}"
+                                 alt="Cross-Border Payments System"
+                                 class="relative rounded-2xl shadow-2xl w-full max-h-[400px] object-cover border border-gray-700/50">
                         </div>
                     </div>
                 </div>
@@ -118,9 +118,9 @@
                     <div class="lg:w-1/2">
                         <div class="relative group">
                             <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/600x400/1f2937/ffffff?text=Payment+Gateway+API" 
-                                 alt="Payment Gateway API" 
-                                 class="relative rounded-2xl shadow-2xl w-full h-80 object-cover border border-gray-700/50">
+                            <img src="{{asset('assets/images/pg-api.png')}}"
+                                 alt="Payment Gateway API"
+                                 class="relative rounded-2xl shadow-2xl w-full max-h-[400px] object-cover border border-gray-700/50">
                         </div>
                     </div>
                 </div>
@@ -142,8 +142,8 @@
                         </p>
                         <div class="relative group max-w-2xl mx-auto">
                             <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
-                            <img src="https://via.placeholder.com/800x500/1f2937/ffffff?text=Custom+Financial+Solutions" 
-                                 alt="Bespoke Solutions" 
+                            <img src="https://via.placeholder.com/800x500/1f2937/ffffff?text=Custom+Financial+Solutions"
+                                 alt="Bespoke Solutions"
                                  class="relative rounded-3xl shadow-2xl w-full h-96 object-cover border border-gray-700/50">
                         </div>
                     </div>

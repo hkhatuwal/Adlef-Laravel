@@ -4,6 +4,7 @@ namespace App\Services\PaymentGateway;
 
 use App\Contracts\PaymentResponse;
 use App\Contracts\WebhookData;
+use App\Models\PaymentTransaction;
 use Dflydev\DotAccessData\Data;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -311,7 +312,7 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
         }
 
         // Extract event type
-        $eventType = $webhookData['event'] ?? 'unknown';
+        $eventType = $webhookData['eventName'] ?? 'unknown';
 
         // Map N-Genius event to standardized status
         $status = $this->mapWebhookEventToStatus($eventType);
@@ -324,14 +325,19 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
             $currency = $webhookData['order']['amount']['currencyCode'];
         }
 
-        $gatewayTransactionId = $webhookData['transaction']['id'] ?? null;
+
+
+        $paymentTransaction=PaymentTransaction::where('gateway_transaction_id', $transactionId)->first();
+
+
+
 
         return new WebhookData(
-            transactionId: $transactionId,
+            transactionId: $paymentTransaction->transaction_id,
             status: $status,
             amount: $amount,
             currency: $currency,
-            gatewayTransactionId: $gatewayTransactionId,
+            gatewayTransactionId: $transactionId,
             rawData: $webhookData,
             eventType: $eventType
         );
