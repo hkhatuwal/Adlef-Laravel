@@ -111,7 +111,7 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
         $orderData = [
             "action"=>"PURCHASE",
             'amount' => [
-                'currencyCode' => strtoupper( 'AED'),
+                'currencyCode' => strtoupper($paymentData['currency'] ?? 'USD'),
                 'value' => (int)($paymentData['amount'] * 100), // Convert to minor units (cents)
             ],
         ];
