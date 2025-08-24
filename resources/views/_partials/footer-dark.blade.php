@@ -14,6 +14,13 @@
                 </button>
             </div>
             <p class="mt-4 text-gray-500 text-sm">By submitting this form, you acknowledge that you have reviewed the terms of our <a href="{{ route('frontend.privacy-policy') }}" class="text-gray-700 underline">Privacy Policy</a>.</p>
+
+            <div class="certifications flex gap-4 mt-4">
+                <img src="{{asset('assets/images/visa.png')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/aes.jpg')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/mastercard.JPG')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/pci.png')}}" alt="" class="h-6" >
+            </div>
         </div>
 
         <!-- Right section -->
@@ -21,7 +28,7 @@
             <div class="mb-6">
                 <h3 class="font-bold text-white">Solutions</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="{{ route('frontend.opentrust-apis-page') }}" class="text-white block">Open Trust APIs</a></li>
+                    <li><a href="{{ route('frontend.api-documentation') }}" class="text-black block">Api Documentation</a></li>
                 </ul>
             </div>
             <div class="mb-6">
@@ -52,4 +59,6 @@
             </div>
         </div>
     </div>
+    <p class="mt-4 text-center w-full">Powered by <strong>Adlef Network LLC</strong></p>
+
 </footer>

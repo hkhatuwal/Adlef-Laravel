@@ -4,7 +4,7 @@
         <!-- Left section -->
         <div class="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
             <img src="{{asset('assets/images/logo.png?v=1')}}" alt="First Digital" class="h-20 mb-4">
-            <p class="text-gray-500">&copy; 2024 First Digital. All rights reserved.</p>
+            <p class="text-gray-500">&copy; 2025 ADLEF NETWORK LLC . All rights reserved.</p>
             <p class="mt-4 text-gray-700">Join our email list to receive articles, tips from industry experts, and more.</p>
             <div class="mt-4 flex">
                 <input type="email" placeholder="Enter your email" class="border border-gray-300 px-4 py-2 w-full">
@@ -13,6 +13,14 @@
                 </button>
             </div>
             <p class="mt-4 text-gray-500 text-sm">By submitting this form, you acknowledge that you have reviewed the terms of our <a href="{{ route('frontend.privacy-policy') }}" class="text-gray-700 underline">Privacy Policy</a>.</p>
+
+            <div class="certifications flex gap-4 mt-4">
+                <img src="{{asset('assets/images/visa.png')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/aes.jpg')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/mastercard.JPG')}}" alt="" class="h-6" >
+                <img src="{{asset('assets/images/pci.png')}}" alt="" class="h-6" >
+            </div>
+
         </div>
 
         <!-- Right section -->
@@ -20,7 +28,7 @@
             <div class="mb-6">
                 <h3 class="font-bold text-black">Solutions</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="{{ route('frontend.opentrust-apis-page') }}" class="text-black block">Open Trust APIs</a></li>
+                    <li><a href="{{ route('frontend.api-documentation') }}" class="text-black block">Api Documentation</a></li>
                 </ul>
             </div>
             <div class="mb-6">
@@ -51,4 +59,6 @@
             </div>
         </div>
     </div>
+
+    <p class="mt-4 text-center w-full">Powered by <strong>Adlef Network LLC</strong></p>
 </footer>
