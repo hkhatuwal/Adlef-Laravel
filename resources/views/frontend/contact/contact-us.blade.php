@@ -13,7 +13,7 @@
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
                 <h2 class="text-xl font-semibold mb-4">Customer Inquiries</h2>
                 <p class="text-gray-600 mb-4">If you have questions about an existing account, please sign into send us a secure message.</p>
-                <a href="#" class="text-blue-500 font-semibold hover:underline">SIGN IN TO CLIENT PORTAL →</a>
+                <a href="{{route('client-login')}}" class="text-blue-500 font-semibold hover:underline">SIGN IN TO CLIENT PORTAL →</a>
             </div>
             <!-- Business Inquiries -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center">

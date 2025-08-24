@@ -36,6 +36,7 @@ Route::group(['as' => 'frontend.'], function () {
     Route::get('/cookie-policy', [\App\Http\Controllers\Frontend\CookiePolicyController::class, 'index'])->name('cookie-policy');
     Route::get('/terms-of-use', [\App\Http\Controllers\Frontend\TermsOfUseController::class, 'index'])->name('terms-of-use');
     Route::get('/faq', [\App\Http\Controllers\Frontend\FAQController::class, 'index'])->name('faq');
+    Route::get('/api-documentation', [\App\Http\Controllers\Frontend\ApiDocumentationController::class, 'index'])->name('api-documentation');
 
     // Help Center Routes
 

@@ -210,6 +210,7 @@
             @include('_components.card', [
              'image' => "assets/images/client_portal.svg",
              'title' => 'Client portal',
+             'actionLink' => route('client-login'),
              'description' => 'The Client Portal is a secure, user-friendly online platform designed to provide our clients with seamless access to their accounts, services, and personalized resources. Through the portal, clients can manage their transactions, view detailed reports, track project progress.',
              'actionText' => 'SIGN IN →'
          ])
@@ -218,7 +219,8 @@
                 'image' => "assets/images/globe.png",
                 'title' => 'Global Market Access',
                 'description' => 'We provide seamless access to global markets, ensuring that your business can capitalize on every opportunity, no matter where it arises. From investment strategies to market entry solutions, we ensure that your global financial operations are efficient and effective.',
-                'actionText' => 'SIGN IN →'
+                'actionText' => 'SIGN UP →',
+                'actionLink' => route('client-registration')
             ])
 
 
@@ -229,7 +231,7 @@
 ',
                 'actionText' => 'LEARN MORE →',
                 'theme' => 'dark',
-                'actionLink' =>route('frontend.opentrust-apis-page'),
+                'actionLink' =>route('frontend.api-documentation'),
                 'bg' => 'black'
             ])
         </div>
