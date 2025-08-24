@@ -183,7 +183,7 @@
         </div>
 
         <div class="logos flex flex-row gap-6 overflow-x-auto items-center">
-            @foreach(['uplef.png', 'ubs.png', 'bitgo.webp', 'token.com.svg', 'biget.svg','creed.webp'] as $partner)
+            @foreach(['kraken.png','ledger.png','paydo.png','adlefy.png', 'ubs.png', 'bitgo.webp', 'token.com.svg', 'biget.svg','creed.webp'] as $partner)
                 <div class="brand w-full p-6 shrink-0 md:shrink">
                     <img src="{{ asset("assets/images/$partner") }}" alt="Partner Logo" class="w-full h-auto">
                 </div>

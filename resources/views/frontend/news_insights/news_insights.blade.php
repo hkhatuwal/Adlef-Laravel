@@ -7,21 +7,23 @@
                 Featured Content
             </h2>
             <h2 class="font-visuletProLight  text-3xl md:text-3xl ">
-                First off the Blocks <span class="font-bold"> Podcast</span>
+                Latest <span class="font-bold"> Bitcoin News</span>
             </h2>
             <div class="leadership-wrapper w-full mx-auto">
                 <div class="swiper">
                     <div class="swiper-wrapper">
-                        @foreach($podcasts as $podcast)
+                        @foreach($bitcoinNews as $news)
                         <div class="swiper-slide ">
-                                  @include('_components.podcast_card', [
-                                                                           'image' => 'storage/'.$podcast->image,
-                                                                           'description' =>$podcast->content,
-                                                                           'title' => $podcast->title,
-                                                                           'label' => $podcast->label,
+                                  @include('_components.bitcoin_news_card', [
+                                                                           'image' => $news['image'],
+                                                                           'description' => $news['description'],
+                                                                           'title' => $news['title'],
+                                                                           'label' => $news['label'],
                                                                            'theme' => 'light',
                                                                            'bg' => '#fff',
-                                                                           "links"=>$podcast->links
+                                                                           'links' => $news['links'],
+                                                                           'source' => $news['source'],
+                                                                           'publishedAt' => $news['published_at']
                                                                        ])
                         </div>
                         @endforeach
@@ -45,32 +47,32 @@
 
 
 
-    <section>
-        <div class="container mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14 ">
-            <div class="md:w-1/2">
-                <h2 class="font-visuletProLight  text-3xl md:text-4xl ">
-                    Articles
-                </h2>
-            </div>
-            @foreach($categoriesWithPosts as $categoryWithPosts)
-                <h2 class="font-visuletProLight  text-3xl md:text-3xl ">
-                    {{$categoryWithPosts->name}}
-                </h2>
-                <div class="cards flex gap-3  mt-10 overflow-scroll">
-                    @foreach($categoryWithPosts->posts->take(3) as $post)
-                        @include('_components.news_card', [
-                            'image' => 'storage/' . $post->image,
-                            'title' => 'Guide to International Digital Assets Regulations',
-                            'footerText' => '6 February 2023',
-                            'theme' => 'light',
-                            'bg' => 'transparent'
-                        ])
-                    @endforeach
-                </div>
+{{--    <section>--}}
+{{--        <div class="container mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14 ">--}}
+{{--            <div class="md:w-1/2">--}}
+{{--                <h2 class="font-visuletProLight  text-3xl md:text-4xl ">--}}
+{{--                    Articles--}}
+{{--                </h2>--}}
+{{--            </div>--}}
+{{--            @foreach($categoriesWithPosts as $categoryWithPosts)--}}
+{{--                <h2 class="font-visuletProLight  text-3xl md:text-3xl ">--}}
+{{--                    {{$categoryWithPosts->name}}--}}
+{{--                </h2>--}}
+{{--                <div class="cards flex gap-3  mt-10 overflow-scroll">--}}
+{{--                    @foreach($categoryWithPosts->posts->take(3) as $post)--}}
+{{--                        @include('_components.news_card', [--}}
+{{--                            'image' => 'storage/' . $post->image,--}}
+{{--                            'title' => 'Guide to International Digital Assets Regulations',--}}
+{{--                            'footerText' => '6 February 2023',--}}
+{{--                            'theme' => 'light',--}}
+{{--                            'bg' => 'transparent'--}}
+{{--                        ])--}}
+{{--                    @endforeach--}}
+{{--                </div>--}}
 
-                <hr>
-            @endforeach
-        </div>
-    </section>
+{{--                <hr>--}}
+{{--            @endforeach--}}
+{{--        </div>--}}
+{{--    </section>--}}
 
 @endsection

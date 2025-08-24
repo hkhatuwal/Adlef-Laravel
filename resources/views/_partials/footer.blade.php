@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap">
         <!-- Left section -->
         <div class="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
-            <img src="{{asset('assets/images/logo.svg?v=1')}}" alt="First Digital" class="h-20 mb-4">
+            <img src="{{asset('assets/images/logo.png?v=1')}}" alt="First Digital" class="h-20 mb-4">
             <p class="text-gray-500">&copy; 2024 First Digital. All rights reserved.</p>
             <p class="mt-4 text-gray-700">Join our email list to receive articles, tips from industry experts, and more.</p>
             <div class="mt-4 flex">
