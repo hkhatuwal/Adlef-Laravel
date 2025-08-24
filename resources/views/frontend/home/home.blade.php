@@ -21,18 +21,31 @@
             <button class="btn-dark btn-lg"><a href="{{route('frontend.contact-us.business-enquiry')}}">Contact
                     Sales</a></button>
         </div>
-        <div class="grid grid-cols-2 grid-rows-2  p-12 md:flex-1 min-h-[30vh] w-full">
-            <!-- First Image in the 1st grid box -->
-            <div class="col-span-1 row-span-1 flex justify-center items-center">
-                <img src="{{ asset('assets/images/hero1.svg') }}" alt="Hero Image">
+        <div class="md:flex-1 min-h-[30vh] w-full relative lg:p-10 ">
+
+            <div class="relative group inline-block">
+                <img src="{{asset('assets/images/hero2.png')}}"
+                     class="w-full h-full rounded-lg border-2 border-green-50 shadow-md
+                transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-105"
+                     alt="">
+
+                <img src="{{asset('assets/images/hero1.png')}}"
+                     class="w-full h-full absolute hidden lg:block lg:top-10   lg:left-10 rounded-lg m-10 border-2 border-white
+                shadow-lg transition-all duration-300 group-hover:top-0 group-hover:scale-105"
+                     alt="">
             </div>
-            <!-- Empty grid boxes for layout adjustment -->
-            <div class="col-span-1 row-span-1"></div>
-            <div class="col-span-1 row-span-1"></div>
-            <!-- Second Image in the bottom right grid box -->
-            <div class="col-span-1 row-span-1 flex justify-center items-center">
-                <img src="{{ asset('assets/images/hero2.svg') }}" alt="Hero Image">
-            </div>
+
+{{--            <!-- First Image in the 1st grid box -->--}}
+{{--            <div class="col-span-1 row-span-1 flex justify-center items-center">--}}
+{{--                <img src="{{ asset('assets/images/hero1.svg') }}" alt="Hero Image">--}}
+{{--            </div>--}}
+{{--            <!-- Empty grid boxes for layout adjustment -->--}}
+{{--            <div class="col-span-1 row-span-1"></div>--}}
+{{--            <div class="col-span-1 row-span-1"></div>--}}
+{{--            <!-- Second Image in the bottom right grid box -->--}}
+{{--            <div class="col-span-1 row-span-1 flex justify-center items-center">--}}
+{{--                <img src="{{ asset('assets/images/hero2.svg') }}" alt="Hero Image">--}}
+{{--            </div>--}}
         </div>
     </section>
 
