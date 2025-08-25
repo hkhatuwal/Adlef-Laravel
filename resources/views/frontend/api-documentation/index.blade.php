@@ -1,9 +1,9 @@
 @extends('_partials.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+<div class="min-h-screen bg-white">
     <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+    <div class="bg-black text-white py-20">
         <div class="container mx-auto px-6">
             <div class="text-center">
                 <h1 class="text-5xl font-bold mb-6" data-aos="fade-up">
@@ -14,11 +14,11 @@
                     Accept payments seamlessly with our comprehensive REST API.
                 </p>
                 <div class="mt-8" data-aos="fade-up" data-aos-delay="200">
-                    <a href="#getting-started" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 inline-flex items-center">
+                    <a href="#getting-started" class="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-300 inline-flex items-center">
                         <i class="fa-solid fa-rocket mr-2"></i>
                         Get Started
                     </a>
-                    <a href="#examples" class="ml-4 border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300 inline-flex items-center">
+                    <a href="#examples" class="ml-4 border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-black transition duration-300 inline-flex items-center">
                         <i class="fa-solid fa-code mr-2"></i>
                         View Examples
                     </a>
@@ -28,25 +28,25 @@
     </div>
 
     <!-- Navigation Pills -->
-    <div class="sticky top-0 bg-white shadow-md z-40">
+    <div class="sticky top-0 bg-white shadow-md z-40 border-b border-gray-200">
         <div class="container mx-auto px-6">
             <nav class="flex space-x-8 py-4 overflow-x-auto">
-                <a href="#getting-started" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#getting-started" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-play mr-2"></i>Getting Started
                 </a>
-                <a href="#authentication" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#authentication" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-shield-halved mr-2"></i>Authentication
                 </a>
-                <a href="#generate-payment" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#generate-payment" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-credit-card mr-2"></i>Generate Payment
                 </a>
-                <a href="#payment-details" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#payment-details" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-search mr-2"></i>Payment Details
                 </a>
-                <a href="#webhooks" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#webhooks" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-webhook mr-2"></i>Webhooks
                 </a>
-                <a href="#response-codes" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition duration-300">
+                <a href="#response-codes" class="nav-pill whitespace-nowrap px-4 py-2 rounded-lg text-gray-600 hover:text-black hover:bg-gray-100 transition duration-300">
                     <i class="fa-solid fa-code mr-2"></i>Response Codes
                 </a>
             </nav>
@@ -59,10 +59,10 @@
 
             <!-- Getting Started Section -->
             <section id="getting-started" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-6">
-                        <div class="bg-green-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-play text-green-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-play text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Getting Started</h2>
@@ -71,22 +71,22 @@
                     </div>
                     
                     <div class="grid md:grid-cols-3 gap-6">
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
-                            <div class="bg-blue-600 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <div class="bg-black w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                                 <i class="fa-solid fa-key text-white"></i>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">1. Get API Keys</h3>
                             <p class="text-gray-600 text-sm">Sign up and generate your API keys from the client dashboard</p>
                         </div>
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
-                            <div class="bg-purple-600 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <div class="bg-black w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                                 <i class="fa-solid fa-code text-white"></i>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">2. Make API Calls</h3>
                             <p class="text-gray-600 text-sm">Use our RESTful API endpoints to create and manage payments</p>
                         </div>
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
-                            <div class="bg-green-600 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <div class="bg-black w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                                 <i class="fa-solid fa-webhook text-white"></i>
                             </div>
                             <h3 class="font-semibold text-gray-900 mb-2">3. Handle Webhooks</h3>
@@ -94,12 +94,12 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+                    <div class="mt-8 p-6 bg-gray-50 border-l-4 border-gray-400 rounded-lg">
                         <div class="flex items-start">
-                            <i class="fa-solid fa-lightbulb text-yellow-600 mr-3 mt-1"></i>
+                            <i class="fa-solid fa-lightbulb text-gray-600 mr-3 mt-1"></i>
                             <div>
-                                <h4 class="font-semibold text-yellow-800 mb-2">Quick Start Tip</h4>
-                                <p class="text-yellow-700 text-sm">
+                                <h4 class="font-semibold text-gray-800 mb-2">Quick Start Tip</h4>
+                                <p class="text-gray-700 text-sm">
                                     All API endpoints use HTTPS and require authentication headers. 
                                     Test your integration in sandbox mode before going live.
                                 </p>
@@ -111,10 +111,10 @@
 
             <!-- Authentication Section -->
             <section id="authentication" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-6">
-                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-shield-halved text-blue-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-shield-halved text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Authentication</h2>
@@ -126,35 +126,35 @@
                         All API requests require authentication using your API key and secret key in the request headers:
                     </p>
                     
-                    <div class="bg-gray-900 rounded-xl p-6 relative">
+                    <div class="bg-black rounded-xl p-6 relative">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-green-400 font-medium flex items-center">
+                            <span class="text-white font-medium flex items-center">
                                 <i class="fa-solid fa-terminal mr-2"></i>Required Headers
                             </span>
-                            <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-green-400 px-3 py-1 rounded text-sm transition duration-200" data-copy="headers">
+                            <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition duration-200" data-copy="headers">
                                 <i class="fa-solid fa-copy mr-1"></i>Copy
                             </button>
                         </div>
-                        <pre class="text-green-400 text-sm overflow-x-auto" id="headers-example"><code>X-API-Key: your_api_key_here
+                        <pre class="text-white text-sm overflow-x-auto" id="headers-example"><code>X-API-Key: your_api_key_here
 X-Secret-Key: your_secret_key_here
 Content-Type: application/json</code></pre>
                     </div>
 
                     <div class="mt-6 grid md:grid-cols-2 gap-6">
-                        <div class="bg-blue-50 p-6 rounded-xl">
-                            <h4 class="font-semibold text-blue-900 mb-3 flex items-center">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
                                 <i class="fa-solid fa-key mr-2"></i>API Key
                             </h4>
-                            <p class="text-blue-800 text-sm">
+                            <p class="text-gray-800 text-sm">
                                 Your public API key that identifies your application. 
                                 This key is safe to use in client-side code.
                             </p>
                         </div>
-                        <div class="bg-red-50 p-6 rounded-xl">
-                            <h4 class="font-semibold text-red-900 mb-3 flex items-center">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <h4 class="font-semibold text-gray-900 mb-3 flex items-center">
                                 <i class="fa-solid fa-lock mr-2"></i>Secret Key
                             </h4>
-                            <p class="text-red-800 text-sm">
+                            <p class="text-gray-800 text-sm">
                                 Your private secret key that authenticates your requests. 
                                 Keep this key secure and never expose it in client-side code.
                             </p>
@@ -165,10 +165,10 @@ Content-Type: application/json</code></pre>
 
             <!-- Generate Payment Section -->
             <section id="generate-payment" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-6">
-                        <div class="bg-green-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-credit-card text-green-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-credit-card text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Generate Payment</h2>
@@ -180,9 +180,9 @@ Content-Type: application/json</code></pre>
                         <!-- Endpoint -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Endpoint</h3>
-                            <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 border-l-4 border-green-500">
+                            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-gray-500 border border-gray-200">
                                 <div class="flex items-center flex-wrap gap-3">
-                                    <span class="bg-green-600 text-white px-3 py-1 rounded-lg text-sm font-mono font-bold">POST</span>
+                                    <span class="bg-black text-white px-3 py-1 rounded-lg text-sm font-mono font-bold">POST</span>
                                     <code class="text-gray-800 font-mono bg-white px-3 py-1 rounded">{{ url('/api/v1/payment/generate') }}</code>
                                 </div>
                             </div>
@@ -193,12 +193,12 @@ Content-Type: application/json</code></pre>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Request Parameters</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden">
-                                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                    <thead class="bg-black">
                                         <tr>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Parameter</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Type</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Required</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Description</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Parameter</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Type</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Required</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Description</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -206,7 +206,7 @@ Content-Type: application/json</code></pre>
                                             <td class="px-6 py-4 text-sm font-mono font-bold text-gray-900">amount</td>
                                             <td class="px-6 py-4 text-sm text-gray-700">number</td>
                                             <td class="px-6 py-4">
-                                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Required</span>
+                                                <span class="bg-black text-white px-2 py-1 rounded-full text-xs font-semibold">Required</span>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-700">Payment amount (e.g., 10.00)</td>
                                         </tr>
@@ -214,7 +214,7 @@ Content-Type: application/json</code></pre>
                                             <td class="px-6 py-4 text-sm font-mono font-bold text-gray-900">currency</td>
                                             <td class="px-6 py-4 text-sm text-gray-700">string</td>
                                             <td class="px-6 py-4">
-                                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Required</span>
+                                                <span class="bg-black text-white px-2 py-1 rounded-full text-xs font-semibold">Required</span>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-700">Currency code (e.g., "USD", "EUR")</td>
                                         </tr>
@@ -222,7 +222,7 @@ Content-Type: application/json</code></pre>
                                             <td class="px-6 py-4 text-sm font-mono font-bold text-gray-900">description</td>
                                             <td class="px-6 py-4 text-sm text-gray-700">string</td>
                                             <td class="px-6 py-4">
-                                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-semibold">Optional</span>
+                                                <span class="bg-gray-400 text-white px-2 py-1 rounded-full text-xs font-semibold">Optional</span>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-700">Payment description</td>
                                         </tr>
@@ -230,7 +230,7 @@ Content-Type: application/json</code></pre>
                                             <td class="px-6 py-4 text-sm font-mono font-bold text-gray-900">customer_email</td>
                                             <td class="px-6 py-4 text-sm text-gray-700">string</td>
                                             <td class="px-6 py-4">
-                                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Required</span>
+                                                <span class="bg-black text-white px-2 py-1 rounded-full text-xs font-semibold">Required</span>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-700">Customer's email address</td>
                                         </tr>
@@ -242,16 +242,16 @@ Content-Type: application/json</code></pre>
                         <!-- Example Request -->
                         <div id="examples">
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Example Request</h3>
-                            <div class="bg-gray-900 rounded-xl p-6 relative">
+                            <div class="bg-black rounded-xl p-6 relative">
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="text-green-400 font-medium flex items-center">
+                                    <span class="text-white font-medium flex items-center">
                                         <i class="fa-solid fa-terminal mr-2"></i>cURL Example
                                     </span>
-                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-green-400 px-3 py-1 rounded text-sm transition duration-200" data-copy="curl">
+                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition duration-200" data-copy="curl">
                                         <i class="fa-solid fa-copy mr-1"></i>Copy
                                     </button>
                                 </div>
-                                <pre class="text-green-400 text-sm overflow-x-auto" id="curl-example"><code>curl --location '{{ url('/api/v1/payment/generate') }}' \
+                                <pre class="text-white text-sm overflow-x-auto" id="curl-example"><code>curl --location '{{ url('/api/v1/payment/generate') }}' \
 --header 'X-API-Key: ak_BOV8leQRfljCq68WcHB9Zm6dzMM9eEZH' \
 --header 'X-Secret-Key: sk_Ov0yxZwW5gnxFbfDCaudJWp2ADSxE6Fo' \
 --header 'Content-Type: application/json' \
@@ -267,7 +267,7 @@ Content-Type: application/json</code></pre>
                         <!-- Response Format -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Response Format</h3>
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border">
+                            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <span class="text-gray-700 font-medium flex items-center">
                                         <i class="fa-solid fa-code mr-2"></i>JSON Response
@@ -298,10 +298,10 @@ Content-Type: application/json</code></pre>
 
             <!-- Payment Details Section -->
             <section id="payment-details" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-6">
-                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-search text-blue-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-search text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Get Payment Details</h2>
@@ -313,9 +313,9 @@ Content-Type: application/json</code></pre>
                         <!-- Endpoint -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Endpoint</h3>
-                            <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 border-l-4 border-blue-500">
+                            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-gray-500 border border-gray-200">
                                 <div class="flex items-center flex-wrap gap-3">
-                                    <span class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-mono font-bold">GET</span>
+                                    <span class="bg-black text-white px-3 py-1 rounded-lg text-sm font-mono font-bold">GET</span>
                                     <code class="text-gray-800 font-mono bg-white px-3 py-1 rounded">{{ url('/api/v1/payment/details/{transactionId}') }}</code>
                                 </div>
                             </div>
@@ -326,12 +326,12 @@ Content-Type: application/json</code></pre>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Path Parameters</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden">
-                                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                    <thead class="bg-black">
                                         <tr>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Parameter</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Type</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Required</th>
-                                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Description</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Parameter</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Type</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Required</th>
+                                            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Description</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -339,7 +339,7 @@ Content-Type: application/json</code></pre>
                                             <td class="px-6 py-4 text-sm font-mono font-bold text-gray-900">transactionId</td>
                                             <td class="px-6 py-4 text-sm text-gray-700">string</td>
                                             <td class="px-6 py-4">
-                                                <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Required</span>
+                                                <span class="bg-black text-white px-2 py-1 rounded-full text-xs font-semibold">Required</span>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-700">Transaction ID (e.g., txn_tIO5XClz1fmjQ57a)</td>
                                         </tr>
@@ -351,16 +351,16 @@ Content-Type: application/json</code></pre>
                         <!-- Example Request -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Example Request</h3>
-                            <div class="bg-gray-900 rounded-xl p-6 relative">
+                            <div class="bg-black rounded-xl p-6 relative">
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="text-green-400 font-medium flex items-center">
+                                    <span class="text-white font-medium flex items-center">
                                         <i class="fa-solid fa-terminal mr-2"></i>cURL Example
                                     </span>
-                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-green-400 px-3 py-1 rounded text-sm transition duration-200" data-copy="curl-details">
+                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition duration-200" data-copy="curl-details">
                                         <i class="fa-solid fa-copy mr-1"></i>Copy
                                     </button>
                                 </div>
-                                <pre class="text-green-400 text-sm overflow-x-auto" id="curl-details-example"><code>curl --location '{{ url('/api/v1/payment/details/txn_tIO5XClz1fmjQ57a') }}' \
+                                <pre class="text-white text-sm overflow-x-auto" id="curl-details-example"><code>curl --location '{{ url('/api/v1/payment/details/txn_tIO5XClz1fmjQ57a') }}' \
 --header 'X-API-Key: ak_BOV8leQRfljCq68WcHB9Zm6dzMM9eEZH' \
 --header 'X-Secret-Key: sk_Ov0yxZwW5gnxFbfDCaudJWp2ADSxE6Fo' \
 --header 'Content-Type: application/json'</code></pre>
@@ -370,7 +370,7 @@ Content-Type: application/json</code></pre>
                         <!-- Response Format -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Response Format</h3>
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border">
+                            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <span class="text-gray-700 font-medium flex items-center">
                                         <i class="fa-solid fa-code mr-2"></i>JSON Response
@@ -404,10 +404,10 @@ Content-Type: application/json</code></pre>
 
             <!-- Webhooks Section -->
             <section id="webhooks" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-6">
-                        <div class="bg-orange-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-webhook text-orange-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-webhook text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Webhooks</h2>
@@ -416,7 +416,7 @@ Content-Type: application/json</code></pre>
                     </div>
 
                     <div class="space-y-8">
-                        <div class="bg-gradient-to-r from-orange-50 to-yellow-50 p-6 rounded-xl border-l-4 border-orange-400">
+                        <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-gray-400 border border-gray-200">
                             <p class="text-gray-700 text-lg leading-relaxed">
                                 Webhooks are HTTP callbacks that notify your application when payment events occur.
                                 Our system will automatically send webhook notifications to your registered webhook URLs
@@ -427,13 +427,13 @@ Content-Type: application/json</code></pre>
                         <!-- Configuration -->
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Webhook Configuration</h3>
-                            <div class="bg-blue-50 p-6 rounded-xl">
-                                <p class="text-blue-800 mb-4">
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                <p class="text-gray-800 mb-4">
                                     Configure your webhook URLs in the API Keys section of your client dashboard. 
                                     You can add multiple webhook URLs to receive notifications at different endpoints.
                                 </p>
-                                <div class="bg-blue-100 p-4 rounded-lg">
-                                    <p class="text-blue-900 text-sm font-medium">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                                    <p class="text-gray-900 text-sm font-medium">
                                         💡 <strong>Pro Tip:</strong> Test your webhook endpoints thoroughly before going live. 
                                         Use tools like ngrok for local development testing.
                                     </p>
@@ -447,16 +447,16 @@ Content-Type: application/json</code></pre>
                             <p class="text-gray-700 mb-4">
                                 When a payment event occurs, we'll send a POST request to your webhook URL with the following headers:
                             </p>
-                            <div class="bg-gray-900 rounded-xl p-6 relative">
+                            <div class="bg-black rounded-xl p-6 relative">
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="text-green-400 font-medium flex items-center">
+                                    <span class="text-white font-medium flex items-center">
                                         <i class="fa-solid fa-terminal mr-2"></i>Webhook Headers
                                     </span>
-                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-green-400 px-3 py-1 rounded text-sm transition duration-200" data-copy="webhook-headers">
+                                    <button class="copy-btn bg-gray-800 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition duration-200" data-copy="webhook-headers">
                                         <i class="fa-solid fa-copy mr-1"></i>Copy
                                     </button>
                                 </div>
-                                <pre class="text-green-400 text-sm overflow-x-auto" id="webhook-headers-example"><code>X-Signature: generated_signature_hash
+                                <pre class="text-white text-sm overflow-x-auto" id="webhook-headers-example"><code>X-Signature: generated_signature_hash
 X-Event-Type: payment.{status}
 Content-Type: application/json</code></pre>
                             </div>
@@ -466,30 +466,30 @@ Content-Type: application/json</code></pre>
                         <div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Event Types</h3>
                             <div class="grid md:grid-cols-2 gap-4">
-                                <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                    <div class="flex items-center mb-2">
-                                        <span class="bg-yellow-600 w-3 h-3 rounded-full mr-3"></span>
-                                        <code class="font-mono text-sm font-bold text-yellow-800">payment.pending</code>
-                                    </div>
-                                    <p class="text-yellow-700 text-sm">Payment is awaiting completion</p>
-                                </div>
-                                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                    <div class="flex items-center mb-2">
-                                        <span class="bg-green-600 w-3 h-3 rounded-full mr-3"></span>
-                                        <code class="font-mono text-sm font-bold text-green-800">payment.completed</code>
-                                    </div>
-                                    <p class="text-green-700 text-sm">Payment has been successfully completed</p>
-                                </div>
-                                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-                                    <div class="flex items-center mb-2">
-                                        <span class="bg-red-600 w-3 h-3 rounded-full mr-3"></span>
-                                        <code class="font-mono text-sm font-bold text-red-800">payment.failed</code>
-                                    </div>
-                                    <p class="text-red-700 text-sm">Payment has failed</p>
-                                </div>
                                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                                     <div class="flex items-center mb-2">
                                         <span class="bg-gray-600 w-3 h-3 rounded-full mr-3"></span>
+                                        <code class="font-mono text-sm font-bold text-gray-800">payment.pending</code>
+                                    </div>
+                                    <p class="text-gray-700 text-sm">Payment is awaiting completion</p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                    <div class="flex items-center mb-2">
+                                        <span class="bg-black w-3 h-3 rounded-full mr-3"></span>
+                                        <code class="font-mono text-sm font-bold text-gray-800">payment.completed</code>
+                                    </div>
+                                    <p class="text-gray-700 text-sm">Payment has been successfully completed</p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                    <div class="flex items-center mb-2">
+                                        <span class="bg-gray-800 w-3 h-3 rounded-full mr-3"></span>
+                                        <code class="font-mono text-sm font-bold text-gray-800">payment.failed</code>
+                                    </div>
+                                    <p class="text-gray-700 text-sm">Payment has failed</p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                    <div class="flex items-center mb-2">
+                                        <span class="bg-gray-400 w-3 h-3 rounded-full mr-3"></span>
                                         <code class="font-mono text-sm font-bold text-gray-800">payment.expired</code>
                                     </div>
                                     <p class="text-gray-700 text-sm">Payment has expired</p>
@@ -503,7 +503,7 @@ Content-Type: application/json</code></pre>
                             <p class="text-gray-700 mb-4">
                                 The webhook payload contains the complete transaction information:
                             </p>
-                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border">
+                            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <span class="text-gray-700 font-medium flex items-center">
                                         <i class="fa-solid fa-code mr-2"></i>Example Webhook Payload
@@ -530,26 +530,26 @@ Content-Type: application/json</code></pre>
                         </div>
 
                         <!-- Important Notes -->
-                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
                             <div class="flex items-start">
-                                <i class="fa-solid fa-exclamation-triangle text-amber-600 mr-3 mt-1"></i>
+                                <i class="fa-solid fa-exclamation-triangle text-gray-600 mr-3 mt-1"></i>
                                 <div>
-                                    <h4 class="font-semibold text-amber-800 mb-3">Important Notes</h4>
-                                    <ul class="text-sm text-amber-700 space-y-2">
+                                    <h4 class="font-semibold text-gray-800 mb-3">Important Notes</h4>
+                                    <ul class="text-sm text-gray-700 space-y-2">
                                         <li class="flex items-start">
-                                            <span class="w-2 h-2 bg-amber-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                            <span class="w-2 h-2 bg-gray-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                                             <span>Webhook delivery timeout is 30 seconds</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <span class="w-2 h-2 bg-amber-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                            <span class="w-2 h-2 bg-gray-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                                             <span>Handle duplicate webhook deliveries gracefully using idempotency</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <span class="w-2 h-2 bg-amber-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                            <span class="w-2 h-2 bg-gray-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                                             <span>Always respond with 200 status code for successful processing</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <span class="w-2 h-2 bg-amber-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
+                                            <span class="w-2 h-2 bg-gray-600 rounded-full mr-3 mt-2 flex-shrink-0"></span>
                                             <span>Verify webhook signatures to ensure authenticity</span>
                                         </li>
                                     </ul>
@@ -562,10 +562,10 @@ Content-Type: application/json</code></pre>
 
             <!-- Response Codes Section -->
             <section id="response-codes" class="scroll-mt-24" data-aos="fade-up">
-                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
                     <div class="flex items-center mb-8">
-                        <div class="bg-purple-100 p-3 rounded-lg mr-4">
-                            <i class="fa-solid fa-code text-purple-600 text-xl"></i>
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fa-solid fa-code text-white text-xl"></i>
                         </div>
                         <div>
                             <h2 class="text-3xl font-bold text-gray-900">Response Codes</h2>
@@ -575,71 +575,71 @@ Content-Type: application/json</code></pre>
                     
                     <div class="grid lg:grid-cols-2 gap-8">
                         <!-- Success Codes -->
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
-                            <h3 class="text-xl font-semibold text-green-800 mb-6 flex items-center">
+                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                                 <i class="fa-solid fa-check-circle mr-2"></i>
                                 Success Codes
                             </h3>
                             <div class="space-y-4">
-                                <div class="bg-white p-4 rounded-lg border border-green-200 flex items-center justify-between">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <span class="font-mono bg-green-600 text-white px-3 py-1 rounded-lg font-bold text-lg">200</span>
+                                        <span class="font-mono bg-black text-white px-3 py-1 rounded-lg font-bold text-lg">200</span>
                                         <div class="ml-4">
-                                            <p class="font-semibold text-green-800">OK</p>
-                                            <p class="text-green-700 text-sm">Request successful</p>
+                                            <p class="font-semibold text-gray-800">OK</p>
+                                            <p class="text-gray-700 text-sm">Request successful</p>
                                         </div>
                                     </div>
-                                    <i class="fa-solid fa-check text-green-600"></i>
+                                    <i class="fa-solid fa-check text-black"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Error Codes -->
-                        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
-                            <h3 class="text-xl font-semibold text-red-800 mb-6 flex items-center">
+                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
                                 <i class="fa-solid fa-exclamation-circle mr-2"></i>
                                 Error Codes
                             </h3>
                             <div class="space-y-4">
-                                <div class="bg-white p-4 rounded-lg border border-red-200 flex items-center justify-between">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <span class="font-mono bg-red-600 text-white px-3 py-1 rounded-lg font-bold text-lg">400</span>
+                                        <span class="font-mono bg-gray-800 text-white px-3 py-1 rounded-lg font-bold text-lg">400</span>
                                         <div class="ml-4">
-                                            <p class="font-semibold text-red-800">Bad Request</p>
-                                            <p class="text-red-700 text-sm">Invalid request format</p>
+                                            <p class="font-semibold text-gray-800">Bad Request</p>
+                                            <p class="text-gray-700 text-sm">Invalid request format</p>
                                         </div>
                                     </div>
-                                    <i class="fa-solid fa-times text-red-600"></i>
+                                    <i class="fa-solid fa-times text-gray-600"></i>
                                 </div>
-                                <div class="bg-white p-4 rounded-lg border border-red-200 flex items-center justify-between">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <span class="font-mono bg-red-600 text-white px-3 py-1 rounded-lg font-bold text-lg">401</span>
+                                        <span class="font-mono bg-gray-800 text-white px-3 py-1 rounded-lg font-bold text-lg">401</span>
                                         <div class="ml-4">
-                                            <p class="font-semibold text-red-800">Unauthorized</p>
-                                            <p class="text-red-700 text-sm">Invalid API credentials</p>
+                                            <p class="font-semibold text-gray-800">Unauthorized</p>
+                                            <p class="text-gray-700 text-sm">Invalid API credentials</p>
                                         </div>
                                     </div>
-                                    <i class="fa-solid fa-lock text-red-600"></i>
+                                    <i class="fa-solid fa-lock text-gray-600"></i>
                                 </div>
-                                <div class="bg-white p-4 rounded-lg border border-red-200 flex items-center justify-between">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <span class="font-mono bg-red-600 text-white px-3 py-1 rounded-lg font-bold text-lg">422</span>
+                                        <span class="font-mono bg-gray-800 text-white px-3 py-1 rounded-lg font-bold text-lg">422</span>
                                         <div class="ml-4">
-                                            <p class="font-semibold text-red-800">Validation Error</p>
-                                            <p class="text-red-700 text-sm">Request data validation failed</p>
+                                            <p class="font-semibold text-gray-800">Validation Error</p>
+                                            <p class="text-gray-700 text-sm">Request data validation failed</p>
                                         </div>
                                     </div>
-                                    <i class="fa-solid fa-exclamation-triangle text-red-600"></i>
+                                    <i class="fa-solid fa-exclamation-triangle text-gray-600"></i>
                                 </div>
-                                <div class="bg-white p-4 rounded-lg border border-red-200 flex items-center justify-between">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                                     <div class="flex items-center">
-                                        <span class="font-mono bg-red-600 text-white px-3 py-1 rounded-lg font-bold text-lg">500</span>
+                                        <span class="font-mono bg-gray-800 text-white px-3 py-1 rounded-lg font-bold text-lg">500</span>
                                         <div class="ml-4">
-                                            <p class="font-semibold text-red-800">Internal Server Error</p>
-                                            <p class="text-red-700 text-sm">Unexpected server error</p>
+                                            <p class="font-semibold text-gray-800">Internal Server Error</p>
+                                            <p class="text-gray-700 text-sm">Unexpected server error</p>
                                         </div>
                                     </div>
-                                    <i class="fa-solid fa-server text-red-600"></i>
+                                    <i class="fa-solid fa-server text-gray-600"></i>
                                 </div>
                             </div>
                         </div>
@@ -649,17 +649,17 @@ Content-Type: application/json</code></pre>
 
             <!-- Get Started CTA -->
             <section class="text-center py-16" data-aos="fade-up">
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white">
+                <div class="bg-black rounded-2xl p-12 text-white">
                     <h2 class="text-4xl font-bold mb-4">Ready to Get Started?</h2>
                     <p class="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
                         Join thousands of developers who trust our payment gateway API for their applications.
                     </p>
                     <div class="space-x-4">
-                        <a href="{{ route('client-registration') }}" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 inline-flex items-center">
+                        <a href="{{ route('client-registration') }}" class="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-300 inline-flex items-center">
                             <i class="fa-solid fa-user-plus mr-2"></i>
                             Create Account
                         </a>
-                        <a href="{{ route('frontend.contact-us') }}" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300 inline-flex items-center">
+                        <a href="{{ route('frontend.contact-us') }}" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-black transition duration-300 inline-flex items-center">
                             <i class="fa-solid fa-headset mr-2"></i>
                             Contact Support
                         </a>
@@ -711,11 +711,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show success feedback
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="fa-solid fa-check mr-1"></i>Copied!';
-                this.classList.add('bg-green-600', 'text-white');
+                this.classList.add('bg-black', 'text-white');
                 
                 setTimeout(() => {
                     this.innerHTML = originalText;
-                    this.classList.remove('bg-green-600', 'text-white');
+                    this.classList.remove('bg-black', 'text-white');
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
@@ -756,12 +756,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         navPills.forEach(pill => {
-            pill.classList.remove('text-blue-600', 'bg-blue-50');
+            pill.classList.remove('text-black', 'bg-gray-100');
             pill.classList.add('text-gray-600');
             
             if (pill.getAttribute('href') === '#' + currentSection) {
                 pill.classList.remove('text-gray-600');
-                pill.classList.add('text-blue-600', 'bg-blue-50');
+                pill.classList.add('text-black', 'bg-gray-100');
             }
         });
     });
