@@ -21,6 +21,7 @@ class AccountOpeningRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         toastr("Some fields are empty or invalid", Type::ERROR);
+        $this->dd($validator->errors());
         throw new HttpResponseException(
             back()
                 ->withErrors($validator)
@@ -47,7 +48,7 @@ class AccountOpeningRequest extends FormRequest
 
             // Account Purpose and Economic Profile
             'purpose' => ['required', 'array', 'min:1'],
-            'purpose.*' => ['string', 'in:Custody,Asset Servicing,Escrow,Investments,Treasury Services,Other'],
+            'purpose.*' => ['string'],
             'source_funds' => ['required', 'array', 'min:1'],
             'source_funds.*' => ['string'],
 //            'wealth_source' => ['required', 'array', 'min:1'],
