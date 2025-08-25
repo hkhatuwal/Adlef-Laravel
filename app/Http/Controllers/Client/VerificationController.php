@@ -14,7 +14,7 @@ class VerificationController extends Controller
     public function showVerifyForm(){
         return view('client.auth.verify');
     }
-    
+
     public function showDocumentPending(){
         return view('client.auth.document-verification-pending');
     }
@@ -32,6 +32,7 @@ class VerificationController extends Controller
 
             // Generate 6 digit OTP
             $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            Log::info($otp);
 
             // Store OTP in session with expiry time (15 minutes)
             session([

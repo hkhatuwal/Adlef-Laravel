@@ -50,8 +50,8 @@ class AccountOpeningRequest extends FormRequest
             'purpose.*' => ['string', 'in:Custody,Asset Servicing,Escrow,Investments,Treasury Services,Other'],
             'source_funds' => ['required', 'array', 'min:1'],
             'source_funds.*' => ['string'],
-            'wealth_source' => ['required', 'array', 'min:1'],
-            'wealth_source.*' => ['string'],
+//            'wealth_source' => ['required', 'array', 'min:1'],
+//            'wealth_source.*' => ['string'],
             'annual_income' => ['required', 'string'],
 
             // Contact Information

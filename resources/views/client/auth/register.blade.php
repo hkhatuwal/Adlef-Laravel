@@ -203,31 +203,31 @@
                                 @enderror
                             </fieldset>
 
-                            <fieldset class="mt-6">
-                                <div class="flex items-center gap-2">
-                                    <legend class="text-base font-bold text-gray-900">What is the source of your wealth?
-                                        (Check all that apply)
-                                    </legend>
+{{--                            <fieldset class="mt-6">--}}
+{{--                                <div class="flex items-center gap-2">--}}
+{{--                                    <legend class="text-base font-bold text-gray-900">What is the source of your wealth?--}}
+{{--                                        (Check all that apply)--}}
+{{--                                    </legend>--}}
 
-                                </div>
-                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-1">
-                                    @foreach(config('constants.wealth_source') as  $source)
-                                        <div class="flex items-start">
-                                            <div class="flex items-center h-5">
-                                                <input id="wealth_{{ Str::snake($source) }}" name="wealth_source[]" type="checkbox" value="{{$source}}"
-                                                       @checked(is_array(old('wealth_source')) && in_array($source, old('wealth_source')))
-                                                       class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded">
-                                            </div>
-                                            <div class="ml-3 text-sm">
-                                                <label for="wealth_{{ Str::snake($source) }}" class="font-medium text-gray-700">{{$source}}</label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                @error('wealth_source')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </fieldset>
+{{--                                </div>--}}
+{{--                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-1">--}}
+{{--                                    @foreach(config('constants.wealth_source') as  $source)--}}
+{{--                                        <div class="flex items-start">--}}
+{{--                                            <div class="flex items-center h-5">--}}
+{{--                                                <input id="wealth_{{ Str::snake($source) }}" name="wealth_source[]" type="checkbox" value="{{$source}}"--}}
+{{--                                                       @checked(is_array(old('wealth_source')) && in_array($source, old('wealth_source')))--}}
+{{--                                                       class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded">--}}
+{{--                                            </div>--}}
+{{--                                            <div class="ml-3 text-sm">--}}
+{{--                                                <label for="wealth_{{ Str::snake($source) }}" class="font-medium text-gray-700">{{$source}}</label>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    @endforeach--}}
+{{--                                </div>--}}
+{{--                                @error('wealth_source')--}}
+{{--                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>--}}
+{{--                                @enderror--}}
+{{--                            </fieldset>--}}
 
                             <div>
                                 <label class="text-base font-bold text-gray-900">What is your current annual

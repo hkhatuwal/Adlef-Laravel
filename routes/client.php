@@ -35,17 +35,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
     Route::get('api-clients/{apiClient}/statistics', [\App\Http\Controllers\Client\ApiClientController::class, 'statistics'])
         ->name('api-clients.statistics');
 
-    // Payment Gateway Management
-    Route::prefix('payment-gateway')->name('payment-gateway.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'index'])->name('index');
-        Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
 
-        // API Keys Management
-        Route::post('/api-keys', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'storeApiKey'])->name('api-keys.store');
-        Route::post('/api-keys/{apiClient}/regenerate', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'regenerateApiKey'])->name('api-keys.regenerate');
-        Route::post('/api-keys/{apiClient}/toggle', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'toggleApiClientStatus'])->name('api-keys.toggle');
-        Route::delete('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'deleteApiClient'])->name('api-keys.delete');
-    });
 
     Route::middleware([\App\Http\Middleware\ClientVerifyMiddleware::class])->group(function ($app) {
         Route::get('/logout', [ClientLogoutController::class, 'logout'])->name('client-logout');
@@ -84,6 +74,19 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
 //    Crypto Wallet Route
         Route::post('/crypto-wallet', [CryptoWalletController::class, 'store'])->name('crypto-wallet.store');
 
+
+
+        // Payment Gateway Management
+        Route::prefix('payment-gateway')->name('payment-gateway.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'index'])->name('index');
+            Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
+
+            // API Keys Management
+            Route::post('/api-keys', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'storeApiKey'])->name('api-keys.store');
+            Route::post('/api-keys/{apiClient}/regenerate', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'regenerateApiKey'])->name('api-keys.regenerate');
+            Route::post('/api-keys/{apiClient}/toggle', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'toggleApiClientStatus'])->name('api-keys.toggle');
+            Route::delete('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'deleteApiClient'])->name('api-keys.delete');
+        });
 
     });
 

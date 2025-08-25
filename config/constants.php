@@ -52,16 +52,12 @@ return [
         'PYR031 Advance Payments for goods'
     ],
     "register_source_funds"=>[
-        'Salary',
-        'Inheritance',
-        'Divorce Settlement',
-        'Pension/SavingsFromEmployment',
-        'Sale Of Property',
-        'Interest Income',
-        'Capital Gain/Dividends',
-        'Gambling',
-        'Gift',
-        'Other'
+        'Payment Gateway',
+        'OTC',
+        'On ramp/Off ramp', 
+        'Crypto Gateway',
+        'Escrow',
+        'Investment'
     ],
     "wealth_source" => [
         'Salary',

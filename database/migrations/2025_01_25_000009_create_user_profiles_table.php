@@ -40,18 +40,7 @@ return new class extends Migration
                 'Treasury Services',
                 'Other'
             ])->nullable();
-            $table->set('funds_source', [
-                'Salary',
-                'Inheritance',
-                'Divorce Settlement',
-                'Pension/SavingsFromEmployment',
-                'Sale Of Property',
-                'Interest Income',
-                'Capital Gain/Dividends',
-                'Gambling',
-                'Gift',
-                'Other'
-            ])->nullable();
+            $table->text()->nullable();
             $table->set('wealth_source', [
                 'Salary',
                 'Inheritance',
