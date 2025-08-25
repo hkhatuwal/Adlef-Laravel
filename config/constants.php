@@ -14,9 +14,12 @@ return [
         'reason_not_required' => 'No TIN is required'
     ],
     "account_purposes" => [
-        'Custody', 'Asset Servicing', 'Escrow', 'Investments', 'Treasury Services'
-        ,
-        'Other'
+        'Payment Gateway',
+        'OTC',
+        'On ramp/Off ramp',
+        'Crypto Gateway',
+        'Escrow',
+        'Investment'
     ],
     "source_funds" => [
         'PYR001 Payment for Services',
@@ -52,12 +55,16 @@ return [
         'PYR031 Advance Payments for goods'
     ],
     "register_source_funds"=>[
-        'Payment Gateway',
-        'OTC',
-        'On ramp/Off ramp', 
-        'Crypto Gateway',
-        'Escrow',
-        'Investment'
+        'Salary',
+        'Inheritance',
+        'Divorce Settlement',
+        'Pension/SavingsFromEmployment',
+        'Sale Of Property',
+        'Interest Income',
+        'Capital Gain/Dividends',
+        'Gambling',
+        'Gift',
+        'Other'
     ],
     "wealth_source" => [
         'Salary',

@@ -32,27 +32,9 @@ return new class extends Migration
                 'US$1mil - US$5mil',
                 'Over US$5mil'
             ])->nullable();
-            $table->set('account_purpose', [
-                'Custody',
-                'Asset Servicing',
-                'Escrow',
-                'Investments',
-                'Treasury Services',
-                'Other'
-            ])->nullable();
-            $table->text()->nullable();
-            $table->set('wealth_source', [
-                'Salary',
-                'Inheritance',
-                'Divorce Settlement',
-                'Pension/SavingsFromEmployment',
-                'Sale Of Property',
-                'Interest Income',
-                'Capital Gain/Dividends',
-                'Gambling',
-                'Gift',
-                'Other'
-            ])->nullable();
+            $table->text('account_purpose')->nullable();
+            $table->text('funds_source')->nullable();
+            $table->string('wealth_source')->nullable();
             $table->enum('anticipated_asset_class', [
                 'Custody Asset Servicing',
                 'Escrow',
