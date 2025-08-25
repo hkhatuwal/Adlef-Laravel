@@ -21,9 +21,9 @@
             <button class="btn-dark btn-lg"><a href="{{route('frontend.contact-us.business-enquiry')}}">Contact
                     Sales</a></button>
         </div>
-        <div class="md:flex-1 min-h-[30vh] w-full relative lg:p-10 ">
+        <div class="md:flex-1 min-h-[30vh] w-full lg:relative lg:p-10 ">
 
-            <div class="relative group inline-block">
+            <div class="lg:relative group inline-block">
                 <img src="{{asset('assets/images/hero2.png')}}"
                      class="w-full h-full rounded-lg border-2 border-green-50 shadow-md
                 transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-105"

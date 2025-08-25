@@ -17,7 +17,7 @@
             </button>
         </div>
         <ul id="menu-items"
-            class="gap-3 md:gap-5 flex p-5 opacity-0    transition-opacity duration-300   flex-col  absolute sm:relative bg-white  w-full sm:w-auto top-10 sm:top-0 left-0 mt-12 z-20 sm:z-auto  sm:mt-0 sm:flex-row sm:flex sm:items-center sm:bg-transparent sm:opacity-100 sm:p-0 sm:overflow-visible">
+            class=" gap-3 md:gap-5 flex p-5 opacity-0    transition-opacity duration-300   flex-col  absolute sm:relative bg-white  w-full sm:w-auto top-10 sm:top-0 left-0 mt-12 z-[100] sm:z-auto  sm:mt-0 sm:flex-row sm:flex sm:items-center sm:bg-transparent sm:opacity-100 sm:p-0 sm:overflow-visible">
             <li><a href="{{route('frontend.solutions')}}">Solutions</a></li>
             <li><a href="{{route('frontend.news-insights')}}">News & Insights</a></li>
             <li>
