@@ -21,7 +21,6 @@ class AccountOpeningRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         toastr("Some fields are empty or invalid", Type::ERROR);
-        $this->dd($validator->errors());
         throw new HttpResponseException(
             back()
                 ->withErrors($validator)
