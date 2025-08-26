@@ -31,6 +31,17 @@ class NewsInsightsController extends Controller
             $bitcoinNews = $fallbackResponse['articles'];
         }
 
-        return view('frontend.news_insights.news_insights', compact('categoriesWithPosts', 'bitcoinNews'));
+        // Fetch Business news from NewsAPI
+        $businessNewsResponse = $this->newsApiService->getBusinessNews(10);
+        
+        if ($businessNewsResponse['success']) {
+            $businessNews = $businessNewsResponse['articles'];
+        } else {
+            // Use fallback business news if API fails
+            $fallbackBusinessResponse = $this->newsApiService->getFallbackBusinessNews();
+            $businessNews = $fallbackBusinessResponse['articles'];
+        }
+
+        return view('frontend.news_insights.news_insights', compact('categoriesWithPosts', 'bitcoinNews', 'businessNews'));
     }
 }

@@ -197,7 +197,8 @@ $(document).ready(function () {
 
 
 
-const swiper = new Swiper('.swiper', {
+// Bitcoin News Swiper
+const bitcoinSwiper = new Swiper('.swiper:not(.business-swiper)', {
     // Optional parameters
     direction: 'horizontal',
     loop: true,
@@ -218,6 +219,31 @@ const swiper = new Swiper('.swiper', {
     navigation: {
         nextEl: '.swiper-button-next-custom',
         prevEl: '.swiper-button-prev-custom',
+    },
+});
+
+// Business News Swiper
+const businessSwiper = new Swiper('.business-swiper', {
+    // Optional parameters
+    direction: 'horizontal',
+    loop: true,
+    breakpoints: {
+        480: {
+            slidesPerView: 1,
+            spaceBetween: 1,
+        },
+        1024: {
+            slidesPerView: 4,
+            spaceBetween: 4,
+        }, 1688: {
+            slidesPerView: 5,
+            spaceBetween: 8,
+        }
+    },
+    // Navigation arrows
+    navigation: {
+        nextEl: '.swiper-button-next-business',
+        prevEl: '.swiper-button-prev-business',
     },
 });
 

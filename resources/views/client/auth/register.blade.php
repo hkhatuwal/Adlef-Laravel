@@ -108,7 +108,10 @@
                                 <select name="place_of_birth" id="place_of_birth"
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-sm shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm select2 @error('place_of_birth') border-red-500 @enderror">
                                     <option value="">Select...</option>
-                                    <option value="Hong Kong" {{ old('place_of_birth') == 'Hong Kong' ? 'selected' : '' }}>Hong Kong</option>
+
+                                    @foreach(array_values(config('constants.country_code_with_name')) as $country)
+                                    <option value="{{$country}}" {{ old('place_of_birth') == $country ? 'selected' : '' }}>{{$country}}</option>
+                                    @endforeach
                                 </select>
                                 @error('place_of_birth')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

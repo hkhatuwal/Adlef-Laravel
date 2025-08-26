@@ -31,7 +31,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">2. ELIGIBILITY AND REGISTRATION</h2>
-            
+
             <!-- Eligibility Requirements -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">2.1 Eligibility Requirements</h3>
@@ -69,7 +69,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">3. SERVICES DESCRIPTION</h2>
-            
+
             <!-- Service Offerings -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">3.1 Service Offerings</h3>
@@ -105,7 +105,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">4. USER OBLIGATIONS AND RESTRICTIONS</h2>
-            
+
             <!-- Permitted Use -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">4.1 Permitted Use</h3>
@@ -138,7 +138,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">5. FEES AND PAYMENTS</h2>
-            
+
             <!-- Fee Structure -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">5.1 Fee Structure</h3>
@@ -187,7 +187,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">7. DISCLAIMERS AND LIMITATION OF LIABILITY</h2>
-            
+
             <!-- No Warranty -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">7.1 No Warranty</h3>
@@ -239,7 +239,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">9. TERMINATION</h2>
-            
+
             <!-- By User -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">9.1 By User</h3>
@@ -272,7 +272,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">10. GOVERNING LAW AND DISPUTE RESOLUTION</h2>
-            
+
             <!-- Governing Law -->
             <div class="mb-12">
                 <h3 class="text-2xl font-semibold mb-6">10.1 Governing Law</h3>
@@ -301,7 +301,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">11. MISCELLANEOUS</h2>
-            
+
             <div class="space-y-8">
                 <!-- Amendments -->
                 <div>
@@ -363,7 +363,7 @@
     <!-- Footer -->
     <section class="py-8 bg-black text-white">
         <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© 2023 ADLEF NETWORK LLC. ALL RIGHTS RESERVED.</p>
+            <p class="text-lg">© 2025 ADLEF NETWORK LLC. ALL RIGHTS RESERVED.</p>
         </div>
     </section>
 

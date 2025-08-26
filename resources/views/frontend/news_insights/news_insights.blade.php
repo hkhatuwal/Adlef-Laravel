@@ -45,6 +45,48 @@
         </div>
     </section>
 
+    {{-- Business News Section --}}
+    <section class="bg-light">
+        <div class="container mx-auto px-4 md:p-10 mt-10 flex flex-col mb-10 gap-14 ">
+            <h2 class="font-visuletProLight  text-3xl md:text-3xl ">
+                Latest <span class="font-bold"> Business News</span>
+            </h2>
+            <div class="leadership-wrapper w-full mx-auto">
+                <div class="swiper business-swiper">
+                    <div class="swiper-wrapper">
+                        @foreach($businessNews as $news)
+                        <div class="swiper-slide ">
+                                  @include('_components.bitcoin_news_card', [
+                                                                           'image' => $news['image'],
+                                                                           'description' => $news['description'],
+                                                                           'title' => $news['title'],
+                                                                           'label' => $news['label'],
+                                                                           'theme' => 'light',
+                                                                           'bg' => '#fff',
+                                                                           'links' => $news['links'],
+                                                                           'source' => $news['source'],
+                                                                           'publishedAt' => $news['published_at']
+                                                                       ])
+                        </div>
+                        @endforeach
+
+
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <div class="bg-black w-auto p-5 ml-auto  inline-block ">
+                        <span class="swiper-button-prev-business relative text-white material-symbols-outlined px-5">arrow_forward_ios </span>
+                        <div class="swiper-button-next-business relative text-white material-symbols-outlined px-5">
+                            arrow_back_ios
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
 
 
 {{--    <section>--}}
