@@ -59,29 +59,29 @@
                         </div>
                     </div>
 
-                    <!-- Phone Verification Section -->
-                    <div class="border-b pb-4">
-                        <h3 class="text-lg font-semibold mb-4">Phone Verification</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-                                <input type="text" disabled value="{{ auth()->user()->contactDetails->phone ?? '' }}"
-                                       class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none">
-                            </div>
-                            <div class="flex gap-3">
-                                <input type="text" name="phone_otp" placeholder="Enter Phone OTP"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                                <button type="button" id="send-otp-phone" onclick="sendPhoneOtp(this)"
-                                        class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Send
-                                    OTP
-                                </button>
-                            </div>
-                            <button type="button" onclick="verifyPhoneOtp()"
-                                    class="hidden w-full mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                                    id="verify-phone-btn">Verify Phone OTP
-                            </button>
-                        </div>
-                    </div>
+{{--                    <!-- Phone Verification Section -->--}}
+{{--                    <div class="border-b pb-4">--}}
+{{--                        <h3 class="text-lg font-semibold mb-4">Phone Verification</h3>--}}
+{{--                        <div class="space-y-3">--}}
+{{--                            <div>--}}
+{{--                                <label class="block text-sm font-medium text-gray-700">Phone Number</label>--}}
+{{--                                <input type="text" disabled value="{{ auth()->user()->contactDetails->phone ?? '' }}"--}}
+{{--                                       class="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none">--}}
+{{--                            </div>--}}
+{{--                            <div class="flex gap-3">--}}
+{{--                                <input type="text" name="phone_otp" placeholder="Enter Phone OTP"--}}
+{{--                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">--}}
+{{--                                <button type="button" id="send-otp-phone" onclick="sendPhoneOtp(this)"--}}
+{{--                                        class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Send--}}
+{{--                                    OTP--}}
+{{--                                </button>--}}
+{{--                            </div>--}}
+{{--                            <button type="button" onclick="verifyPhoneOtp()"--}}
+{{--                                    class="hidden w-full mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"--}}
+{{--                                    id="verify-phone-btn">Verify Phone OTP--}}
+{{--                            </button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
 
                     <!-- Document Upload Section -->
                     <div>
@@ -107,7 +107,8 @@
 @section('post-script')
     <script>
         let emailVerified = {{ auth()->user()->contactDetails->is_email_verified ? 'true' : 'false' }};
-        let phoneVerified = {{ auth()->user()->contactDetails->is_phone_verified ? 'true' : 'false' }};
+        let phoneVerified = true;
+{{--        let phoneVerified = {{ auth()->user()->contactDetails->is_phone_verified ? 'true' : 'false' }};--}}
         let documentUploaded = {{ auth()->user()->profile->document_path ? 'true' : 'false' }};
 
 

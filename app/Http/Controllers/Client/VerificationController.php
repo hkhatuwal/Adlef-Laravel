@@ -86,6 +86,9 @@ class VerificationController extends Controller
         // Update user verification status
         $user = auth()->user();
         $user->contactDetails->is_email_verified =true;
+        // temporarily
+        $user->contactDetails->is_phone_verified =true;
+
         $user->contactDetails->save();
         $user->email_verified_at = now();
         $user->save();
