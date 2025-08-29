@@ -114,7 +114,7 @@
         <div class="flex flex-col mb-10 gap-14">
             <div class="md:w-1/2">
                 <h2 class="font-visuletProLight text-3xl md:text-6xl">
-                    What makes <span class="font-semibold">us</span> different?
+                    What sets <span class="font-semibold">us</span> apart?
                 </h2>
                 <p class="text-xl mt-4">
                     We don’t just offer financial solutions — we transform the way businesses manage their treasury and

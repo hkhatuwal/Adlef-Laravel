@@ -93,8 +93,7 @@ class CheckoutController extends Controller
     private function mapPaymentMethodToGateway(string $paymentMethod): string
     {
         return match ($paymentMethod) {
-            'credit_card' => 'paydo',
-//            'credit_card' => 'ngenius',
+            'credit_card' => 'ngenius',
             'ngenius_card' => 'ngenius',
             'crypto' => 'trongrid',
             default => 'payop'

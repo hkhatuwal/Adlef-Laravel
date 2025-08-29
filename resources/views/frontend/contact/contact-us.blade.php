@@ -36,7 +36,8 @@
                 <!-- General Questions -->
                 <div class="text-center md:text-left">
                     <h3 class="font-semibold text-lg">General Questions</h3>
-                    <p class="text-gray-600">For general inquiries, please email us at <a href="mailto:{{config('app.email')}}" class="text-blue-500 hover:underline">hello@adlef.com</a> or Whats app +1 209 890 0004.</p>
+                    <p class="text-gray-600">For general inquiries, please email us at <a href="mailto:office@adlefgroup.com" class="text-blue-500 hover:underline">hello@adlef.com</a> or Whats app
+                        <a href="https://wa.me/12098900004" class="text-blue-500 hover:underline">+12098900004</a>.</p>
                 </div>
                 <!-- Mailing Address -->
                 <div class="text-center md:text-left">

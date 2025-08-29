@@ -43,7 +43,7 @@ class PollTronTransactions implements ShouldQueue
     public function handle(): void
     {
         try {
-//            $this->pollTronTransferInTransactions();
+            $this->pollTronTransferInTransactions();
             $this->pollTrongridPaymentGatewayTransactions();
             Log::info('TRON transactions polling completed successfully at ' . Carbon::now()->toDateTimeLocalString());
         } catch (\Exception $e) {

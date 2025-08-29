@@ -3,6 +3,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "devhost": "vite --host",
         "build": "vite build && vite build --ssr"
     },
     "devDependencies": {

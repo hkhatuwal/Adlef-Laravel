@@ -26,8 +26,9 @@
         <!-- Right section -->
         <div class="w-full md:w-1/2 lg:w-2/3 flex flex-wrap justify-between text-black">
             <div class="mb-6">
-                <h3 class="font-bold text-black">Solutions</h3>
+                <h3 class="font-bold text-black">Resources</h3>
                 <ul class="mt-2 space-y-2">
+                    <li><a href="{{ route('frontend.solutions') }}" class="text-black block">Solutions</a></li>
                     <li><a href="{{ route('frontend.api-documentation') }}" class="text-black block">Api Documentation</a></li>
                 </ul>
             </div>
