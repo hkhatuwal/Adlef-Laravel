@@ -119,7 +119,7 @@
                 <p class="text-xl mt-4">
                     We don’t just offer financial solutions — we transform the way businesses manage their treasury and
                     operations. Our unique blend of cutting-edge technology, industry expertise, and client-first
-                    approach sets us apart in the marke
+                    approach sets us apart in the market
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 md:w-2/3 mx-auto">

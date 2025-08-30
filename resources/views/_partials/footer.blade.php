@@ -29,7 +29,7 @@
                 <h3 class="font-bold text-black">Resources</h3>
                 <ul class="mt-2 space-y-2">
                     <li><a href="{{ route('frontend.solutions') }}" class="text-black block">Solutions</a></li>
-                    <li><a href="{{ route('frontend.api-documentation') }}" class="text-black block">Api Documentation</a></li>
+                    <li><a href="{{ route('frontend.api-documentation') }}" class="text-black   block">Api Documentation</a></li>
                 </ul>
             </div>
             <div class="mb-6">
