@@ -193,7 +193,7 @@ class ClientPaymentService
             }
 
             if ($transaction->status== PaymentTransaction::STATUS_COMPLETED) {
-                Log::warning("Transaction already completed")
+                Log::warning("Transaction already completed");
                 return ;
             }
 
