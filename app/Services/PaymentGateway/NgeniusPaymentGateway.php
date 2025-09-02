@@ -327,7 +327,24 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
 
 
 
-        $paymentTransaction=PaymentTransaction::where('gateway_transaction_id', $transactionId)->first();
+        $paymentTransaction = PaymentTransaction::where('gateway_transaction_id', $transactionId)->first();
+
+        // Extract payment method details from webhook
+        $paymentMethodData = null;
+        if (isset($webhookData['order']['_embedded']['payment'][0]['paymentMethod'])) {
+            $paymentMethod = $webhookData['order']['_embedded']['payment'][0]['paymentMethod'];
+            
+            $paymentMethodData = [
+                'payment_method_type' => PaymentTransaction::PAYMENT_METHOD_CARD,
+                'card_brand' => $paymentMethod['name'] ?? null,
+                'card_type' => strtolower($paymentMethod['cardType'] ?? ''),
+                'card_last_four' => substr($paymentMethod['pan'] ?? '', -4),
+                'card_exp_month' => explode('-', $paymentMethod['expiry'] ?? '')[1] ?? null,
+                'card_exp_year' => explode('-', $paymentMethod['expiry'] ?? '')[0] ?? null,
+                'card_country' => strtolower($paymentMethod['issuingCountry'] ?? ''),
+            ];
+        }
+
 
 
 
@@ -339,7 +356,14 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
             currency: $currency,
             gatewayTransactionId: $transactionId,
             rawData: $webhookData,
-            eventType: $eventType
+            eventType: $eventType,
+            paymentMethodType: $paymentMethodData['payment_method_type'] ?? null,
+            cardBrand: $paymentMethodData['card_brand'] ?? null,
+            cardType: $paymentMethodData['card_type'] ?? null,
+            cardLastFour: $paymentMethodData['card_last_four'] ?? null,
+            cardExpMonth: $paymentMethodData['card_exp_month'] ?? null,
+            cardExpYear: $paymentMethodData['card_exp_year'] ?? null,
+            cardCountry: $paymentMethodData['card_country'] ?? null,
         );
     }
 

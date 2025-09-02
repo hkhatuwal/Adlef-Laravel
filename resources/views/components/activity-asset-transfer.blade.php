@@ -49,7 +49,7 @@
                     <div class="text-sm font-medium text-slate-900 truncate">
                         {{ $activity->description }}
                     </div>
-                    <div class="text-xs text-slate-500 truncate">
+                    <div class="text-xs text-slate-500 truncate w-52">
                         {{ $activity->metadata['account_no'] ?? "Missing" }}
                     </div>
                 </div>
@@ -102,4 +102,4 @@
             @endif
         </div>
     </div>
-</div> 
+</div>

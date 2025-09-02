@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ApiClient;
 use App\Models\PaymentTransaction;
+use App\Models\UserPaymentSettings;
 use App\Contracts\PaymentGatewayFactory;
 use App\Contracts\WebhookData;
 use App\Services\PaymentService;
@@ -23,8 +24,47 @@ class ClientPaymentService
     }
 
     /**
-     * Create a payment for a client
+     * Select an available gateway for a category (e.g., card, crypto)
+     * based on user's provider allowances and remaining limits.
      */
+    public function selectGatewayForCategory(ApiClient $client, string $category, float $amount): ?string
+    {
+        $providersByCategory = config('constants.internal_payment_providers');
+        $providers = $providersByCategory[$category] ?? [];
+
+        if (empty($providers)) {
+            return null;
+        }
+
+        // Ensure payment settings exist and are active
+        $paymentSettings = $client->user->paymentSettings;
+        if (!$paymentSettings) {
+            $paymentSettings = UserPaymentSettings::create([
+                'user_id' => $client->user_id,
+                ...UserPaymentSettings::getDefaultSettings()
+            ]);
+        }
+
+        if (!$paymentSettings->is_active) {
+            return null;
+        }
+
+        // Try providers in configured order and return the first that passes limits
+        foreach ($providers as $provider) {
+            if (!$paymentSettings->isProviderAllowed($provider)) {
+                continue;
+            }
+
+            $limitCheck = $this->checkUserPaymentLimits($client, $amount, $provider);
+            if ($limitCheck['success'] ?? false) {
+                return $provider;
+            }
+        }
+
+        return null;
+    }
+
+
     public function createPayment(ApiClient $client, array $paymentData, string $gatewayName = 'payop',PaymentTransaction $paymentTransaction=null): array
     {
         // Validate client can make payment
@@ -36,12 +76,10 @@ class ClientPaymentService
             ];
         }
 
-        if (!$client->isWithinLimits($paymentData['amount'])) {
-            return [
-                'success' => false,
-                'message' => 'Payment amount exceeds your limits',
-                'error_code' => 'LIMIT_EXCEEDED'
-            ];
+        // Check user payment settings and provider-specific limits
+        $limitCheck = $this->checkUserPaymentLimits($client, $paymentData['amount'], $gatewayName);
+        if (!$limitCheck['success']) {
+            throw new Exception("Please contact admin. Limit exceeded");
         }
 
         try {
@@ -75,8 +113,8 @@ class ClientPaymentService
                     ]
                 ]);
 
-                // Update client usage
-                $client->updateUsage($paymentData['amount']);
+                // Note: Client usage is now tracked per-provider in the payment settings
+                // The old global usage tracking is replaced by provider-specific limits
 
                 return [
                     'success' => true,
@@ -121,6 +159,117 @@ class ClientPaymentService
                 'error_code' => 'INTERNAL_ERROR'
             ];
         }
+    }
+
+    /**
+     * Check user payment limits for specific provider
+     */
+    protected function checkUserPaymentLimits(ApiClient $client, float $amount, string $gatewayName): array
+    {
+        // Get user's payment settings
+        $paymentSettings = $client->user->paymentSettings;
+
+        // If no payment settings exist, create default ones
+        if (!$paymentSettings) {
+            $paymentSettings = UserPaymentSettings::create([
+                'user_id' => $client->user_id,
+                ...UserPaymentSettings::getDefaultSettings()
+            ]);
+        }
+
+        // Check if payment settings are active
+        if (!$paymentSettings->is_active) {
+            return [
+                'success' => false,
+                'message' => 'Payment processing is disabled for your account',
+                'error_code' => 'PAYMENT_DISABLED'
+            ];
+        }
+
+        // Check if provider is allowed
+        if (!$paymentSettings->isProviderAllowed($gatewayName)) {
+            return [
+                'success' => false,
+                'message' => "Payment provider '{$gatewayName}' is not allowed for your account",
+                'error_code' => 'PROVIDER_NOT_ALLOWED'
+            ];
+        }
+
+        // Get provider-specific limits
+        $providerLimits = $paymentSettings->getProviderLimits($gatewayName);
+        $dailyLimit = $providerLimits['daily_limit'] ?? 0;
+        $monthlyLimit = $providerLimits['monthly_limit'] ?? 0;
+
+        // Check if limits are set (0 means no limit)
+        if ($dailyLimit > 0 || $monthlyLimit > 0) {
+            // Get current usage for this provider
+            $currentUsage = $this->getCurrentProviderUsage($client, $gatewayName);
+
+            // Check daily limit
+            if ($dailyLimit > 0 && ($currentUsage['daily_used'] + $amount) > $dailyLimit) {
+                return [
+                    'success' => false,
+                    'message' => "Payment amount exceeds daily limit for {$gatewayName}. Daily limit: {$dailyLimit}, Used: {$currentUsage['daily_used']}, Requested: {$amount}",
+                    'error_code' => 'DAILY_LIMIT_EXCEEDED',
+                    'limit_info' => [
+                        'provider' => $gatewayName,
+                        'limit_type' => 'daily',
+                        'limit_amount' => $dailyLimit,
+                        'used_amount' => $currentUsage['daily_used'],
+                        'requested_amount' => $amount
+                    ]
+                ];
+            }
+
+            // Check monthly limit
+            if ($monthlyLimit > 0 && ($currentUsage['monthly_used'] + $amount) > $monthlyLimit) {
+                return [
+                    'success' => false,
+                    'message' => "Payment amount exceeds monthly limit for {$gatewayName}. Monthly limit: {$monthlyLimit}, Used: {$currentUsage['monthly_used']}, Requested: {$amount}",
+                    'error_code' => 'MONTHLY_LIMIT_EXCEEDED',
+                    'limit_info' => [
+                        'provider' => $gatewayName,
+                        'limit_type' => 'monthly',
+                        'limit_amount' => $monthlyLimit,
+                        'used_amount' => $currentUsage['monthly_used'],
+                        'requested_amount' => $amount
+                    ]
+                ];
+            }
+        }
+
+        return ['success' => true];
+    }
+
+    /**
+     * Get current usage for a specific provider
+     */
+    protected function getCurrentProviderUsage(ApiClient $client, string $gatewayName): array
+    {
+        $today = now()->startOfDay();
+        $thisMonth = now()->startOfMonth();
+
+        // Get all user's API clients
+        $userClientIds = $client->user->apiClients()->pluck('id')->toArray();
+
+        // Calculate daily usage for this provider
+        $dailyUsed = PaymentTransaction::whereIn('api_client_id', $userClientIds)
+            ->where('gateway_name', $gatewayName)
+            ->where('status', PaymentTransaction::STATUS_COMPLETED)
+            ->where('created_at', '>=', $today)
+            ->sum('amount');
+
+        // Calculate monthly usage for this provider
+        $monthlyUsed = PaymentTransaction::whereIn('api_client_id', $userClientIds)
+            ->where('gateway_name', $gatewayName)
+            ->where('status', PaymentTransaction::STATUS_COMPLETED)
+            ->where('created_at', '>=', $thisMonth)
+            ->sum('amount');
+
+        return [
+            'daily_used' => $dailyUsed,
+            'monthly_used' => $monthlyUsed
+        ];
     }
 
     /**
@@ -179,6 +328,8 @@ class ClientPaymentService
             // Parse webhook data once
             $parsedData = $gateway->parseWebhookData($webhookData);
 
+            Log::info("Parse Data");
+            Log::info(json_encode($parsedData));
             // Find transaction using parsed data
             $transaction = $this->findTransactionFromParsedData($gatewayName, $parsedData);
 
@@ -251,13 +402,31 @@ class ClientPaymentService
 
         $transaction->update($updateData);
 
+        // Update payment method details from webhook data
+        $paymentMethodData = $this->extractPaymentMethodDataFromWebhook($parsedData);
+        if (!empty($paymentMethodData)) {
+            $transaction->updatePaymentMethodDetails($paymentMethodData);
+        }
+
         Log::info('Transaction updated from webhook', [
             'transaction_id' => $transaction->transaction_id,
             'old_status' => $transaction->getOriginal('status'),
             'new_status' => $status,
             'gateway' => $transaction->gateway_name,
-            'event_type' => $parsedData->getEventType() ?? 'payment'
+            'event_type' => $parsedData->getEventType() ?? 'payment',
+            'payment_method_type' => $paymentMethodData['payment_method_type'] ?? null,
+            'payment_method_updated' => !empty($paymentMethodData)
         ]);
+    }
+
+    /**
+     * Extract payment method data from webhook data
+     */
+    protected function extractPaymentMethodDataFromWebhook(WebhookData $parsedData): array
+    {
+        // Use the helper method from WebhookData to get payment method data
+        // formatted for the PaymentTransaction model
+        return $parsedData->getPaymentMethodDataForTransaction();
     }
 
     /**
@@ -421,6 +590,58 @@ class ClientPaymentService
         return ApiClient::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->get();
+    }
+
+    /**
+     * Get current usage statistics for all providers for a user
+     */
+    public function getUserProviderUsageStats($user): array
+    {
+        $userClientIds = $user->apiClients()->pluck('id')->toArray();
+
+        if (empty($userClientIds)) {
+            return [];
+        }
+
+        $today = now()->startOfDay();
+        $thisMonth = now()->startOfMonth();
+        $availableProviders = config('constants.internal_payment_providers');
+
+        $stats = [];
+
+        foreach ($availableProviders as $category => $providers) {
+            foreach ($providers as $provider) {
+                $dailyUsed = PaymentTransaction::whereIn('api_client_id', $userClientIds)
+                    ->where('gateway_name', $provider)
+                    ->where('status', PaymentTransaction::STATUS_COMPLETED)
+                    ->where('created_at', '>=', $today)
+                    ->sum('amount');
+
+                $monthlyUsed = PaymentTransaction::whereIn('api_client_id', $userClientIds)
+                    ->where('gateway_name', $provider)
+                    ->where('status', PaymentTransaction::STATUS_COMPLETED)
+                    ->where('created_at', '>=', $thisMonth)
+                    ->sum('amount');
+
+                $stats[$provider] = [
+                    'category' => $category,
+                    'daily_used' => $dailyUsed,
+                    'monthly_used' => $monthlyUsed,
+                    'daily_transactions' => PaymentTransaction::whereIn('api_client_id', $userClientIds)
+                        ->where('gateway_name', $provider)
+                        ->where('status', PaymentTransaction::STATUS_COMPLETED)
+                        ->where('created_at', '>=', $today)
+                        ->count(),
+                    'monthly_transactions' => PaymentTransaction::whereIn('api_client_id', $userClientIds)
+                        ->where('gateway_name', $provider)
+                        ->where('status', PaymentTransaction::STATUS_COMPLETED)
+                        ->where('created_at', '>=', $thisMonth)
+                        ->count(),
+                ];
+            }
+        }
+
+        return $stats;
     }
 
 }

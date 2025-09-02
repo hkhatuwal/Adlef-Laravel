@@ -12,14 +12,18 @@ use Illuminate\Http\Request;
 use App\Models\Currency;
 use App\Models\Commission;
 use App\Models\AdminDepositAccount;
+use App\Models\UserPaymentSettings;
+use App\Services\ClientPaymentService;
 
 class UserController extends Controller
 {
     protected NotificationService $notificationService;
+    protected ClientPaymentService $clientPaymentService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, ClientPaymentService $clientPaymentService)
     {
         $this->notificationService = $notificationService;
+        $this->clientPaymentService = $clientPaymentService;
     }
 
     public function index()
@@ -307,5 +311,79 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.deposit-accounts', $user)
             ->with('success', 'Deposit account removed successfully.');
+    }
+
+    public function paymentSettings(User $user)
+    {
+        $paymentSettings = $user->paymentSettings ?? UserPaymentSettings::create([
+            'user_id' => $user->id,
+            ...UserPaymentSettings::getDefaultSettings()
+        ]);
+
+        $availableProviders = config('constants.internal_payment_providers');
+        $userApiClients = $user->apiClients()->with('paymentTransactions')->get();
+        $providerUsageStats = $this->clientPaymentService->getUserProviderUsageStats($user);
+
+        return view('admin.users.payment-settings', compact('user', 'paymentSettings', 'availableProviders', 'userApiClients', 'providerUsageStats'));
+    }
+
+    public function updatePaymentSettings(Request $request, User $user)
+    {
+        $availableProviders = config('constants.internal_payment_providers');
+        $allProviders = [];
+        foreach ($availableProviders as $category => $providers) {
+            $allProviders = array_merge($allProviders, $providers);
+        }
+
+        $validationRules = [
+            'max_api_clients' => 'required|integer|min:1|max:100',
+            'allowed_payment_providers' => 'required|array',
+            'allowed_payment_providers.card' => 'array',
+            'allowed_payment_providers.crypto' => 'array',
+            'is_active' => 'boolean',
+        ];
+
+        // Add validation rules for each provider's limits
+        foreach ($allProviders as $provider) {
+            if (in_array($provider,$request->allowed_payment_providers['card']) || in_array($provider,$request->allowed_payment_providers['crypto'] )) {
+                $validationRules["provider_limits.{$provider}.daily_limit"] = 'required|numeric|min:0|max:999999.99';
+                $validationRules["provider_limits.{$provider}.monthly_limit"] = 'required|numeric|min:0|max:999999.99';
+            }
+
+        }
+
+        $validated = $request->validate($validationRules);
+
+        // Validate that monthly limits are not less than daily limits for each provider
+        foreach ($allProviders as $provider) {
+            $dailyLimit = $validated['provider_limits'][$provider]['daily_limit'] ?? 0;
+            $monthlyLimit = $validated['provider_limits'][$provider]['monthly_limit'] ?? 0;
+
+            if ($monthlyLimit < $dailyLimit) {
+                return back()->withErrors(["provider_limits.{$provider}.monthly_limit" => "Monthly limit cannot be less than daily limit for {$provider}."]);
+            }
+        }
+
+        // Check if reducing max_api_clients would affect existing clients
+        $currentApiClientsCount = $user->apiClients()->count();
+        if ($validated['max_api_clients'] < $currentApiClientsCount) {
+            return back()->withErrors(['max_api_clients' => "Cannot reduce below current API clients count ({$currentApiClientsCount}). Please delete some API clients first."]);
+        }
+
+        $paymentSettings = $user->paymentSettings ?? new UserPaymentSettings(['user_id' => $user->id]);
+
+        // Update basic settings
+        $paymentSettings->max_api_clients = $validated['max_api_clients'];
+        $paymentSettings->allowed_payment_providers = $validated['allowed_payment_providers'];
+        $paymentSettings->is_active = $validated['is_active'] ?? false;
+
+        // Update provider limits
+        $paymentSettings->provider_limits = $validated['provider_limits'];
+
+        $paymentSettings->save();
+
+        return redirect()
+            ->route('admin.users.payment-settings', $user)
+            ->with('success', 'Payment settings updated successfully.');
     }
 }

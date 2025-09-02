@@ -56,6 +56,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('users/{user}/deposit-accounts', [UserController::class, 'assignDepositAccount'])->name('users.deposit-accounts.assign');
         Route::delete('users/{user}/deposit-accounts/{account}', [UserController::class, 'removeDepositAccount'])->name('users.deposit-accounts.remove');
 
+        // Payment Settings Management Routes
+        Route::get('users/{user}/payment-settings', [UserController::class, 'paymentSettings'])->name('users.payment-settings');
+        Route::put('users/{user}/payment-settings', [UserController::class, 'updatePaymentSettings'])->name('users.update-payment-settings');
+
         // Asset Transfer Routes
         Route::get('transfers', [\App\Http\Controllers\Admin\AssetTransferController::class, 'index'])->name('transfers.index');
         Route::get('transfers/{transfer}', [\App\Http\Controllers\Admin\AssetTransferController::class, 'show'])->name('transfers.show');
@@ -113,5 +117,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('api-clients.reset-usage');
         Route::get('api-clients/{apiClient}/transactions', [\App\Http\Controllers\Admin\ApiClientController::class, 'getTransactions'])
             ->name('api-clients.transactions');
+
+        // Payment Transactions Management
+        Route::get('payment-transactions', [\App\Http\Controllers\Admin\PaymentTransactionController::class, 'index'])
+            ->name('payment-transactions.index');
+        Route::get('payment-transactions/{paymentTransaction}', [\App\Http\Controllers\Admin\PaymentTransactionController::class, 'show'])
+            ->name('payment-transactions.show');
+        Route::get('payment-transactions-export', [\App\Http\Controllers\Admin\PaymentTransactionController::class, 'export'])
+            ->name('payment-transactions.export');
     });
 });

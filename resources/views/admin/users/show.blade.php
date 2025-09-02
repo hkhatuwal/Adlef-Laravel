@@ -16,34 +16,46 @@
                 </div>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="{{ route('admin.users.commissions', $user) }}" 
-               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/50 dark:text-purple-400 dark:hover:bg-purple-900 transition-colors group">
-                <i class="material-symbols-outlined text-lg mr-2">percent</i>
-                Manage Commissions
-            </a>
-            <a href="{{ route('admin.users.deposit-accounts', $user) }}" 
-               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400 dark:hover:bg-blue-900 transition-colors group">
-                <i class="material-symbols-outlined text-lg mr-2">savings</i>
-                Manage Deposit Accounts
-            </a>
-            <a href="{{ route('admin.users.accounts', $user) }}" 
-               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/50 dark:text-indigo-400 dark:hover:bg-indigo-900 transition-colors group">
-                <i class="material-symbols-outlined text-lg mr-2">account_balance</i>
-                View Accounts
-                <i class="material-symbols-outlined text-lg ml-2 transition-transform group-hover:translate-x-1">arrow_forward</i>
-            </a>
-            <a href="{{ route('admin.users.assets', $user) }}" 
-               class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-400 dark:hover:bg-emerald-900 transition-colors group">
-                <i class="material-symbols-outlined text-lg mr-2">account_balance_wallet</i>
-                View Assets
-                <i class="material-symbols-outlined text-lg ml-2 transition-transform group-hover:translate-x-1">arrow_forward</i>
-            </a>
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-medium shadow-sm
-                {{ $user->email_verified_at ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : 'bg-amber-50 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400' }}">
-                <i class="material-symbols-outlined text-lg mr-2">{{ $user->email_verified_at ? 'verified' : 'pending' }}</i>
-                {{ $user->email_verified_at ? 'Verified Account' : 'Pending Verification' }}
-            </span>
+        <div class="flex flex-col gap-4">
+            <!-- Action Buttons Row 1 -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <a href="{{ route('admin.users.commissions', $user) }}" 
+                   class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/50 dark:text-purple-400 dark:hover:bg-purple-900 transition-colors group">
+                    <i class="material-symbols-outlined text-base mr-2">percent</i>
+                    Commissions
+                </a>
+                <a href="{{ route('admin.users.deposit-accounts', $user) }}" 
+                   class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400 dark:hover:bg-blue-900 transition-colors group">
+                    <i class="material-symbols-outlined text-base mr-2">savings</i>
+                    Deposit Accounts
+                </a>
+                <a href="{{ route('admin.users.payment-settings', $user) }}" 
+                   class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/50 dark:text-orange-400 dark:hover:bg-orange-900 transition-colors group">
+                    <i class="material-symbols-outlined text-base mr-2">payment</i>
+                    Payment Settings
+                </a>
+            </div>
+            
+            <!-- Action Buttons Row 2 -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <a href="{{ route('admin.users.accounts', $user) }}" 
+                   class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-900/50 dark:text-indigo-400 dark:hover:bg-indigo-900 transition-colors group">
+                    <i class="material-symbols-outlined text-base mr-2">account_balance</i>
+                    View Accounts
+                    <i class="material-symbols-outlined text-base ml-2 transition-transform group-hover:translate-x-1">arrow_forward</i>
+                </a>
+                <a href="{{ route('admin.users.assets', $user) }}" 
+                   class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-400 dark:hover:bg-emerald-900 transition-colors group">
+                    <i class="material-symbols-outlined text-base mr-2">account_balance_wallet</i>
+                    View Assets
+                    <i class="material-symbols-outlined text-base ml-2 transition-transform group-hover:translate-x-1">arrow_forward</i>
+                </a>
+                <span class="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium shadow-sm
+                    {{ $user->email_verified_at ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400' : 'bg-amber-50 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400' }}">
+                    <i class="material-symbols-outlined text-base mr-2">{{ $user->email_verified_at ? 'verified' : 'pending' }}</i>
+                    {{ $user->email_verified_at ? 'Verified Account' : 'Pending Verification' }}
+                </span>
+            </div>
         </div>
     </div>
 

@@ -134,4 +134,9 @@ class User extends Authenticatable
         return $this->belongsToMany(AdminDepositAccount::class, 'user_admin_deposit_accounts')
             ->withTimestamps();
     }
+
+    public function paymentSettings()
+    {
+        return $this->hasOne(UserPaymentSettings::class);
+    }
 }

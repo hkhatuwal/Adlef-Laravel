@@ -84,8 +84,6 @@ class PaymentGatewayController extends Controller
             'email' => 'nullable|email|max:255',
             'company_name' => 'nullable|string|max:255',
             'is_sandbox' => 'required|boolean',
-            'daily_limit' => 'nullable|numeric|min:0',
-            'monthly_limit' => 'nullable|numeric|min:0',
             'allowed_ips' => 'nullable|string',
             'webhook_urls' => 'nullable|string',
             'allowed_currencies' => 'nullable|array',
@@ -125,8 +123,6 @@ class PaymentGatewayController extends Controller
             'allowed_ips' => $allowedIps,
             'webhook_urls' => $webhookUrls,
             'allowed_currencies' => $validatedData['allowed_currencies'] ?? [],
-            'daily_limit' => $validatedData['daily_limit'],
-            'monthly_limit' => $validatedData['monthly_limit'],
         ]);
 
         return response()->json([

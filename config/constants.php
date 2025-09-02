@@ -2,8 +2,8 @@
 
 
 return [
-    "reference_prefix"=>"ADREF",
-    "reference_suffix"=>"AD",
+    "reference_prefix" => "ADREF",
+    "reference_suffix" => "AD",
     "client_login" => [
         "email" => "himtech728@gmail.com",
         "password" => "Pa$\$w0rd!1"
@@ -54,7 +54,7 @@ return [
         'PYR030 User Withdrawal',
         'PYR031 Advance Payments for goods'
     ],
-    "register_source_funds"=>[
+    "register_source_funds" => [
         'Salary',
         'Inheritance',
         'Divorce Settlement',
@@ -168,7 +168,7 @@ return [
         '+996' => 'Kyrgyzstan',
         '+998' => 'Uzbekistan',
     ],
-    'instruction_items'=>[
+    'instruction_items' => [
         [
             'title' => 'Asset Transfer',
             'route' => 'client.transfer',
@@ -180,7 +180,7 @@ return [
             'icon' => 'fa-repeat'
         ]
     ],
-    'menu_items'=>[
+    'menu_items' => [
         [
             'title' => 'Overview',
             'route' => 'client.dashboard',
@@ -195,6 +195,16 @@ return [
             'title' => 'Payment Gateway',
             'route' => 'client.payment-gateway.index',
             'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>'
+        ]
+    ],
+    'internal_payment_providers' => [
+        'card' => [
+        "ngenius",
+        "payop",
+        "paydo"
+    ],
+        "crypto" => [
+            "trongrid"
         ]
     ]
 ];

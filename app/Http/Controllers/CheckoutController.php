@@ -79,7 +79,11 @@ class CheckoutController extends Controller
         ]);
 
         // Generate payment URL based on selected method
-        $paymentUrl = $this->generatePaymentUrl($transaction, $gatewayName);
+        try {
+            $paymentUrl = $this->generatePaymentUrl($transaction, $gatewayName);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
 
         $transaction->update(['payment_url' => $paymentUrl]);
 
@@ -102,9 +106,27 @@ class CheckoutController extends Controller
 
     /**
      * Generate payment URL based on payment method
+     * @throws \Exception
      */
     private function generatePaymentUrl(PaymentTransaction $transaction, string $gatewayName): string
     {
+        // If gateway is a high-level category (card/crypto), choose concrete provider via limits
+        $providersByCategory = config('constants.internal_payment_providers');
+        $selectedGateway = $gatewayName;
+        if (array_key_exists($gatewayName, $providersByCategory)) {
+            $selectedGateway = $this->clientPaymentService->selectGatewayForCategory(
+                $transaction->apiClient,
+                $gatewayName,
+                (float) $transaction->amount
+            );
+
+            if (!$selectedGateway) {
+                abort(422, 'No available payment provider with remaining limit for the selected method');
+            }
+
+            // Persist the concrete gateway on the transaction
+            $transaction->update(['gateway_name' => $selectedGateway]);
+        }
 
         $paymentData = [
             'amount' => $transaction->amount,
@@ -119,8 +141,9 @@ class CheckoutController extends Controller
             'metadata' => $transaction->metadata ?? [],
         ];
 
-        $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData,$gatewayName,$transaction);
+            $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData, $selectedGateway, $transaction);
         return $result['data']['payment_url'];
+
     }
 
     /**

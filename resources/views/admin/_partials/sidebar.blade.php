@@ -162,6 +162,16 @@
                             User Activities
                         </a>
                         @endcan
+
+                        @can('view users')
+                        <a href="{{ route('admin.payment-transactions.index') }}"
+                           class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg {{ request()->routeIs('admin.payment-transactions.*') ? 'text-slate-900 bg-slate-200 dark:text-white dark:bg-slate-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700/50' }} group transition-colors">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 dark:bg-slate-700 text-purple-600 dark:text-purple-400 mr-3 transition-transform group-hover:scale-110">
+                                <i class="material-symbols-outlined text-[20px]">payment</i>
+                            </span>
+                            Payment Transactions
+                        </a>
+                        @endcan
                     </div>
                 </div>
 
