@@ -343,6 +343,11 @@ class ClientPaymentService
                 return;
             }
 
+            if ($transaction->status== PaymentTransaction::STATUS_COMPLETED) {
+                Log::warning("Transaction already completed");
+                return ;
+            }
+
             // Update transaction status using parsed data
             $this->updateTransactionFromParsedData($transaction, $parsedData);
 
