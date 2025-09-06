@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="flex items-center gap-4">
-            @if($transfer->status === 'pending')
+            @if(in_array($transfer->status,['pending','hold']))
                 <div class="flex items-center gap-2">
                     <button type="button"
                             @if($transfer->transfer_type === 'out')
@@ -26,14 +26,16 @@
                         <i class="material-symbols-outlined text-[20px] mr-2">verified</i>
                         Verify Payment
                     </button>
-                    <form action="{{ route('admin.transfers.hold', $transfer) }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
-                            <i class="material-symbols-outlined text-[20px] mr-2">pause_circle</i>
-                            Hold Transfer
-                        </button>
-                    </form>
+                   @if($transfer->status!="hold")
+                        <form action="{{ route('admin.transfers.hold', $transfer) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                <i class="material-symbols-outlined text-[20px] mr-2">pause_circle</i>
+                                Hold Transfer
+                            </button>
+                        </form>
+                   @endif
                     <form action="{{ route('admin.transfers.reject', $transfer) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"

@@ -45,7 +45,6 @@ class PollTronTransactions implements ShouldQueue
         try {
             $this->pollTronTransferInTransactions();
             $this->pollTrongridPaymentGatewayTransactions();
-            Log::info('TRON transactions polling completed successfully at ' . Carbon::now()->toDateTimeLocalString());
         } catch (\Exception $e) {
             Log::error("Error polling TRON transactions: " . $e->getMessage());
         }
@@ -100,8 +99,6 @@ class PollTronTransactions implements ShouldQueue
 
             // Update the last poll timestamp to current time after processing all wallets
             Setting::set(self::LAST_POLL_SETTING_KEY, $currentTimestamp);
-            Log::info("Updated last poll timestamp to: " . $currentTimestamp);
-            Log::info("Total transactions found across all wallets: " . $totalTransactionsFound);
         } catch (\Exception $e) {
             Log::error('Error in pollTronTransactions: ' . $e->getMessage());
             throw $e;
@@ -123,7 +120,6 @@ class PollTronTransactions implements ShouldQueue
                 $lastPollTimestamp = Carbon::now()->subDays(5)->timestamp * 1000; // Convert to milliseconds
             }
 
-            Log::info("Polling TRON transactions from timestamp: " . $lastPollTimestamp);
 
             // Get pending crypto payment orders (new fingerprinting system)
             $cryptoOrders = CryptoPaymentOrder::where('status', CryptoPaymentOrder::STATUS_PENDING)
@@ -149,7 +145,6 @@ class PollTronTransactions implements ShouldQueue
 
 
 
-            Log::info("Polling " . $walletAddresses->count() . " unique wallet addresses");
 
             // Poll each unique wallet address
             foreach ($walletAddresses as $walletAddress) {
@@ -162,7 +157,6 @@ class PollTronTransactions implements ShouldQueue
                     $transactionCount = count($transactions);
                     $totalTransactionsFound += $transactionCount;
 
-                    Log::info("Found " . $transactionCount . " transactions for wallet " . $walletAddress);
 
                     // Process each transaction
                     foreach ($transactions as $transaction) {
@@ -182,8 +176,6 @@ class PollTronTransactions implements ShouldQueue
 
             // Update the last poll timestamp to current time after processing all wallets
             Setting::set(self::LAST_POLL_PAYMENT_GATEWAY_SETTING_KEY, $currentTimestamp);
-            Log::info("Updated last poll for payment gateway timestamp to: " . $currentTimestamp);
-            Log::info("Total transactions found across all wallets: " . $totalTransactionsFound);
         } catch (\Exception $e) {
             Log::error('Error in pollTrongridPaymentGatewayTransactions: ' . $e->getMessage());
             throw $e;

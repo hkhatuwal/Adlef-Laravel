@@ -41,17 +41,17 @@
                     ];
                     $config = $statusConfig[$transaction->status] ?? $statusConfig['pending'];
                 @endphp
-                
+
                 <div class="w-12 h-12 {{ $config['bg'] }} rounded-full flex items-center justify-center">
                     <i class="fa-solid {{ $config['icon'] }} {{ $config['color'] }} text-xl"></i>
                 </div>
-                
+
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900">Payment {{ ucfirst($transaction->status) }}</h3>
                     <p class="text-gray-600">{{ $transaction->description }}</p>
                 </div>
             </div>
-            
+
             <div class="text-right">
                 <p class="text-2xl font-bold text-gray-900">{{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}</p>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $config['bg'] }} {{ $config['text'] }}">
@@ -77,7 +77,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     @if($transaction->gateway_transaction_id)
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Gateway Transaction ID</label>
@@ -89,27 +89,27 @@
                         </div>
                     </div>
                     @endif
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                         <p class="text-sm text-gray-900">{{ $transaction->currency }} {{ number_format($transaction->amount, 2) }}</p>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Gateway</label>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center">
-                                <i class="fa-solid fa-credit-card text-xs text-gray-600"></i>
-                            </div>
-                            <p class="text-sm text-gray-900">{{ ucfirst($transaction->gateway_name) }}</p>
-                        </div>
-                    </div>
-                    
+
+{{--                    <div>--}}
+{{--                        <label class="block text-sm font-medium text-gray-700 mb-1">Gateway</label>--}}
+{{--                        <div class="flex items-center space-x-2">--}}
+{{--                            <div class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center">--}}
+{{--                                <i class="fa-solid fa-credit-card text-xs text-gray-600"></i>--}}
+{{--                            </div>--}}
+{{--                            <p class="text-sm text-gray-900">{{ ucfirst($transaction->gateway_name) }}</p>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Created</label>
                         <p class="text-sm text-gray-900">{{ $transaction->created_at->format('M j, Y g:i A') }}</p>
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Updated</label>
                         <p class="text-sm text-gray-900">{{ $transaction->updated_at->format('M j, Y g:i A') }}</p>
@@ -128,14 +128,14 @@
                         <p class="text-sm text-gray-900">{{ $transaction->customer_name }}</p>
                     </div>
                     @endif
-                    
+
                     @if($transaction->customer_email)
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <p class="text-sm text-gray-900">{{ $transaction->customer_email }}</p>
                     </div>
                     @endif
-                    
+
                     @if($transaction->customer_phone)
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
@@ -147,14 +147,14 @@
             @endif
 
             <!-- Gateway Response -->
-            @if($transaction->gateway_response)
-            <div class="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Gateway Response</h3>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <pre class="text-sm text-gray-700 whitespace-pre-wrap">{{ json_encode($transaction->gateway_response, JSON_PRETTY_PRINT) }}</pre>
-                </div>
-            </div>
-            @endif
+{{--            @if($transaction->gateway_response)--}}
+{{--            <div class="bg-white rounded-xl border border-gray-200 p-6">--}}
+{{--                <h3 class="text-lg font-semibold text-gray-900 mb-4">Gateway Response</h3>--}}
+{{--                <div class="bg-gray-50 rounded-lg p-4">--}}
+{{--                    <pre class="text-sm text-gray-700 whitespace-pre-wrap">{{ json_encode($transaction->gateway_response, JSON_PRETTY_PRINT) }}</pre>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--            @endif--}}
         </div>
 
         <!-- Sidebar -->
@@ -167,12 +167,12 @@
                         <i class="fa-solid fa-download mr-2"></i>
                         Download Receipt
                     </button>
-                    
+
                     <button class="w-full flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all" onclick="copyToClipboard('{{ $transaction->transaction_id }}')">
                         <i class="fa-solid fa-copy mr-2"></i>
                         Copy Transaction ID
                     </button>
-                    
+
                     @if($transaction->status === 'completed' && $transaction->gateway_name === 'payop')
                     <button class="w-full flex items-center justify-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all">
                         <i class="fa-solid fa-undo mr-2"></i>
@@ -195,7 +195,7 @@
                             <p class="text-xs text-gray-500">{{ $transaction->created_at->format('M j, Y g:i A') }}</p>
                         </div>
                     </div>
-                    
+
                     @if($transaction->gateway_transaction_id)
                     <div class="flex items-start space-x-3">
                         <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
@@ -203,11 +203,11 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-sm font-medium text-gray-900">Payment Processing</p>
-                            <p class="text-xs text-gray-500">Sent to {{ ucfirst($transaction->gateway_name) }}</p>
+                            <p class="text-xs text-gray-500">Sent to Provider</p>
                         </div>
                     </div>
                     @endif
-                    
+
                     @if($transaction->status === 'completed')
                     <div class="flex items-start space-x-3">
                         <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -255,7 +255,7 @@ function copyToClipboard(text) {
         toast.className = 'fixed top-4 right-4 bg-black text-white px-4 py-2 rounded-lg text-sm z-50';
         toast.textContent = 'Copied to clipboard!';
         document.body.appendChild(toast);
-        
+
         setTimeout(() => {
             document.body.removeChild(toast);
         }, 2000);
@@ -263,4 +263,4 @@ function copyToClipboard(text) {
 }
 </script>
 @endpush
-@endsection 
+@endsection

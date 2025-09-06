@@ -218,51 +218,168 @@
             </div>
         </div>
 
-        <!-- Recent Activities Table -->
+        <!-- Recent Activities Section -->
         <div class="relative group">
             <div class="absolute -inset-0.5 bg-gradient-to-r from-slate-500/30 to-slate-600/30 rounded-2xl blur opacity-30"></div>
-            <div class="relative bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="relative bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-700">
+                <!-- Section Header with Stats -->
                 <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Recent Activities</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Recent Activities</h3>
+                            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Latest user activities in the system</p>
+                        </div>
+                        <a href="{{ route('admin.activities.index') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+                            <i class="material-symbols-outlined text-lg mr-1">arrow_forward</i>
+                            View All
+                        </a>
+                    </div>
+
+                    <!-- Activity Stats Cards -->
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="bg-white dark:bg-slate-800 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
+                            <div class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Total</div>
+                            <div class="text-lg font-bold text-slate-900 dark:text-white">{{ $recentActivities->count() }}</div>
+                        </div>
+                        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 border border-emerald-200 dark:border-emerald-800">
+                            <div class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mb-1">Completed</div>
+                            <div class="text-lg font-bold text-emerald-700 dark:text-emerald-500">
+                                {{ $recentActivities->where('status', 'completed')->count() }}
+                            </div>
+                        </div>
+                        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 border border-amber-200 dark:border-amber-800">
+                            <div class="text-xs font-medium text-amber-600 dark:text-amber-400 mb-1">Pending</div>
+                            <div class="text-lg font-bold text-amber-700 dark:text-amber-500">
+                                {{ $recentActivities->where('status', 'pending')->count() }}
+                            </div>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-3 border border-red-200 dark:border-red-800">
+                            <div class="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Failed</div>
+                            <div class="text-lg font-bold text-red-700 dark:text-red-500">
+                                {{ $recentActivities->where('status', 'failed')->count() }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Activities List -->
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                        <thead class="bg-slate-50 dark:bg-slate-700/50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">User</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Reference</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                            @foreach($recentActivities as $activity)
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                                    {{ $activity->user->name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                                    {{ ucfirst(str_replace('_', ' ', $activity->activity_type)) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                                    {{ $activity->reference_number }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        @if($activity->status === 'completed') bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400
-                                        @elseif($activity->status === 'pending') bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400
-                                        @else bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400 @endif">
-                                        {{ ucfirst($activity->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                                    {{ $activity->created_at->format('M d, Y H:i') }}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <!-- Header -->
+                    <div class="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                        <div class="grid grid-cols-12 gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                            <div class="col-span-3">Type & Date</div>
+                            <div class="col-span-3">Counterparty</div>
+                            <div class="col-span-2">Reference No.</div>
+                            <div class="col-span-2">Status</div>
+                            <div class="col-span-2 text-right">Amount</div>
+                        </div>
+                    </div>
+
+                    <!-- Activities List -->
+                    <div class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                        @forelse($recentActivities as $activity)
+                            <div class="px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/25 transition-colors">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <!-- Type & Date -->
+                                    <div class="col-span-3">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg
+                                                {{ $activity->activity_type === 'asset_transfer' ? 'bg-blue-100 dark:bg-blue-900/50' :
+                                                   ($activity->activity_type === 'otc_trade' ? 'bg-purple-100 dark:bg-purple-900/50' :
+                                                   'bg-slate-100 dark:bg-slate-700') }}">
+                                                <i class="fa-solid {{ $activity->icon_class ?? 'fa-exchange-alt' }} text-lg
+                                                    {{ $activity->activity_type === 'asset_transfer' ? 'text-blue-600 dark:text-blue-400' :
+                                                       ($activity->activity_type === 'otc_trade' ? 'text-purple-600 dark:text-purple-400' :
+                                                       'text-slate-500 dark:text-slate-400') }}"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-slate-900 dark:text-white">
+                                                    {{ ucwords(str_replace('_', ' ', $activity->activity_type)) }}
+                                                </div>
+                                                <div class="text-sm text-slate-500 dark:text-slate-400">
+                                                    {{ $activity->created_at->format('M d, Y H:i') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Counterparty -->
+                                    <div class="col-span-3">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                                                <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                                                    {{ strtoupper(substr($activity->user->name, 0, 1)) }}
+                                                </span>
+                                            </div>
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-slate-900 dark:text-white">
+                                                    {{ $activity->user->name }}
+                                                </div>
+                                                <div class="text-sm text-slate-500 dark:text-slate-400">
+                                                    {{ $activity->description ?? 'Activity' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reference No. -->
+                                    <div class="col-span-2">
+                                        <div class="text-sm font-medium text-slate-900 dark:text-white">
+                                            {{ $activity->reference_number }}
+                                        </div>
+                                        <div class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ ucfirst($activity->action ?? 'Activity') }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Status -->
+                                    <div class="col-span-2">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                                            {{ $activity->status === 'completed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-400' :
+                                               ($activity->status === 'pending' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-400' :
+                                               ($activity->status === 'failed' ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400' :
+                                               'bg-slate-100 text-slate-800 dark:bg-slate-900/50 dark:text-slate-400')) }}">
+                                            <i class="material-symbols-outlined text-[18px] mr-1">
+                                                {{ $activity->status === 'completed' ? 'check_circle' :
+                                                   ($activity->status === 'failed' ? 'error' :
+                                                   ($activity->status === 'cancelled' ? 'cancel' : 'pending')) }}
+                                            </i>
+                                            {{ ucfirst($activity->status) }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Amount -->
+                                    <div class="col-span-2 text-right">
+                                        <div class="text-sm font-medium text-slate-900 dark:text-white">
+                                            {{ number_format($activity->amount ?? 0, 8) }} {{ $activity->currency_symbol ?? 'USD' }}
+                                        </div>
+                                        @if(isset($activity->metadata['fee']) && $activity->metadata['fee'] > 0)
+                                            <div class="text-xs text-slate-500 dark:text-slate-400">
+                                                Fee: {{ number_format($activity->metadata['fee'], 8) }} {{ $activity->currency_symbol ?? 'USD' }}
+                                            </div>
+                                        @endif
+                                        <div class="mt-2">
+                                            <a href="{{ route('admin.activities.show', $activity) }}"
+                                               class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                <i class="material-symbols-outlined text-lg mr-1">visibility</i>
+                                                View
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="px-6 py-8 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+                                        <i class="material-symbols-outlined text-2xl text-slate-400">history</i>
+                                    </div>
+                                    <h3 class="text-sm font-medium text-slate-900 dark:text-white mb-1">No Activities Found</h3>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">No recent activities are available at the moment.</p>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

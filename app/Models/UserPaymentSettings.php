@@ -13,12 +13,17 @@ class UserPaymentSettings extends Model
         'allowed_payment_providers',
         'provider_limits',
         'is_active',
+        'fee_type',
+        'fee_percentage',
+        'fee_fixed',
     ];
 
     protected $casts = [
         'allowed_payment_providers' => 'array',
         'provider_limits' => 'array',
         'is_active' => 'boolean',
+        'fee_percentage' => 'decimal:2',
+        'fee_fixed' => 'decimal:2',
     ];
 
     /**
@@ -52,6 +57,9 @@ class UserPaymentSettings extends Model
             'allowed_payment_providers' => $availableProviders,
             'provider_limits' => $defaultProviderLimits,
             'is_active' => true,
+            'fee_type' => 'percentage',
+            'fee_percentage' => 0.00,
+            'fee_fixed' => 0.00,
         ];
     }
 
@@ -159,5 +167,65 @@ class UserPaymentSettings extends Model
         }
         
         return $result;
+    }
+
+    /**
+     * Calculate settlement fee for a given amount
+     */
+    public function calculateSettlementFee(float $amount): float
+    {
+        if ($this->fee_type === 'percentage') {
+            return ($amount * $this->fee_percentage) / 100;
+        } else {
+            return $this->fee_fixed;
+        }
+    }
+
+    /**
+     * Get the current fee type
+     */
+    public function getFeeType(): string
+    {
+        return $this->fee_type ?? 'percentage';
+    }
+
+    /**
+     * Get the current fee value based on type
+     */
+    public function getFeeValue(): float
+    {
+        if ($this->fee_type === 'percentage') {
+            return $this->fee_percentage ?? 0.00;
+        } else {
+            return $this->fee_fixed ?? 0.00;
+        }
+    }
+
+    /**
+     * Check if settlement fees are enabled
+     */
+    public function hasSettlementFees(): bool
+    {
+        if ($this->fee_type === 'percentage') {
+            return ($this->fee_percentage ?? 0) > 0;
+        } else {
+            return ($this->fee_fixed ?? 0) > 0;
+        }
+    }
+
+    /**
+     * Get fee description for display
+     */
+    public function getFeeDescription(): string
+    {
+        if (!$this->hasSettlementFees()) {
+            return 'No settlement fees';
+        }
+
+        if ($this->fee_type === 'percentage') {
+            return $this->fee_percentage . '% per transaction';
+        } else {
+            return '$' . number_format($this->fee_fixed, 2) . ' per transaction';
+        }
     }
 }

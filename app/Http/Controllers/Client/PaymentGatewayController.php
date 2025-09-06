@@ -4,10 +4,18 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentTransaction;
+use App\Models\PaymentGatewayWallet;
+use App\Models\Setting;
+use App\Models\Settlement;
+use App\Models\UserPaymentSettings;
+use App\Models\AssetAccount;
+use App\Models\Currency;
 use App\Services\ClientPaymentService;
 use App\Models\ApiClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentGatewayController extends Controller
 {
@@ -81,7 +89,7 @@ class PaymentGatewayController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'required|email|max:255',
             'company_name' => 'nullable|string|max:255',
             'is_sandbox' => 'required|boolean',
             'allowed_ips' => 'nullable|string',
@@ -199,6 +207,208 @@ class PaymentGatewayController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'API key deleted successfully'
+        ]);
+    }
+
+    /**
+     * Display the settlement management page
+     */
+    public function settlement()
+    {
+        $user = Auth::user();
+
+        // Get user's payment settings for fee calculations
+        $paymentSettings = $user->paymentSettings ?? UserPaymentSettings::create([
+            'user_id' => $user->id,
+            ...UserPaymentSettings::getDefaultSettings()
+        ]);
+
+        // Get wallet information
+        $wallets = PaymentGatewayWallet::getWalletsForUser($user->id);
+        $totalBalance = PaymentGatewayWallet::getTotalBalanceForUser($user->id);
+
+        // Get settlement history
+        $settlements = Settlement::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Get successful payment transactions for the user's API clients
+        $clientIds = $user->apiClients()->pluck('id')->toArray();
+        $successfulPayments = collect();
+
+        if (!empty($clientIds)) {
+            $successfulPayments = PaymentTransaction::whereIn('api_client_id', $clientIds)
+                ->where('status', 'completed')
+                ->with(['apiClient:id,name'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(10, ['*'], 'payments_page');
+        }
+
+        // Get settlement statistics
+        $settlementStats = [
+            'total_requested' => Settlement::where('user_id', $user->id)->sum('amount'),
+            'total_fees' => Settlement::where('user_id', $user->id)->sum('fee_amount'),
+            'total_net' => Settlement::where('user_id', $user->id)->sum('net_amount'),
+            'pending_count' => Settlement::where('user_id', $user->id)->where('status', Settlement::STATUS_PENDING)->count(),
+            'completed_count' => Settlement::where('user_id', $user->id)->where('status', Settlement::STATUS_COMPLETED)->count(),
+        ];
+
+        return view('client.payment-gateway.settlement', compact(
+            'wallets',
+            'totalBalance',
+            'paymentSettings',
+            'settlements',
+            'settlementStats',
+            'successfulPayments'
+        ));
+    }
+
+    /**
+     * Process settlement request for user's payment gateway wallets
+     */
+    public function processSettlement(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'settlement_amount' => 'required|numeric|min:0.01',
+            'notes' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            // Get user's payment settings
+            $paymentSettings = $user->paymentSettings;
+            if (!$paymentSettings) {
+                $paymentSettings = UserPaymentSettings::create([
+                    'user_id' => $user->id,
+                    ...UserPaymentSettings::getDefaultSettings()
+                ]);
+            }
+
+            // Get user's total wallet balance
+            $totalBalance = PaymentGatewayWallet::getTotalBalanceForUser($user->id);
+
+            if ($totalBalance <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No funds available for settlement'
+                ], 400);
+            }
+
+            // Check if requested amount is valid
+            $requestedAmount = $validated['settlement_amount'];
+            if ($requestedAmount > $totalBalance) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Requested amount exceeds available balance'
+                ], 400);
+            }
+
+            // Calculate fees
+            $feeAmount = $paymentSettings->calculateSettlementFee($requestedAmount);
+            $netAmount = $requestedAmount - $feeAmount;
+
+            // Create settlement record
+            $settlement = Settlement::createRequest([
+                'user_id' => $user->id,
+                'amount' => $requestedAmount,
+                'fee_amount' => $feeAmount,
+                'net_amount' => $netAmount,
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            $gatewayWallets=PaymentGatewayWallet::getWalletsForUser(auth()->id());
+            $totalCost=0;
+            foreach ($gatewayWallets as $wallet) {
+                if ($wallet->balance_usd>=$requestedAmount) {
+                    $totalCost+=$this->getSettlementWalletCost($wallet,$requestedAmount);
+                    $wallet->update(['balance_usd' => $wallet->balance_usd - $requestedAmount]);
+                }
+                else{
+                    $requestedAmount -= $wallet->balance_usd;
+                    $totalCost+=$this->getSettlementWalletCost($wallet,$wallet->balance_usd);
+                    $wallet->update(['balance_usd' => 0]);
+                }
+            }
+
+
+
+            $usdCurrency=Currency::query()->where('symbol','USD')->first();
+            $usdAssetAccount=AssetAccount::where('currency_id',$usdCurrency->id)->where("user_id",$user->id)->first();
+            $usdAssetAccount->update([
+                'balance' => $usdAssetAccount->balance + $netAmount,
+            ]);
+            $settlement->update(['cost' => $totalCost,'status' => Settlement::STATUS_COMPLETED]);
+
+
+
+            Log::info('Settlement request created', [
+                'user_id' => $user->id,
+                'settlement_id' => $settlement->id,
+                'reference_id' => $settlement->reference_id,
+                'requested_amount' => $requestedAmount,
+                'fee_amount' => $feeAmount,
+                'net_amount' => $netAmount,
+                'total_balance' => $totalBalance,
+                'notes' => $validated['notes'] ?? null
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Settlement request submitted successfully. You will be contacted within 24 hours.',
+                'data' => [
+                    'settlement_id' => $settlement->id,
+                    'reference_id' => $settlement->reference_id,
+                    'requested_amount' => $requestedAmount,
+                    'fee_amount' => $feeAmount,
+                    'net_amount' => $netAmount,
+                    'total_balance' => $totalBalance,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Settlement request failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process settlement request. Please try again.'
+            ], 500);
+        }
+    }
+
+    private function getSettlementWalletCost(PaymentGatewayWallet $wallet,$amount)
+    {
+       $costType= Setting::get($wallet->gateway_name.'_cost_type');
+       if(!isset($costType)){
+           return 0;
+       }
+       if($costType=='fixed'){
+           return Setting::get($wallet->gateway_name.'_cost_fixed');
+       }
+
+       $percentageValue=Setting::get($wallet->gateway_name.'_cost_percentage');
+       return  $amount*($percentageValue/100);
+
+    }
+    /**
+     * Get user's wallet information
+     */
+    public function getWalletInfo()
+    {
+        $user = Auth::user();
+
+        $wallets = PaymentGatewayWallet::getWalletsForUser($user->id);
+        $totalBalance = PaymentGatewayWallet::getTotalBalanceForUser($user->id);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'wallets' => $wallets,
+                'total_balance' => $totalBalance
+            ]
         ]);
     }
 }

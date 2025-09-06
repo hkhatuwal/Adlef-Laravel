@@ -139,4 +139,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserPaymentSettings::class);
     }
+
+    public function paymentGatewayWallets()
+    {
+        return $this->hasMany(PaymentGatewayWallet::class);
+    }
 }

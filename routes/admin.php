@@ -125,5 +125,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('payment-transactions.show');
         Route::get('payment-transactions-export', [\App\Http\Controllers\Admin\PaymentTransactionController::class, 'export'])
             ->name('payment-transactions.export');
+
+        // Settlement Management Routes
+        Route::get('settlements', [\App\Http\Controllers\Admin\SettlementController::class, 'index'])->name('settlements.index');
+        Route::get('settlements/{settlement}', [\App\Http\Controllers\Admin\SettlementController::class, 'show'])->name('settlements.show');
+        Route::post('settlements/{settlement}/processing', [\App\Http\Controllers\Admin\SettlementController::class, 'markAsProcessing'])->name('settlements.processing');
+        Route::post('settlements/{settlement}/complete', [\App\Http\Controllers\Admin\SettlementController::class, 'complete'])->name('settlements.complete');
+        Route::post('settlements/{settlement}/fail', [\App\Http\Controllers\Admin\SettlementController::class, 'markAsFailed'])->name('settlements.fail');
+        Route::post('settlements/{settlement}/cancel', [\App\Http\Controllers\Admin\SettlementController::class, 'cancel'])->name('settlements.cancel');
     });
 });

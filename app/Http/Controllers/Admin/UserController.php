@@ -341,6 +341,9 @@ class UserController extends Controller
             'allowed_payment_providers.card' => 'array',
             'allowed_payment_providers.crypto' => 'array',
             'is_active' => 'boolean',
+            'fee_type' => 'required|in:percentage,fixed',
+            'fee_percentage' => 'required_if:fee_type,percentage|numeric|min:0|max:100',
+            'fee_fixed' => 'required_if:fee_type,fixed|numeric|min:0|max:999999.99',
         ];
 
         // Add validation rules for each provider's limits
@@ -376,6 +379,11 @@ class UserController extends Controller
         $paymentSettings->max_api_clients = $validated['max_api_clients'];
         $paymentSettings->allowed_payment_providers = $validated['allowed_payment_providers'];
         $paymentSettings->is_active = $validated['is_active'] ?? false;
+
+        // Update settlement fee settings
+        $paymentSettings->fee_type = $validated['fee_type'];
+        $paymentSettings->fee_percentage = $validated['fee_percentage'] ?? 0.00;
+        $paymentSettings->fee_fixed = $validated['fee_fixed'] ?? 0.00;
 
         // Update provider limits
         $paymentSettings->provider_limits = $validated['provider_limits'];

@@ -79,6 +79,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
         // Payment Gateway Management
         Route::prefix('payment-gateway')->name('payment-gateway.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'index'])->name('index');
+            Route::get('/settlement', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'settlement'])->name('settlement');
             Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
 
             // API Keys Management
@@ -86,6 +87,10 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
             Route::post('/api-keys/{apiClient}/regenerate', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'regenerateApiKey'])->name('api-keys.regenerate');
             Route::post('/api-keys/{apiClient}/toggle', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'toggleApiClientStatus'])->name('api-keys.toggle');
             Route::delete('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'deleteApiClient'])->name('api-keys.delete');
+
+            // Settlement Management
+            Route::post('/settlement', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'processSettlement'])->name('settlement.process');
+            Route::get('/wallet-info', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'getWalletInfo'])->name('wallet.info');
         });
 
     });

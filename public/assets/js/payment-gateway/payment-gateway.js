@@ -1,16 +1,16 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Tab functionality
     console.log("Payment Gateway JS Loaded");
 
-    $('.tab-button').on('click', function() {
+    $('.tab-button').on('click', function () {
         const tabName = $(this).data('tab');
 
         // Remove active class from all buttons and add to clicked button
         $('.tab-button').removeClass('active border-black text-black')
-                        .addClass('border-transparent text-gray-500');
+            .addClass('border-transparent text-gray-500');
 
         $(this).addClass('active border-black text-black')
-               .removeClass('border-transparent text-gray-500');
+            .removeClass('border-transparent text-gray-500');
 
         // Hide all tab contents and show selected one
         $('.tab-content').addClass('hidden');
@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     // Copy functionality for API documentation
-    $('.copy-btn').on('click', function() {
+    $('.copy-btn').on('click', function () {
         const copyType = $(this).data('copy');
         let textToCopy = '';
 
@@ -36,7 +36,7 @@ Content-Type: application/json`;
 
 // Copy to clipboard function
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
+    navigator.clipboard.writeText(text).then(function () {
         toastr.success('Copied to clipboard!');
     });
 }
@@ -88,20 +88,31 @@ function submitCreateApiKey() {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(data) {
+        success: function (data) {
             if (data.success) {
                 toastr.success('API key created successfully!');
                 closeCreateApiKeyModal();
                 setTimeout(() => location.reload(), 1000);
             } else {
+                console.log(data)
                 toastr.error('Error creating API key: ' + (data.message || 'Unknown error'));
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('Error:', error);
-            toastr.error('Error creating API key');
+
+            // Try to get message from JSON response
+            let errorMessage = 'Error creating API key';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                // fallback for plain text responses
+                errorMessage = xhr.responseText;
+            }
+
+            toastr.error(errorMessage);
         },
-        complete: function() {
+        complete: function () {
             $submitBtn.html(originalHtml).prop('disabled', false);
         }
     });
@@ -126,7 +137,7 @@ function regenerateApiKey(clientId) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 'Content-Type': 'application/json'
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.success) {
                     toastr.success('API key regenerated successfully!');
                     setTimeout(() => location.reload(), 1000);
@@ -134,11 +145,11 @@ function regenerateApiKey(clientId) {
                     toastr.error('Error regenerating API key: ' + (data.message || 'Unknown error'));
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error:', error);
                 toastr.error('Error regenerating API key');
             },
-            complete: function() {
+            complete: function () {
                 $button.html(originalHtml).prop('disabled', false);
             }
         });
@@ -159,8 +170,8 @@ function toggleApiClientStatus(clientId, newStatus) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 'Content-Type': 'application/json'
             },
-            data: JSON.stringify({ is_active: newStatus === 'true' }),
-            success: function(data) {
+            data: JSON.stringify({is_active: newStatus === 'true'}),
+            success: function (data) {
                 if (data.success) {
                     toastr.success(`API key ${action}d successfully!`);
                     setTimeout(() => location.reload(), 1000);
@@ -168,11 +179,11 @@ function toggleApiClientStatus(clientId, newStatus) {
                     toastr.error(`Error ${action}ing API key: ` + (data.message || 'Unknown error'));
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error:', error);
                 toastr.error(`Error ${action}ing API key`);
             },
-            complete: function() {
+            complete: function () {
                 $button.html(originalHtml).prop('disabled', false);
             }
         });
@@ -192,7 +203,7 @@ function deleteApiClient(clientId) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 'Content-Type': 'application/json'
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.success) {
                     toastr.success('API key deleted successfully!');
                     setTimeout(() => location.reload(), 1000);
@@ -200,11 +211,11 @@ function deleteApiClient(clientId) {
                     toastr.error('Error deleting API key: ' + (data.message || 'Unknown error'));
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error:', error);
                 toastr.error('Error deleting API key');
             },
-            complete: function() {
+            complete: function () {
                 $button.html(originalHtml).prop('disabled', false);
             }
         });
@@ -212,15 +223,14 @@ function deleteApiClient(clientId) {
 }
 
 
-
 // Close modal when clicking outside or pressing Escape
-$(document).on('click', function(event) {
+$(document).on('click', function (event) {
     if ($(event.target).is('#createApiKeyModal')) {
         closeCreateApiKeyModal();
     }
 });
 
-$(document).on('keydown', function(event) {
+$(document).on('keydown', function (event) {
     if (event.key === 'Escape') {
         closeCreateApiKeyModal();
     }

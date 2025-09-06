@@ -393,9 +393,8 @@
         </div>
     </div>
 </div>
-@section('post-script')
-    <script src="{{ asset('admin/js/payment-settings/payment-settings.js') }}"></script>
-@endsection
 @endsection
 
-
+@push('scripts')
+<script src="{{ asset('admin/js/payment-settings/payment-settings.js') }}"></script>
+@endpush

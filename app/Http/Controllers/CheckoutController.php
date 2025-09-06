@@ -61,7 +61,7 @@ class CheckoutController extends Controller
             abort(400, 'Payment session is no longer valid');
         }
 
-                // Validate payment method selection
+        // Validate payment method selection
         $request->validate([
             'payment_method' => 'required|in:credit_card,ngenius_card,crypto'
         ]);
@@ -81,14 +81,29 @@ class CheckoutController extends Controller
         // Generate payment URL based on selected method
         try {
             $paymentUrl = $this->generatePaymentUrl($transaction, $gatewayName);
+            $transaction->update(['payment_url' => $paymentUrl]);
+
+            // Redirect to appropriate payment gateway
+            return redirect($paymentUrl);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            // Return error view instead of JSON
+            return $this->renderErrorPage(
+                title: 'Payment Processing Error',
+                subtitle: 'Unable to process your payment request',
+                message: 'Failed to create the payment. Please try again or contact support if the issue persists.',
+                transaction: $transaction,
+                errorCode: 'PAYMENT_CREATION_FAILED',
+                suggestions: [
+                    'Check your internet connection and try again',
+                    'Verify your payment details are correct',
+                    'Try using a different payment method',
+                    'Contact support if the problem continues'
+                ]
+            );
         }
 
-        $transaction->update(['payment_url' => $paymentUrl]);
 
-        // Redirect to appropriate payment gateway
-        return redirect($paymentUrl);
+
     }
 
     /**
@@ -117,7 +132,7 @@ class CheckoutController extends Controller
             $selectedGateway = $this->clientPaymentService->selectGatewayForCategory(
                 $transaction->apiClient,
                 $gatewayName,
-                (float) $transaction->amount
+                (float)$transaction->amount
             );
 
             if (!$selectedGateway) {
@@ -131,7 +146,7 @@ class CheckoutController extends Controller
         $paymentData = [
             'amount' => $transaction->amount,
             'currency' => strtoupper($transaction->currency),
-            'description' => $transaction->description ,
+            'description' => $transaction->description,
             'customer_email' => $transaction->customer_email ?? '',
             'customer_name' => $transaction->customer_name ?? '',
             'customer_phone' => $transaction->customer_phone ?? '',
@@ -140,9 +155,13 @@ class CheckoutController extends Controller
             'cancel_url' => $transaction->cancel_url,
             'metadata' => $transaction->metadata ?? [],
         ];
+        $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData, $selectedGateway, $transaction);
 
-            $result = $this->clientPaymentService->createPayment($transaction->apiClient, $paymentData, $selectedGateway, $transaction);
-        return $result['data']['payment_url'];
+        if ($result['success']) {
+            return $result['data']['payment_url'];
+        }
+        throw new \Exception($result['message']);
+
 
     }
 
@@ -189,7 +208,6 @@ class CheckoutController extends Controller
 
         return view('checkout.crypto', compact('cryptoOrder', 'walletAddress'));
     }
-
 
 
     /**
@@ -259,5 +277,62 @@ class CheckoutController extends Controller
         }
 
         return view('checkout.failed', compact('transaction', 'errorMessage'));
+    }
+
+    /**
+     * Show error page with customizable parameters
+     */
+    public function showError(Request $request): View
+    {
+        $title = $request->query('title', 'Payment Error');
+        $subtitle = $request->query('subtitle', 'An error occurred while processing your payment');
+        $message = $request->query('message', 'Your payment could not be processed at this time.');
+        $errorCode = $request->query('error_code');
+        $transactionId = $request->query('transaction_id');
+        $retryUrl = $request->query('retry_url');
+        $cancelUrl = $request->query('cancel_url');
+        $backUrl = $request->query('back_url');
+
+        $transaction = null;
+        if ($transactionId) {
+            $transaction = PaymentTransaction::where('transaction_id', $transactionId)->first();
+        }
+
+        $suggestions = $request->query('suggestions');
+        if ($suggestions) {
+            $suggestions = is_string($suggestions) ? explode(',', $suggestions) : $suggestions;
+        }
+
+        return view('checkout.error', compact(
+            'title', 'subtitle', 'message', 'errorCode', 'transaction',
+            'retryUrl', 'cancelUrl', 'backUrl', 'suggestions'
+        ));
+    }
+
+    /**
+     * Helper method to render error page with transaction context
+     */
+    private function renderErrorPage(
+        string $title,
+        string $subtitle,
+        string $message,
+        ?PaymentTransaction $transaction = null,
+        ?string $errorCode = null,
+        ?string $retryUrl = null,
+        ?string $cancelUrl = null,
+        ?string $backUrl = null,
+        ?array $suggestions = null
+    ): View {
+        return view('checkout.error', [
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'message' => $message,
+            'errorCode' => $errorCode,
+            'transaction' => $transaction,
+            'retryUrl' => $retryUrl,
+            'cancelUrl' => $cancelUrl,
+            'backUrl' => $backUrl,
+            'suggestions' => $suggestions
+        ]);
     }
 }

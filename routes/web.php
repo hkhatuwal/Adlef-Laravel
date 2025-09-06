@@ -67,6 +67,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/checkout/status/{transactionId}', [\App\Http\Controllers\CheckoutController::class, 'checkPaymentStatus'])->name('checkout.status');
     Route::get('/success', [\App\Http\Controllers\CheckoutController::class, 'success'])->name('success');
     Route::get('/failed', [\App\Http\Controllers\CheckoutController::class, 'failed'])->name('failed');
+    Route::get('/error', [\App\Http\Controllers\CheckoutController::class, 'showError'])->name('error');
 });
 
 

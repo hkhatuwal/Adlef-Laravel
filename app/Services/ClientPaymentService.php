@@ -5,9 +5,12 @@ namespace App\Services;
 use App\Models\ApiClient;
 use App\Models\PaymentTransaction;
 use App\Models\UserPaymentSettings;
+use App\Models\PaymentGatewayWallet;
+use App\Models\Currency;
 use App\Contracts\PaymentGatewayFactory;
 use App\Contracts\WebhookData;
 use App\Services\PaymentService;
+use App\Utils\CurrencyConverter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Exception;
@@ -16,11 +19,13 @@ class ClientPaymentService
 {
     protected PaymentGatewayFactory $gatewayFactory;
     protected PaymentService $paymentService;
+    protected CurrencyConverter $currencyConverter;
 
-    public function __construct(PaymentGatewayFactory $gatewayFactory, PaymentService $paymentService)
+    public function __construct(PaymentGatewayFactory $gatewayFactory, PaymentService $paymentService, CurrencyConverter $currencyConverter)
     {
         $this->gatewayFactory = $gatewayFactory;
         $this->paymentService = $paymentService;
+        $this->currencyConverter = $currencyConverter;
     }
 
     /**
@@ -413,6 +418,11 @@ class ClientPaymentService
             $transaction->updatePaymentMethodDetails($paymentMethodData);
         }
 
+        // Handle wallet update for completed transactions
+        if ($status === PaymentTransaction::STATUS_COMPLETED) {
+            $this->updateUserWalletFromTransaction($transaction);
+        }
+
         Log::info('Transaction updated from webhook', [
             'transaction_id' => $transaction->transaction_id,
             'old_status' => $transaction->getOriginal('status'),
@@ -555,6 +565,7 @@ class ClientPaymentService
                 'failed_transactions' => 0,
                 'pending_transactions' => 0,
                 'total_amount' => 0,
+                'wallet_balance' => 0,
                 'currencies' => []
             ];
         }
@@ -577,12 +588,16 @@ class ClientPaymentService
             ->pluck('currency')
             ->toArray();
 
+        // Get wallet balance from PaymentGatewayWallet
+        $walletBalance = PaymentGatewayWallet::getTotalBalanceForUser($user->id);
+
         return [
             'total_transactions' => $stats->total_transactions ?? 0,
             'successful_transactions' => $stats->successful_transactions ?? 0,
             'failed_transactions' => $stats->failed_transactions ?? 0,
             'pending_transactions' => $stats->pending_transactions ?? 0,
-            'total_amount' => $stats->total_amount ?? 0,
+            'total_amount' => $walletBalance, // Use wallet balance instead of transaction sum
+            'wallet_balance' => $walletBalance,
             'currencies' => $currencies
         ];
     }
@@ -647,6 +662,83 @@ class ClientPaymentService
         }
 
         return $stats;
+    }
+
+    /**
+     * Update user's payment gateway wallet when transaction is completed
+     */
+    protected function updateUserWalletFromTransaction(PaymentTransaction $transaction): void
+    {
+        try {
+            $user = $transaction->apiClient->user;
+            $amount = $transaction->amount;
+            $currency = $transaction->currency;
+            $gatewayName = $transaction->gateway_name;
+
+            Log::info("Converting ". $amount ." From ". $currency);
+
+            // Convert amount to USD if currency is not USD
+            $amountInUSD = $this->convertAmountToUSD($amount, $currency);
+
+            // Get or create wallet for this user and gateway
+            $wallet = PaymentGatewayWallet::getOrCreateWallet($user->id, $gatewayName);
+
+            // Add amount to wallet
+            $wallet->addBalance($amountInUSD);
+
+            Log::info('Payment gateway wallet updated', [
+                'user_id' => $user->id,
+                'gateway_name' => $gatewayName,
+                'original_amount' => $amount,
+                'original_currency' => $currency,
+                'amount_in_usd' => $amountInUSD,
+                'new_balance' => $wallet->balance_usd,
+                'transaction_id' => $transaction->transaction_id
+            ]);
+
+        } catch (Exception $e) {
+            Log::error('Failed to update payment gateway wallet', [
+                'transaction_id' => $transaction->transaction_id,
+                'user_id' => $transaction->apiClient->user_id,
+                'gateway_name' => $transaction->gateway_name,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Convert amount to USD using CurrencyConverter
+     */
+    protected function convertAmountToUSD(float $amount, string $currency): float
+    {
+        // If already USD, return as is
+        if (strtoupper($currency) === 'USD') {
+            return $amount;
+        }
+
+        try {
+            // Find the currency model
+            $currencyModel = Currency::where('symbol', strtoupper($currency))->first();
+
+            if (!$currencyModel) {
+                Log::warning('Currency not found for conversion', [
+                    'currency' => $currency,
+                    'amount' => $amount
+                ]);
+                return $amount; // Return original amount if currency not found
+            }
+
+            // Convert to USD using CurrencyConverter
+            return $this->currencyConverter->convertToUSD($amount, $currencyModel);
+
+        } catch (Exception $e) {
+            Log::error('Failed to convert currency to USD', [
+                'currency' => $currency,
+                'amount' => $amount,
+                'error' => $e->getMessage()
+            ]);
+            return $amount; // Return original amount on error
+        }
     }
 
 }

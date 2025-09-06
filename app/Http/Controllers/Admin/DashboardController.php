@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Settlement;
 use App\Models\User;
 use App\Models\UserActivity;
 use App\Models\AssetTransfer;
@@ -31,12 +32,15 @@ class DashboardController extends Controller
         // Calculate Revenue (fees + network_fees)
         $assetTransferRevenue = AssetTransfer::where('status', 'completed')->sum('fee');
         $otcRequestRevenue = OtcRequest::where('status', 'completed')->sum('network_fee');
-        $totalRevenue = $assetTransferRevenue + $otcRequestRevenue;
+        $paymentSettlementRevenue=Settlement::where('status', 'completed')->sum('fee_amount');
+
+        $totalRevenue = $assetTransferRevenue + $otcRequestRevenue+$paymentSettlementRevenue;
 
         // Calculate Costs
         $assetTransferCosts = AssetTransfer::where('status', 'completed')->sum('transaction_cost');
         $otcRequestCosts = OtcRequest::where('status', 'completed')->sum('transaction_cost');
-        $totalCosts = $assetTransferCosts + $otcRequestCosts;
+        $settlementCosts = Settlement::where('status', 'completed')->sum('cost');
+        $totalCosts = $assetTransferCosts + $otcRequestCosts + $settlementCosts;
 
         // Calculate Profit
         $totalProfit = $totalRevenue - $totalCosts;
