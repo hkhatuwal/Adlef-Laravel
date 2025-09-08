@@ -34,7 +34,7 @@
             <i class="fa-solid fa-filter mr-2"></i>
             Apply Filters
         </button>
-        
+
         @if(request()->hasAny(['status', 'currency', 'from_date', 'to_date']))
             <a href="{{ route('client.payment-gateway.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200 transition-all">
                 <i class="fa-solid fa-times mr-2"></i>
@@ -65,10 +65,13 @@
                             <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
                                 <i class="fa-solid fa-credit-card text-gray-600"></i>
                             </div>
+                            <a href="{{ route('client.payment-gateway.transaction.show', $transaction->transaction_id) }}"
+                            >
                             <div>
                                 <div class="text-sm font-medium text-gray-900">{{ $transaction->transaction_id }}</div>
                                 <div class="text-sm text-gray-500">{{ Str::limit($transaction->description, 30) }}</div>
                             </div>
+                            </a>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -96,6 +99,8 @@
                             <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center mr-2">
                                 <i class="fa-solid fa-credit-card text-xs text-gray-600"></i>
                             </div>
+
+
                             {{ ucfirst($transaction->payment_method) }}
                         </div>
                     </td>
@@ -143,7 +148,7 @@
         <div class="text-sm text-gray-700">
             Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} transactions
         </div>
-        
+
         @if($transactions->hasPages())
             <div class="flex items-center space-x-2">
                 {{-- Previous Button --}}
@@ -152,7 +157,7 @@
                         <i class="fa-solid fa-chevron-left mr-1"></i>Previous
                     </span>
                 @else
-                    <a href="{{ $transactions->appends(request()->query())->previousPageUrl() }}" 
+                    <a href="{{ $transactions->appends(request()->query())->previousPageUrl() }}"
                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">
                         <i class="fa-solid fa-chevron-left mr-1"></i>Previous
                     </a>
@@ -165,7 +170,7 @@
                 @endphp
 
                 @if($start > 1)
-                    <a href="{{ $transactions->appends(request()->query())->url(1) }}" 
+                    <a href="{{ $transactions->appends(request()->query())->url(1) }}"
                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">1</a>
                     @if($start > 2)
                         <span class="px-2 py-1 text-gray-400">...</span>
@@ -176,7 +181,7 @@
                     @if($i == $transactions->currentPage())
                         <span class="px-3 py-1 bg-black text-white rounded text-sm">{{ $i }}</span>
                     @else
-                        <a href="{{ $transactions->appends(request()->query())->url($i) }}" 
+                        <a href="{{ $transactions->appends(request()->query())->url($i) }}"
                            class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">{{ $i }}</a>
                     @endif
                 @endfor
@@ -185,13 +190,13 @@
                     @if($end < $transactions->lastPage() - 1)
                         <span class="px-2 py-1 text-gray-400">...</span>
                     @endif
-                    <a href="{{ $transactions->appends(request()->query())->url($transactions->lastPage()) }}" 
+                    <a href="{{ $transactions->appends(request()->query())->url($transactions->lastPage()) }}"
                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">{{ $transactions->lastPage() }}</a>
                 @endif
 
                 {{-- Next Button --}}
                 @if($transactions->hasMorePages())
-                    <a href="{{ $transactions->appends(request()->query())->nextPageUrl() }}" 
+                    <a href="{{ $transactions->appends(request()->query())->nextPageUrl() }}"
                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors">
                         Next<i class="fa-solid fa-chevron-right ml-1"></i>
                     </a>
@@ -203,4 +208,4 @@
             </div>
         @endif
     </div>
-@endif 
+@endif

@@ -14,7 +14,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">1. General Questions</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: What is ADLEF GROUP? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
@@ -53,7 +53,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">2. Account & Verification</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: Do I need to complete KYC? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
@@ -90,7 +90,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">3. Transactions & Payments</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: What payment methods do you accept? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-purple-500">
@@ -139,7 +139,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">4. Security & Compliance</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: Is ADLEF GROUP a custodial service? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
@@ -180,7 +180,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">5. Fees & Pricing</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: What are your fees? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-orange-500">
@@ -215,7 +215,7 @@
     <section class="py-16 bg-gray-50">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">6. Institutional & OTC Services</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: What OTC services do you offer? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
@@ -234,7 +234,7 @@
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
                     <h3 class="text-xl font-semibold mb-4 text-indigo-600">Q: How do I contact your institutional team?</h3>
                     <p class="text-lg leading-relaxed text-gray-700">
-                        <strong>A:</strong> Email <a href="mailto:institutional@adlefgroup.com" class="text-indigo-600 hover:underline font-medium">institutional@adlefgroup.com</a> for tailored solutions.
+                        <strong>A:</strong> Email <a href="mailto:support@adlefgroup.com" class="text-indigo-600 hover:underline font-medium">support@adlefgroup.com</a> for tailored solutions.
                     </p>
                 </div>
             </div>
@@ -245,7 +245,7 @@
     <section class="py-16">
         <div class="container px-4 md:px-10 mx-auto">
             <h2 class="text-4xl font-bold mb-8">7. Troubleshooting & Support</h2>
-            
+
             <div class="space-y-6">
                 <!-- Q1: My transaction is stuck. What should I do? -->
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-teal-500">
@@ -295,12 +295,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <section class="py-8 bg-black text-white">
-        <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© 2024 ADLEF NETWORK LLC. All Rights Reserved.</p>
-        </div>
-    </section>
+
 
 @endsection
 

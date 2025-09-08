@@ -5,8 +5,8 @@ return [
     "reference_prefix" => "ADREF",
     "reference_suffix" => "AD",
     "client_login" => [
-        "email" => "himtech728@gmail.com",
-        "password" => "Pa$\$w0rd!1"
+        "email" => "himanshu@adelf.com",
+        "password" => "password"
     ],
     "tin_reasons" => [
         'reason_no_issue' => 'The country where the Account Holder is liable to pay tax does not issue TINs to its residents',

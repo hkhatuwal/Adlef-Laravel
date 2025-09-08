@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <h6 class="text-xl font-semibold text-gray-900 mb-3">Transfer In</h6>
-                            <p class="text-gray-500 leading-relaxed">Move assets into your FDT account</p>
+                            <p class="text-gray-500 leading-relaxed">Move assets into your account</p>
                         </div>
                     </div>
 

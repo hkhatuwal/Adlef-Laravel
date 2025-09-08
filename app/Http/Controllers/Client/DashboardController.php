@@ -126,8 +126,8 @@ class DashboardController extends Controller
                              class="w-5 h-5">
                     </span>
                     <div>
-                        <div class="font-medium text-slate-900">'.$currency->name.'</div>
-                        <div class="text-xs text-slate-500">'.$currency->symbol.'</div>
+                        <div class="font-medium text-slate-900">'.$currency->symbol.'</div>
+                        <div class="xs text-slate-500">'.$currency->name.'</div>
                     </div>
                 </div>',
                 // Balance column
