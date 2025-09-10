@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\Client\AssetTransferController;
 use App\Http\Controllers\Client\ClientLoginController;
 use App\Http\Controllers\Client\ClientLogoutController;
+use App\Http\Controllers\Client\ClientPasswordResetController;
 use App\Http\Controllers\Client\ClientRegistrationController;
 use App\Http\Controllers\Client\CryptoWalletController;
 use App\Http\Controllers\Client\DashboardController;
@@ -23,6 +24,12 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register', [ClientRegistrationController::class, 'showRegistrationForm'])->name('client-registration');
     Route::post('/register/save', [ClientRegistrationController::class, 'saveRegistrationDetails'])->name('client-registration.save');
+    
+    // Password Reset Routes
+    Route::get('/password/reset', [ClientPasswordResetController::class, 'showLinkRequestForm'])->name('client.password.request');
+    Route::post('/password/email', [ClientPasswordResetController::class, 'sendResetLinkEmail'])->name('client.password.email');
+    Route::get('/password/reset/{token}', [ClientPasswordResetController::class, 'showResetForm'])->name('client.password.reset');
+    Route::post('/password/reset', [ClientPasswordResetController::class, 'reset'])->name('client.password.update');
 });
 Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Auth\Middleware\Authenticate::class])->name('client.')->group(function ($app) {
 

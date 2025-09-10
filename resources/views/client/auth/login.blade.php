@@ -37,7 +37,7 @@
                                     <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
                                 </div>
                             </div>
-
+                            <a href="{{route('client.password.request')}}" class="text-sm text-primary-600 hover:underline dark:text-primary-500">Forgot your password?</a>
                         </div>
                         <button type="submit" class="btn btn-primary w-full">Sign in</button>
                         <a  href="{{route('client-registration')}}" class="text-center w-full block underline">Create New Account?</a>
