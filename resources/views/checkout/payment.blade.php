@@ -60,9 +60,7 @@
         <div class="max-w-lg mx-auto" data-aos="fade-up" data-aos-duration="600">
             <!-- Logo & Header -->
             <div class="text-center mb-6">
-                <div class="mb-3">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 mx-auto object-contain border-2 w-full ">
-                </div>
+             
                 <h1 class="text-2xl font-bold text-gray-900 mb-1">Complete Payment</h1>
                 <p class="text-gray-600 text-sm">Secure checkout for your transaction</p>
             </div>
