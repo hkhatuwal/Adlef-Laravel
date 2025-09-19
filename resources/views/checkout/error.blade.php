@@ -80,9 +80,7 @@
 
             <!-- Header -->
             <div class="text-center mb-4">
-                <div class="mb-3">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 mx-auto object-contain border-2 w-full bg-red-100">
-                </div>
+              
                 <div class="error-icon w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-3">
                     <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
                 </div>
