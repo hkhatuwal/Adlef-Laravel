@@ -54,9 +54,7 @@
         <div class="max-w-lg mx-auto" data-aos="fade-up" data-aos-duration="600">
             <!-- Logo & Header -->
             <div class="text-center mb-6">
-                <div class="mb-4">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="{{ config('app.name') }}" class="h-12 mx-auto object-contain">
-                </div>
+               
                 <div class="success-icon w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
                     <i class="fas fa-check text-white text-3xl success-checkmark"></i>
                 </div>
