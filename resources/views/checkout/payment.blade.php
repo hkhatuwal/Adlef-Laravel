@@ -126,7 +126,7 @@
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
-                                                <p class="text-gray-500 text-xs">Visa, MasterCard, American Express</p>
+                                                <p class="text-gray-500 text-xs">VISA/MASTER/JCB/DINER/DISCOVER</p>
                                             </div>
                                         </div>
                                         <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
