@@ -90,7 +90,9 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
             Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
 
             // API Keys Management
+            Route::get('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'getApiKey'])->name('api-keys.show');
             Route::post('/api-keys', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'storeApiKey'])->name('api-keys.store');
+            Route::match(['PUT', 'POST'], '/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'updateApiKey'])->name('api-keys.update');
             Route::post('/api-keys/{apiClient}/regenerate', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'regenerateApiKey'])->name('api-keys.regenerate');
             Route::post('/api-keys/{apiClient}/toggle', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'toggleApiClientStatus'])->name('api-keys.toggle');
             Route::delete('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'deleteApiClient'])->name('api-keys.delete');

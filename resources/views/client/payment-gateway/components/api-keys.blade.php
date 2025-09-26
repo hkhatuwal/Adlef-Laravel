@@ -246,6 +246,10 @@
 
 <!-- Create API Key Modal -->
 @include('client.payment-gateway.components.create-apikey-modal')
+
+<!-- Edit API Key Modal -->
+@include('client.payment-gateway.components.edit-apikey-modal')
+
 <meta name="api-keys-create-url" content="{{ route('client.payment-gateway.api-keys.store') }}">
 
 <script>

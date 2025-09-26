@@ -81,6 +81,23 @@ class PaymentGatewayController extends Controller
     }
 
     /**
+     * Get API key details for editing
+     */
+    public function getApiKey(ApiClient $apiClient)
+    {
+        $user = Auth::user();
+
+        if ($apiClient->user_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'client' => $apiClient
+        ]);
+    }
+
+    /**
      * Store a new API key
      */
     public function storeApiKey(Request $request)
@@ -137,6 +154,79 @@ class PaymentGatewayController extends Controller
             'success' => true,
             'message' => 'API key created successfully',
             'api_client' => $apiClient
+        ]);
+    }
+
+    /**
+     * Update API key
+     */
+    public function updateApiKey(Request $request, ApiClient $apiClient)
+    {
+        $user = Auth::user();
+
+        if ($apiClient->user_id !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // Debug: Log all request data
+        \Log::info('Update API Key Request Data:', [
+            'all' => $request->all(),
+            'input' => $request->input(),
+            'raw' => $request->getContent(),
+            'method' => $request->method(),
+            'files' => $request->allFiles(),
+            'headers' => $request->headers->all()
+        ]);
+
+
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'is_sandbox' => 'required|boolean',
+            'allowed_ips' => 'nullable|string',
+            'webhook_urls' => 'nullable|string',
+            'allowed_currencies' => 'nullable|array',
+            'allowed_currencies.*' => 'string|in:USD,EUR,GBP,CAD,AUD,JPY,CHF,CNY,INR',
+            'daily_limit' => 'nullable|numeric|min:0',
+            'monthly_limit' => 'nullable|numeric|min:0',
+        ]);
+
+        // Process allowed IPs
+        $allowedIps = [];
+        if (!empty($validatedData['allowed_ips'])) {
+            $allowedIps = array_filter(
+                array_map('trim', explode("\n", $validatedData['allowed_ips'])),
+                'strlen'
+            );
+        }
+
+        // Process webhook URLs
+        $webhookUrls = [];
+        if (!empty($validatedData['webhook_urls'])) {
+            $webhookUrls = array_filter(
+                array_map('trim', explode("\n", $validatedData['webhook_urls'])),
+                'strlen'
+            );
+        }
+
+        $apiClient->update([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'company_name' => $validatedData['company_name'],
+            'is_sandbox' => $validatedData['is_sandbox'],
+            'allowed_ips' => $allowedIps,
+            'webhook_urls' => $webhookUrls,
+            'allowed_currencies' => $validatedData['allowed_currencies'] ?? [],
+            'daily_limit' => $validatedData['daily_limit'],
+            'monthly_limit' => $validatedData['monthly_limit'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'API key updated successfully',
+            'api_client' => $apiClient->fresh()
         ]);
     }
 

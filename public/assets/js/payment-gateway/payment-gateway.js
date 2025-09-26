@@ -120,8 +120,130 @@ function submitCreateApiKey() {
 
 // Other API key management functions
 function editApiClient(clientId) {
-    // TODO: Implement edit functionality
-    toastr.info('Edit functionality coming soon');
+    // Get client data and populate the edit form
+    $.ajax({
+        url: `/payment-gateway/api-keys/${clientId}`,
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'Content-Type': 'application/json'
+        },
+        success: function (data) {
+            if (data.success) {
+                populateEditForm(data.client);
+                openEditApiKeyModal();
+            } else {
+                toastr.error('Error loading API key details: ' + (data.message || 'Unknown error'));
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+            toastr.error('Error loading API key details');
+        }
+    });
+}
+
+function populateEditForm(client) {
+    // Populate form fields
+    $('#edit_client_id').val(client.id);
+    $('#edit_name').val(client.name);
+    $('#edit_email').val(client.email || '');
+    $('#edit_company_name').val(client.company_name || '');
+    $('#edit_is_sandbox').val(client.is_sandbox ? '1' : '0');
+    $('#edit_daily_limit').val(client.daily_limit || '');
+    $('#edit_monthly_limit').val(client.monthly_limit || '');
+
+    // Populate IP addresses
+    if (client.allowed_ips && client.allowed_ips.length > 0) {
+        $('#edit_allowed_ips').val(client.allowed_ips.join('\n'));
+    } else {
+        $('#edit_allowed_ips').val('');
+    }
+
+    // Populate webhook URLs
+    if (client.webhook_urls && client.webhook_urls.length > 0) {
+        $('#edit_webhook_urls').val(client.webhook_urls.join('\n'));
+    } else {
+        $('#edit_webhook_urls').val('');
+    }
+
+    // Populate allowed currencies
+    $('.edit_currency_checkbox').prop('checked', false);
+    if (client.allowed_currencies && client.allowed_currencies.length > 0) {
+        client.allowed_currencies.forEach(currency => {
+            $(`.edit_currency_checkbox[value="${currency}"]`).prop('checked', true);
+        });
+    }
+}
+
+function openEditApiKeyModal() {
+    $('#editApiKeyModal').removeClass('hidden');
+}
+
+function closeEditApiKeyModal() {
+    $('#editApiKeyModal').addClass('hidden');
+    $('#editApiKeyForm')[0].reset();
+}
+
+function submitEditApiKey() {
+    const form = $('#editApiKeyForm')[0];
+    const formData = new FormData(form);
+    const clientId = $('#edit_client_id').val();
+
+    // Add _method field for Laravel to recognize as PUT
+    formData.append('_method', 'PUT');
+
+
+    // Show loading state
+    const $submitBtn = $('#editApiKeyModal button[onclick="submitEditApiKey()"]');
+    const originalHtml = $submitBtn.html();
+    $submitBtn.html('<i class="fa-solid fa-spinner fa-spin mr-2"></i>Updating...').prop('disabled', true);
+
+    // Get the route URL from a data attribute or meta tag
+    const editUrl = $('meta[name="api-keys-edit-url"]').attr('content').replace(':id', clientId);
+
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
+
+    $.ajax({
+        url: editUrl,
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (data) {
+
+            if (data.success) {
+                toastr.success('API key updated successfully!');
+                closeEditApiKeyModal();
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                console.log(data)
+                toastr.error('Error updating API key: ' + (data.message || 'Unknown error'));
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error);
+
+            // Try to get message from JSON response
+            let errorMessage = 'Error updating API key';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                // fallback for plain text responses
+                errorMessage = xhr.responseText;
+            }
+
+            toastr.error(errorMessage);
+        },
+        complete: function () {
+            $submitBtn.html(originalHtml).prop('disabled', false);
+        }
+    });
 }
 
 function regenerateApiKey(clientId) {
@@ -228,11 +350,15 @@ $(document).on('click', function (event) {
     if ($(event.target).is('#createApiKeyModal')) {
         closeCreateApiKeyModal();
     }
+    if ($(event.target).is('#editApiKeyModal')) {
+        closeEditApiKeyModal();
+    }
 });
 
 $(document).on('keydown', function (event) {
     if (event.key === 'Escape') {
         closeCreateApiKeyModal();
+        closeEditApiKeyModal();
     }
 });
 

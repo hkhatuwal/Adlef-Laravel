@@ -25,3 +25,4 @@ class PasswordReset extends Mailable
                     ->view('emails.password-reset');
     }
 }
+
