@@ -99,7 +99,9 @@ Content-Type: application/json</code></pre>
 --data-raw '{
      "amount": 10.00,
      "currency": "USD",
-     "description": "Test payment",
+     "description": "Shoes ",
+                              "customer_name": "Phillip",
+                              "customer_phone": "1234569294",
      "customer_email": "customer@example.com"
 }'</code></pre>
                 </div>

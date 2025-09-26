@@ -32,7 +32,7 @@ class PaymentController extends Controller
             'currency' => 'required|string|size:3',
             'description' => 'nullable|string|max:255',
             'customer_email' => 'required|email|max:255',
-            'customer_name' => 'nullable|string|max:255',
+            'customer_name' => 'required|string|max:255',
             'customer_phone' => 'required|string|max:20',
             'client_order_id' => 'nullable|string|max:100',
             'return_url' => 'nullable|url|max:500',

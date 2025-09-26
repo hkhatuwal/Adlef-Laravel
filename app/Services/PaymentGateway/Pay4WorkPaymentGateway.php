@@ -432,3 +432,4 @@ class Pay4WorkPaymentGateway extends AbstractPaymentGateway
         return $methods;
     }
 }
+

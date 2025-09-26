@@ -10,7 +10,7 @@
                     API Documentation
                 </h1>
                 <p class="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
-                    Integrate our powerful payment gateway API into your applications. 
+                    Integrate our powerful payment gateway API into your applications.
                     Accept payments seamlessly with our comprehensive REST API.
                 </p>
                 <div class="mt-8" data-aos="fade-up" data-aos-delay="200">
@@ -69,7 +69,7 @@
                             <p class="text-gray-600 mt-1">Everything you need to begin integrating our API</p>
                         </div>
                     </div>
-                    
+
                     <div class="grid md:grid-cols-3 gap-6">
                         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
                             <div class="bg-black w-12 h-12 rounded-lg flex items-center justify-center mb-4">
@@ -100,7 +100,7 @@
                             <div>
                                 <h4 class="font-semibold text-gray-800 mb-2">Quick Start Tip</h4>
                                 <p class="text-gray-700 text-sm">
-                                    All API endpoints use HTTPS and require authentication headers. 
+                                    All API endpoints use HTTPS and require authentication headers.
                                     Test your integration in sandbox mode before going live.
                                 </p>
                             </div>
@@ -121,11 +121,11 @@
                             <p class="text-gray-600 mt-1">Secure your API requests with proper authentication</p>
                         </div>
                     </div>
-                    
+
                     <p class="text-gray-700 mb-6 text-lg">
                         All API requests require authentication using your API key and secret key in the request headers:
                     </p>
-                    
+
                     <div class="bg-black rounded-xl p-6 relative">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-white font-medium flex items-center">
@@ -146,7 +146,7 @@ Content-Type: application/json</code></pre>
                                 <i class="fa-solid fa-key mr-2"></i>API Key
                             </h4>
                             <p class="text-gray-800 text-sm">
-                                Your public API key that identifies your application. 
+                                Your public API key that identifies your application.
                                 This key is safe to use in client-side code.
                             </p>
                         </div>
@@ -155,7 +155,7 @@ Content-Type: application/json</code></pre>
                                 <i class="fa-solid fa-lock mr-2"></i>Secret Key
                             </h4>
                             <p class="text-gray-800 text-sm">
-                                Your private secret key that authenticates your requests. 
+                                Your private secret key that authenticates your requests.
                                 Keep this key secure and never expose it in client-side code.
                             </p>
                         </div>
@@ -258,7 +258,10 @@ Content-Type: application/json</code></pre>
 --data-raw '{
      "amount": 10.00,
      "currency": "USD",
-     "description": "Test payment",
+      "description": "Shoes ",
+                              "customer_name": "Phillip",
+                              "customer_phone": "1234569294",
+     "customer_email": "customer@example.com"
      "customer_email": "customer@example.com"
 }'</code></pre>
                             </div>
@@ -386,9 +389,10 @@ Content-Type: application/json</code></pre>
         "status": "pending",
         "amount": "9.99",
         "currency": "USDT",
-        "description": "Test payment",
-        "customer_email": "customer@example.com",
-        "customer_name": null,
+      "description": "Shoes ",
+                              "customer_name": "Phillip",
+                              "customer_phone": "1234569294",
+     "customer_email": "customer@example.com"
         "payment_url": "{{ url('/payment/crypto/') }}/TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
         "gateway_transaction_id": "TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
         "client_order_id": null,
@@ -429,12 +433,12 @@ Content-Type: application/json</code></pre>
                             <h3 class="text-xl font-semibold text-gray-900 mb-4">Webhook Configuration</h3>
                             <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
                                 <p class="text-gray-800 mb-4">
-                                    Configure your webhook URLs in the API Keys section of your client dashboard. 
+                                    Configure your webhook URLs in the API Keys section of your client dashboard.
                                     You can add multiple webhook URLs to receive notifications at different endpoints.
                                 </p>
                                 <div class="bg-white p-4 rounded-lg border border-gray-200">
                                     <p class="text-gray-900 text-sm font-medium">
-                                        💡 <strong>Pro Tip:</strong> Test your webhook endpoints thoroughly before going live. 
+                                        💡 <strong>Pro Tip:</strong> Test your webhook endpoints thoroughly before going live.
                                         Use tools like ngrok for local development testing.
                                     </p>
                                 </div>
@@ -517,9 +521,10 @@ Content-Type: application/json</code></pre>
     "status": "completed",
     "amount": "9.99",
     "currency": "USDT",
-    "description": "Test payment",
-    "customer_email": "customer@example.com",
-    "customer_name": null,
+     "description": "Shoes ",
+                              "customer_name": "Phillip",
+                              "customer_phone": "1234569294",
+     "customer_email": "customer@example.com"
     "payment_url": "{{ url('/payment/crypto/') }}/TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
     "gateway_transaction_id": "TASkPTT2od6fmtKhGyexSJwzF4c3DVHdi6",
     "client_order_id": null,
@@ -572,7 +577,7 @@ Content-Type: application/json</code></pre>
                             <p class="text-gray-600 mt-1">HTTP status codes and their meanings</p>
                         </div>
                     </div>
-                    
+
                     <div class="grid lg:grid-cols-2 gap-8">
                         <!-- Success Codes -->
                         <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
@@ -676,12 +681,12 @@ Content-Type: application/json</code></pre>
 document.addEventListener('DOMContentLoaded', function() {
     // Copy to clipboard functionality
     const copyButtons = document.querySelectorAll('.copy-btn');
-    
+
     copyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const copyType = this.getAttribute('data-copy');
             let textToCopy = '';
-            
+
             switch(copyType) {
                 case 'headers':
                     textToCopy = document.getElementById('headers-example').textContent;
@@ -705,14 +710,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     textToCopy = document.getElementById('webhook-payload-example').textContent;
                     break;
             }
-            
+
             // Copy to clipboard
             navigator.clipboard.writeText(textToCopy).then(() => {
                 // Show success feedback
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="fa-solid fa-check mr-1"></i>Copied!';
                 this.classList.add('bg-black', 'text-white');
-                
+
                 setTimeout(() => {
                     this.innerHTML = originalText;
                     this.classList.remove('bg-black', 'text-white');
@@ -722,7 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-    
+
     // Smooth scrolling for navigation
     const navLinks = document.querySelectorAll('a[href^="#"]');
     navLinks.forEach(link => {
@@ -730,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
-            
+
             if (targetElement) {
                 const offsetTop = targetElement.offsetTop - 100; // Account for sticky nav
                 window.scrollTo({
@@ -740,12 +745,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // Active navigation highlighting
     window.addEventListener('scroll', function() {
         const sections = document.querySelectorAll('section[id]');
         const navPills = document.querySelectorAll('.nav-pill');
-        
+
         let currentSection = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop - 120;
@@ -754,18 +759,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentSection = section.getAttribute('id');
             }
         });
-        
+
         navPills.forEach(pill => {
             pill.classList.remove('text-black', 'bg-gray-100');
             pill.classList.add('text-gray-600');
-            
+
             if (pill.getAttribute('href') === '#' + currentSection) {
                 pill.classList.remove('text-gray-600');
                 pill.classList.add('text-black', 'bg-gray-100');
             }
         });
     });
-    
+
     // Initialize AOS
     if (typeof AOS !== 'undefined') {
         AOS.init({
