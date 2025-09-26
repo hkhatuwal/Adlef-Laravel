@@ -20,7 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo('login');
-        
+        $middleware->validateCsrfTokens(except: [
+            'payment/failed' ,
+            'payment/success'
+        ]);
+
         // Register API key middleware
         $middleware->alias([
             'api_key' => \App\Http\Middleware\ApiKeyMiddleware::class,

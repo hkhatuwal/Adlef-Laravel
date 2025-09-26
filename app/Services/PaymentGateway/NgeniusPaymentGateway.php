@@ -134,6 +134,7 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
                 'Accept' => 'application/vnd.ni-payment.v2+json',
             ]
         );
+        dd($response);
 
         if ($response === null) {
             return $this->createErrorResponse('Failed to create N-Genius order', 'NGENIUS_API_ERROR');
@@ -333,7 +334,7 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
         $paymentMethodData = null;
         if (isset($webhookData['order']['_embedded']['payment'][0]['paymentMethod'])) {
             $paymentMethod = $webhookData['order']['_embedded']['payment'][0]['paymentMethod'];
-            
+
             $paymentMethodData = [
                 'payment_method_type' => PaymentTransaction::PAYMENT_METHOD_CARD,
                 'card_brand' => $paymentMethod['name'] ?? null,

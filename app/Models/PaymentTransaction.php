@@ -28,6 +28,7 @@ class PaymentTransaction extends Model
     const PAYMENT_METHOD_WALLET = 'wallet';
     const PAYMENT_METHOD_CRYPTO = 'crypto';
     const PAYMENT_METHOD_MOBILE = 'mobile_payment';
+    const PAYMENT_METHOD_UPI = 'upi';
     const PAYMENT_METHOD_ALTERNATIVE = 'alternative';
 
     // Card Types

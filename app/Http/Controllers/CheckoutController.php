@@ -63,16 +63,15 @@ class CheckoutController extends Controller
 
         // Validate payment method selection
         $request->validate([
-            'payment_method' => 'required|in:credit_card,ngenius_card,crypto'
+            'payment_method' => 'required|in:card,ngenius_card,crypto'
         ]);
 
         $paymentMethod = $request->payment_method;
 
         // Update transaction with selected gateway
-        $gatewayName = $this->mapPaymentMethodToGateway($paymentMethod);
+//        $gatewayName = $this->mapPaymentMethodToGateway($paymentMethod);
 
         $transaction->update([
-            'gateway_name' => $gatewayName,
             'status' => PaymentTransaction::STATUS_PENDING,
             'stage' => PaymentTransaction::STAGE_GATEWAY_PROCESSING,
             'payment_method' => $paymentMethod,
@@ -80,7 +79,7 @@ class CheckoutController extends Controller
 
         // Generate payment URL based on selected method
         try {
-            $paymentUrl = $this->generatePaymentUrl($transaction, $gatewayName);
+            $paymentUrl = $this->generatePaymentUrl($transaction, $paymentMethod);
             $transaction->update(['payment_url' => $paymentUrl]);
 
             // Redirect to appropriate payment gateway
@@ -127,7 +126,6 @@ class CheckoutController extends Controller
     {
         // If gateway is a high-level category (card/crypto), choose concrete provider via limits
         $providersByCategory = config('constants.internal_payment_providers');
-        $selectedGateway = $gatewayName;
         if (array_key_exists($gatewayName, $providersByCategory)) {
             $selectedGateway = $this->clientPaymentService->selectGatewayForCategory(
                 $transaction->apiClient,

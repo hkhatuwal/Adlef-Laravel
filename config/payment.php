@@ -84,6 +84,25 @@ return [
                 'diners_club'
             ],
         ],
+        'pay4work' => [
+            'api_key' => env('PAY4WORK_API_KEY'),
+            'api_secret' => env('PAY4WORK_API_SECRET'),
+            'sandbox' => env('PAY4WORK_SANDBOX', true),
+            'webhook_secret' => env('PAY4WORK_WEBHOOK_SECRET'),
+            'supported_payment_methods' => [
+                'card',
+                'credit_card',
+                'debit_card',
+                'upi',
+                'net_banking',
+                'wallet',
+                'visa',
+                'mastercard',
+                'american_express',
+                'diners_club',
+                'rupay'
+            ],
+        ],
         'trongrid' => [
             'secret_key' => env('TRON_NODE_SECRET'),
             'sandbox' => env('TRON_NODE_SANDBOX', false),
@@ -179,6 +198,13 @@ return [
             'authorization',
             'capture'
         ],
+        'pay4work' => [
+            'refunds',
+            'webhooks',
+            'multi_currency',
+            'direct_integration',
+            'hosted_payment'
+        ],
         'stripe' => [
             'refunds',
             'webhooks',
@@ -227,6 +253,9 @@ return [
         'razorpay' => [
             'INR'
         ],
+        'pay4work' => [
+            'AED', 'INR', 'USD'
+        ],
     ],
 
     /*
@@ -254,6 +283,10 @@ return [
             'min_amount' => 1.00, // ₹1 minimum
             'max_amount' => 1500000.00, // ₹15 lakh maximum
         ],
+        'pay4work' => [
+            'min_amount' => 0.01,
+            'max_amount' => 100000.00,
+        ],
     ],
 
     /*
@@ -268,6 +301,7 @@ return [
         'routes' => [
             'payop' => '/api/webhooks/payop',
             'ngenius' => '/api/webhooks/ngenius',
+            'pay4work' => '/api/webhooks/pay4work',
             'stripe' => '/api/webhooks/stripe',
             'paypal' => '/api/webhooks/paypal',
             'razorpay' => '/api/webhooks/razorpay',

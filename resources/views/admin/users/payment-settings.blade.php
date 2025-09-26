@@ -232,7 +232,6 @@
                                         </span>
                                     </div>
 
-                                    @if(in_array($provider, $paymentSettings->getAllowedProvidersForCategory($category)))
                                     <div class="space-y-4">
                                         <!-- Current Usage Stats -->
                                         @if(isset($providerUsageStats[$provider]))
@@ -297,11 +296,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @else
-                                    <div class="text-center py-4">
-                                        <p class="text-sm text-slate-500 dark:text-slate-400">Enable this provider to set limits</p>
-                                    </div>
-                                    @endif
+
                                 </div>
                                 @endforeach
                             </div>

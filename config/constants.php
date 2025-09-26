@@ -201,7 +201,8 @@ return [
         'card' => [
         "ngenius",
         "payop",
-        "paydo"
+        "paydo",
+        "pay4work"
     ],
         "crypto" => [
             "trongrid"

@@ -60,7 +60,7 @@
         <div class="max-w-lg mx-auto" data-aos="fade-up" data-aos-duration="600">
             <!-- Logo & Header -->
             <div class="text-center mb-6">
-             
+
                 <h1 class="text-2xl font-bold text-gray-900 mb-1">Complete Payment</h1>
                 <p class="text-gray-600 text-sm">Secure checkout for your transaction</p>
             </div>
@@ -116,7 +116,7 @@
                     <div class="space-y-3">
                         <!-- Credit/Debit Card Option -->
                         <div class="payment-option-wrapper">
-                            <input type="radio" name="payment_method" value="credit_card" id="credit_card" class="sr-only payment-radio" required>
+                            <input type="radio" name="payment_method" value="card" id="credit_card" class="sr-only payment-radio" required>
                             <label for="credit_card" class="block">
                                                                  <div class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
                                     <div class="flex items-center justify-between">

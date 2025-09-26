@@ -30,7 +30,7 @@ Route::post('/transfers/verify', [AssetTransferVerificationController::class, 'v
 Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
     // New payment generation endpoint
     Route::post('/generate', [\App\Http\Controllers\Api\PaymentController::class, 'generatePaymentLink']);
-    Route::get('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
+    Route::any('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
 
     // Payop routes
 //    Route::prefix('payop')->group(function () {
@@ -46,7 +46,7 @@ Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
 });
 
 // Public payment status check (no authentication required for checkout page)
-Route::get('/payment/status/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'checkPaymentStatus']);
+Route::any('/payment/status/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'checkPaymentStatus']);
 
 // Webhook routes (no authentication required as they come from payment gateways)
 Route::prefix('webhooks')->group(function () {
@@ -54,4 +54,5 @@ Route::prefix('webhooks')->group(function () {
     Route::any('/paydo', [\App\Http\Controllers\Api\PaymentGateway\PaydoController::class, 'handleWebhook']);
     Route::any('/trongrid', [\App\Http\Controllers\Api\PaymentGateway\TronGridController::class, 'handleWebhook']);
     Route::any('/ngenius', [\App\Http\Controllers\Api\PaymentGateway\NgeniusController::class, 'handleWebhook']);
+    Route::any('/pay4work', [\App\Http\Controllers\Api\PaymentGateway\Pay4WorkController::class, 'handleWebhook']);
 });
