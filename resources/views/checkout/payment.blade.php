@@ -126,7 +126,30 @@
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
-                                                <p class="text-gray-500 text-xs">VISA/MASTER/JCB/DINER/DISCOVER</p>
+                                                <p class="text-gray-500 text-xs">VISA/MASTER</p>
+                                            </div>
+                                        </div>
+                                        <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                            <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <!-- Credit/Debit Others -->
+
+                        <div class="payment-option-wrapper">
+                            <input type="radio" name="payment_method" value="card_others" id="card_others" class="sr-only payment-radio" required>
+                            <label for="card_others" class="block">
+                                                                 <div class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-credit-card text-gray-600"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
+                                                <p class="text-gray-500 text-xs">JCB/DINER/DISCOVER</p>
                                             </div>
                                         </div>
                                         <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">

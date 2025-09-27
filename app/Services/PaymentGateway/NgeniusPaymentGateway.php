@@ -4,7 +4,9 @@ namespace App\Services\PaymentGateway;
 
 use App\Contracts\PaymentResponse;
 use App\Contracts\WebhookData;
+use App\Models\Currency;
 use App\Models\PaymentTransaction;
+use App\Utils\CurrencyConverter;
 use Dflydev\DotAccessData\Data;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -13,6 +15,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Str;
 
 class NgeniusPaymentGateway extends AbstractPaymentGateway
+
 {
     protected array $supportedFeatures = [
         'refunds',
@@ -25,11 +28,25 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
     protected ?string $accessToken = null;
     protected int $tokenExpiresAt = 0;
 
+
+    private CurrencyConverter $currencyConverter;
+
+    public function __construct(array $config)
+    {
+        parent::__construct($config);
+
+        $this->currencyConverter = new CurrencyConverter();
+    }
+
     /**
      * Get provider name
      *
      * @return string
      */
+
+
+
+
     public function getProviderName(): string
     {
         return 'ngenius';
@@ -107,12 +124,17 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
         // Get access token
         $accessToken = $this->getAccessToken();
 
+        $amount=$paymentData['amount'];
+
+        if ($paymentData['currency']=="USD"){
+            $amount=$this->getAedAmount($amount);
+        }
         // Prepare order data
         $orderData = [
             "action"=>"PURCHASE",
             'amount' => [
-                'currencyCode' => strtoupper($paymentData['currency'] ?? 'USD'),
-                'value' => (int)($paymentData['amount'] * 100), // Convert to minor units (cents)
+                'currencyCode' => strtoupper( 'AED'),
+                'value' => (int)($amount*100), // Convert to minor units (cents)
             ],
         ];
 
@@ -134,7 +156,6 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
                 'Accept' => 'application/vnd.ni-payment.v2+json',
             ]
         );
-        dd($response);
 
         if ($response === null) {
             return $this->createErrorResponse('Failed to create N-Genius order', 'NGENIUS_API_ERROR');
@@ -163,6 +184,14 @@ class NgeniusPaymentGateway extends AbstractPaymentGateway
             'message' => 'N-Genius order created successfully',
             'raw_response' => $response
         ]);
+    }
+
+
+    private function getAedAmount($usdAmount)
+    {
+
+        return $usdAmount *  3.6725;
+
     }
 
     /**

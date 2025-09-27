@@ -199,11 +199,14 @@ return [
     ],
     'internal_payment_providers' => [
         'card' => [
-        "ngenius",
-        "payop",
-        "paydo",
-        "pay4work"
-    ],
+//            "ngenius",
+            "payop",
+            "paydo",
+            "pay4work"
+        ],
+        'card_others' => [
+            "ngenius",
+        ],
         "crypto" => [
             "trongrid"
         ]

@@ -40,6 +40,8 @@ class PaymentController extends Controller
             'metadata' => 'nullable|array',
         ]);
 
+
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,

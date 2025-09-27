@@ -63,7 +63,7 @@ class CheckoutController extends Controller
 
         // Validate payment method selection
         $request->validate([
-            'payment_method' => 'required|in:card,ngenius_card,crypto'
+            'payment_method' => 'required|in:card,card_others,ngenius_card,crypto'
         ]);
 
         $paymentMethod = $request->payment_method;
