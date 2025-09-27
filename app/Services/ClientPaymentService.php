@@ -55,17 +55,7 @@ class ClientPaymentService
             return null;
         }
 
-        if ($category=="card_others"){
-            if (!$paymentSettings->isProviderAllowed('ngenius')) {
-                return null;
-            }
-            $limitCheck=$this->checkUserPaymentLimits($client,$amount, 'ngenius');
-            if ($limitCheck['success']) {
-                return 'ngenius';
-            }
-            return null;
-        }
-        // Try providers in configured order and return the first that passes limits
+
         foreach ($providers as $provider) {
             if (!$paymentSettings->isProviderAllowed($provider)) {
                 continue;

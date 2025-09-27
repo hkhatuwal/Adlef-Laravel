@@ -339,6 +339,7 @@ class UserController extends Controller
             'max_api_clients' => 'required|integer|min:1|max:100',
             'allowed_payment_providers' => 'required|array',
             'allowed_payment_providers.card' => 'array',
+            'allowed_payment_providers.card_others' => 'array',
             'allowed_payment_providers.crypto' => 'array',
             'is_active' => 'boolean',
             'fee_type' => 'required|in:percentage,fixed',
@@ -348,7 +349,7 @@ class UserController extends Controller
 
         // Add validation rules for each provider's limits
         foreach ($allProviders as $provider) {
-            if (in_array($provider,$request->allowed_payment_providers['card']) || in_array($provider,$request->allowed_payment_providers['crypto'] )) {
+            if (in_array($provider,$request->allowed_payment_providers['card']) || in_array($provider,$request->allowed_payment_providers['card_others']) || in_array($provider,$request->allowed_payment_providers['crypto'] )) {
                 $validationRules["provider_limits.{$provider}.daily_limit"] = 'required|numeric|min:0|max:999999.99';
                 $validationRules["provider_limits.{$provider}.monthly_limit"] = 'required|numeric|min:0|max:999999.99';
             }
