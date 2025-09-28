@@ -122,7 +122,7 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-credit-card text-gray-600"></i>
+                                                <img src="{{asset('assets/images/visa-mastercard.jpg')}}" alt="">
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
@@ -145,7 +145,7 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-credit-card text-gray-600"></i>
+                                                <img src="{{asset('assets/images/jcb-discover-diner.png')}}" alt="">
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
