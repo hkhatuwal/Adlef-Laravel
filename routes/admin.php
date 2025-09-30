@@ -39,6 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // User Management Routes
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::post('users/{user}/login-as', [UserController::class, 'loginAsUser'])->name('users.login-as');
         Route::get('users/{user}/accounts', [UserController::class, 'accounts'])->name('users.accounts');
         Route::get('users/{user}/assets', [UserController::class, 'assets'])->name('users.assets');
         Route::get('users/{user}/commissions', [UserController::class, 'commissions'])->name('users.commissions');

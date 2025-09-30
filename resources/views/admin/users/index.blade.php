@@ -90,9 +90,19 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end space-x-3">
                                     <a href="{{ route('admin.users.show', $user) }}" 
-                                       class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                       class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                                       title="View User">
                                         <i class="material-symbols-outlined">visibility</i>
                                     </a>
+                                    <form action="{{ route('admin.users.login-as', $user) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" 
+                                                class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300"
+                                                title="Login as User"
+                                                onclick="return confirm('Are you sure you want to login as {{ $user->name }}?')">
+                                            <i class="material-symbols-outlined">login</i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

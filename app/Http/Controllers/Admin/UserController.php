@@ -395,4 +395,16 @@ class UserController extends Controller
             ->route('admin.users.payment-settings', $user)
             ->with('success', 'Payment settings updated successfully.');
     }
+
+    public function loginAsUser(User $user)
+    {
+        // Store admin user ID in session for later restoration
+        session(['admin_user_id' => auth()->id()]);
+        
+        // Log in as the target user
+        auth()->login($user);
+        
+        return redirect()->route('client.dashboard')
+            ->with('success', 'You are now logged in as ' . $user->name);
+    }
 }
