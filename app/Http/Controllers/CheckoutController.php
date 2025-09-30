@@ -9,6 +9,7 @@ use App\Models\CryptoPaymentOrder;
 use App\Services\ClientPaymentService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
@@ -86,6 +87,8 @@ class CheckoutController extends Controller
             // Redirect to appropriate payment gateway
             return redirect($paymentUrl);
         } catch (\Exception $e) {
+            Log::error("Transaction ".$transaction->transaction_id." error: ".$e->getMessage());
+            Log::error($e->getMessage());
             // Return error view instead of JSON
             return $this->renderErrorPage(
                 title: 'Payment Processing Error',

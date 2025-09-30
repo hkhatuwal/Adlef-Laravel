@@ -46,7 +46,6 @@ class PollTronTransactions implements ShouldQueue
             $this->pollTronTransferInTransactions();
             $this->pollTrongridPaymentGatewayTransactions();
         } catch (\Exception $e) {
-            Log::error("Error polling TRON transactions: " . $e->getMessage());
         }
     }
 
@@ -64,7 +63,6 @@ class PollTronTransactions implements ShouldQueue
                 $lastPollTimestamp = Carbon::now()->subDays(5)->timestamp * 1000; // Convert to milliseconds
             }
 
-            Log::info("Polling TRON transactions from timestamp: " . $lastPollTimestamp);
 
             // Get all wallet addresses to poll
             $walletAddresses = $this->tronService->getWalletAddresses();
@@ -73,7 +71,7 @@ class PollTronTransactions implements ShouldQueue
 
             // Poll each wallet address
             foreach ($walletAddresses as $walletAddress) {
-                Log::info("Polling transactions for wallet: " . $walletAddress);
+//                Log::info("Polling transactions for wallet: " . $walletAddress);
 
                 $response = $this->tronService->fetchTransactions($walletAddress, $lastPollTimestamp);
 
@@ -82,25 +80,25 @@ class PollTronTransactions implements ShouldQueue
                     $transactionCount = count($transactions);
                     $totalTransactionsFound += $transactionCount;
 
-                    Log::info("Found " . $transactionCount . " transactions for wallet " . $walletAddress);
+//                    Log::info("Found " . $transactionCount . " transactions for wallet " . $walletAddress);
 
                     // Loop through transactions
                     foreach ($transactions as $transaction) {
                         try {
                             $this->processTransaction($transaction);
                         } catch (Throwable $e) {
-                            Log::error('Failed to process transaction: ' . $e->getMessage());
+//                            Log::error('Failed to process transaction: ' . $e->getMessage());
                         }
                     }
                 } else {
-                    Log::error('Failed to fetch transactions from TRON API for wallet: ' . $walletAddress);
+//                    Log::error('Failed to fetch transactions from TRON API for wallet: ' . $walletAddress);
                 }
             }
 
             // Update the last poll timestamp to current time after processing all wallets
             Setting::set(self::LAST_POLL_SETTING_KEY, $currentTimestamp);
         } catch (\Exception $e) {
-            Log::error('Error in pollTronTransactions: ' . $e->getMessage());
+//            Log::error('Error in pollTronTransactions: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -148,7 +146,7 @@ class PollTronTransactions implements ShouldQueue
 
             // Poll each unique wallet address
             foreach ($walletAddresses as $walletAddress) {
-                Log::info("Polling wallet: " . $walletAddress);
+//                Log::info("Polling wallet: " . $walletAddress);
 
                 $response = $this->tronService->fetchTransactions($walletAddress, $lastPollTimestamp);
 
@@ -165,19 +163,19 @@ class PollTronTransactions implements ShouldQueue
                             $this->processCryptoOrderTransaction($cryptoOrders, $transaction, $walletAddress);
 
                         } catch (Throwable $e) {
-                            Log::error('Failed to process transaction: ' . $e->getMessage());
-                            Log::error('Transaction data: ' . json_encode($transaction));
+//                            Log::error('Failed to process transaction: ' . $e->getMessage());
+//                            Log::error('Transaction data: ' . json_encode($transaction));
                         }
                     }
                 } else {
-                    Log::error('Failed to fetch transactions from TRON API for wallet: ' . $walletAddress);
+//                    Log::error('Failed to fetch transactions from TRON API for wallet: ' . $walletAddress);
                 }
             }
 
             // Update the last poll timestamp to current time after processing all wallets
             Setting::set(self::LAST_POLL_PAYMENT_GATEWAY_SETTING_KEY, $currentTimestamp);
         } catch (\Exception $e) {
-            Log::error('Error in pollTrongridPaymentGatewayTransactions: ' . $e->getMessage());
+//            Log::error('Error in pollTrongridPaymentGatewayTransactions: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -189,7 +187,7 @@ class PollTronTransactions implements ShouldQueue
      */
     private function processTransaction(array $transaction): void
     {
-        Log::info("Processing transaction: " . $transaction['transaction_id']);
+//        Log::info("Processing transaction: " . $transaction['transaction_id']);
 
         $transfers = AssetTransfer::query()->where('from_account_type', CryptoWallet::class);
 
@@ -205,7 +203,7 @@ class PollTronTransactions implements ShouldQueue
 
 
         if (empty($transfers)) {
-            Log::info("No transfers found for transaction: " . $transaction['transaction_id']);
+//            Log::info("No transfers found for transaction: " . $transaction['transaction_id']);
             return;
         }
 
@@ -215,14 +213,14 @@ class PollTronTransactions implements ShouldQueue
 
             $this->verificationService->verifyTransferDetails($transfer, $amount, $transaction['token_info']['symbol'], .1);
             $this->verificationService->markTransferVerifiedAndNotifyUser($transfer);
-            Log::info("Transaction processed: " . json_encode([
-                    'id' => $transaction['transaction_id'],
-                    'symbol' => $transaction['token_info']['symbol'],
-                    'from' => $transaction['from'],
-                    'to' => $transaction['to'],
-                    'value' => $transaction['value'],
-                    'timestamp' => $transaction['block_timestamp']
-                ]));
+//            Log::info("Transaction processed: " . json_encode([
+//                    'id' => $transaction['transaction_id'],
+//                    'symbol' => $transaction['token_info']['symbol'],
+//                    'from' => $transaction['from'],
+//                    'to' => $transaction['to'],
+//                    'value' => $transaction['value'],
+//                    'timestamp' => $transaction['block_timestamp']
+//                ]));
             break;
         }
 
@@ -238,7 +236,7 @@ class PollTronTransactions implements ShouldQueue
         $decimals = $transaction['token_info']['decimals'];
         $transactionAmount = $transaction['value'] / pow(10, $decimals);
 
-        Log::info("Processing transaction amount: " . $transactionAmount . " for wallet: " . $walletAddress);
+//        Log::info("Processing transaction amount: " . $transactionAmount . " for wallet: " . $walletAddress);
 
         // Find matching crypto order by fingerprinted amount and wallet address
         $matchingOrder = $cryptoOrders->first(function ($order) use ($transactionAmount, $walletAddress) {
@@ -247,11 +245,11 @@ class PollTronTransactions implements ShouldQueue
         });
 
         if ($matchingOrder) {
-            Log::info("Found matching crypto order: " . $matchingOrder->order_id . " for amount: " . $transactionAmount);
+//            Log::info("Found matching crypto order: " . $matchingOrder->order_id . " for amount: " . $transactionAmount);
 
             // Check if already processed to avoid duplicate processing
             if ($matchingOrder->status !== CryptoPaymentOrder::STATUS_PENDING) {
-                Log::info("Order " . $matchingOrder->order_id . " already processed, skipping");
+//                Log::info("Order " . $matchingOrder->order_id . " already processed, skipping");
                 return;
             }
 
@@ -272,20 +270,20 @@ class PollTronTransactions implements ShouldQueue
 
 
 
-            Log::info("Crypto order processed successfully: " . json_encode([
-                'order_id' => $matchingOrder->order_id,
-                'transaction_id' => $transaction['transaction_id'],
-                'fingerprint_amount' => $matchingOrder->fingerprint_amount,
-                'actual_amount' => $transactionAmount,
-                'fingerprint_code' => $matchingOrder->fingerprint_code,
-                'wallet_address' => $walletAddress,
-            ]));
+//            Log::info("Crypto order processed successfully: " . json_encode([
+//                'order_id' => $matchingOrder->order_id,
+//                'transaction_id' => $transaction['transaction_id'],
+//                'fingerprint_amount' => $matchingOrder->fingerprint_amount,
+//                'actual_amount' => $transactionAmount,
+//                'fingerprint_code' => $matchingOrder->fingerprint_code,
+//                'wallet_address' => $walletAddress,
+//            ]));
         } else {
-            Log::info("No matching crypto order found for amount: " . $transactionAmount . " and wallet: " . $walletAddress);
+//            Log::info("No matching crypto order found for amount: " . $transactionAmount . " and wallet: " . $walletAddress);
 
             // Log all pending amounts for debugging
             $pendingAmounts = $cryptoOrders->where('wallet_address', $walletAddress)->pluck('fingerprint_amount')->toArray();
-            Log::info("Pending fingerprint amounts for this wallet: " . json_encode($pendingAmounts));
+//            Log::info("Pending fingerprint amounts for this wallet: " . json_encode($pendingAmounts));
         }
     }
 
@@ -302,7 +300,7 @@ class PollTronTransactions implements ShouldQueue
             'block_timestamp' => $transaction['block_timestamp'],
             'processed_at' => Carbon::now()->toISOString(),
         ]);
-        Log::info("Transaction processed: " . json_encode([$res->body()]));
+//        Log::info("Transaction processed: " . json_encode([$res->body()]));
 
     }
 
@@ -319,12 +317,12 @@ class PollTronTransactions implements ShouldQueue
             $paymentTransaction->update([
                 'status' => PaymentTransaction::STATUS_COMPLETED,
             ]);
-            Log::info("Legacy payment transaction processed: " . json_encode([
-                "id" => $paymentTransaction->id,
-                "amount" => $amount,
-            ]));
+//            Log::info("Legacy payment transaction processed: " . json_encode([
+//                "id" => $paymentTransaction->id,
+//                "amount" => $amount,
+//            ]));
         } else {
-            Log::debug("Legacy transaction amount mismatch - Expected: " . $paymentTransaction->amount . ", Got: " . $amount);
+//            Log::debug("Legacy transaction amount mismatch - Expected: " . $paymentTransaction->amount . ", Got: " . $amount);
         }
     }
 
