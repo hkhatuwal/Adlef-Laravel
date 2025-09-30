@@ -56,161 +56,195 @@
     </style>
 </head>
 <body class="antialiased bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen poppins-medium">
-    <div class="container mx-auto px-4 py-6">
-        <div class="max-w-lg mx-auto" data-aos="fade-up" data-aos-duration="600">
-            <!-- Logo & Header -->
-            <div class="text-center mb-6">
+<div class="container mx-auto px-4 py-6">
+    <div class="max-w-lg mx-auto" data-aos="fade-up" data-aos-duration="600">
+        <!-- Logo & Header -->
+        <div class="text-center mb-6">
 
-                <h1 class="text-2xl font-bold text-gray-900 mb-1">Complete Payment</h1>
-                <p class="text-gray-600 text-sm">Secure checkout for your transaction</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">Complete Payment</h1>
+            <p class="text-gray-600 text-sm">Secure checkout for your transaction</p>
+        </div>
+
+        <!-- Payment Details Card -->
+        <div class="payment-card rounded-xl shadow-lg border border-gray-200/50 p-5 mb-5" data-aos="fade-up"
+             data-aos-delay="100">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Payment Details</h2>
+                <div class="flex items-center text-gray-600 text-sm">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    <span>Secure</span>
+                </div>
             </div>
 
-            <!-- Payment Details Card -->
-            <div class="payment-card rounded-xl shadow-lg border border-gray-200/50 p-5 mb-5" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Payment Details</h2>
-                    <div class="flex items-center text-gray-600 text-sm">
-                        <i class="fas fa-shield-alt mr-1"></i>
-                        <span>Secure</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600 text-sm">Amount</span>
-                        <span class="text-xl font-bold amount-highlight">
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">Amount</span>
+                    <span class="text-xl font-bold amount-highlight">
                             {{ number_format($transaction->amount, 2) }} {{ strtoupper($transaction->currency) }}
                         </span>
-                    </div>
+                </div>
 
-                    @if($transaction->description)
+                @if($transaction->description)
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 text-sm">Description</span>
-                        <span class="text-gray-900 text-sm font-medium">{{ Str::limit($transaction->description, 30) }}</span>
+                        <span
+                            class="text-gray-900 text-sm font-medium">{{ Str::limit($transaction->description, 30) }}</span>
                     </div>
-                    @endif
+                @endif
 
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600 text-sm">Transaction ID</span>
-                        <span class="text-gray-900 font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">Transaction ID</span>
+                    <span class="text-gray-900 font-mono text-xs bg-gray-100 px-2 py-1 rounded">
                             {{ Str::limit($transaction->transaction_id, 20) }}
                         </span>
-                    </div>
+                </div>
 
-                    @if($transaction->customer_email)
+                @if($transaction->customer_email)
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 text-sm">Email</span>
                         <span class="text-gray-900 text-sm">{{ $transaction->customer_email }}</span>
                     </div>
-                    @endif
-                </div>
+                @endif
             </div>
+        </div>
 
-            <!-- Payment Methods -->
-            <div class="payment-card rounded-xl shadow-lg border border-gray-200/50 p-5 mb-5" data-aos="fade-up" data-aos-delay="200">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h2>
+        <!-- Payment Methods -->
+        <div class="payment-card rounded-xl shadow-lg border border-gray-200/50 p-5 mb-5" data-aos="fade-up"
+             data-aos-delay="200">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h2>
 
-                <form action="{{ route('payment.checkout.select', $transaction->checkout_session_id) }}" method="POST" id="paymentForm">
-                    @csrf
+            <form action="{{ route('payment.checkout.select', $transaction->checkout_session_id) }}" method="POST"
+                  id="paymentForm">
+                @csrf
 
-                    <div class="space-y-3">
-                        <!-- Credit/Debit Card Option -->
+                <div class="space-y-3">
+                    <!-- Credit/Debit Card Option -->
+
+                    @if(!empty($allowedProviders) && !empty($allowedProviders['card']))
                         <div class="payment-option-wrapper">
-                            <input type="radio" name="payment_method" value="card" id="credit_card" class="sr-only payment-radio" required>
+                            <input type="radio" name="payment_method" value="card" id="credit_card"
+                                   class="sr-only payment-radio" required>
                             <label for="credit_card" class="block">
-                                                                 <div class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+                                <div
+                                    class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                <img src="{{asset('assets/images/visa-mastercard.jpg')}}" alt="">
+                                                <i class="fas fa-credit-card text-gray-600"></i>
                                             </div>
                                             <div>
                                                 <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
-                                                <p class="text-gray-500 text-xs">VISA/MASTER</p>
+                                                <p class="text-gray-500 text-xs">
+                                                    @foreach(config('constants.internal_payment_providers.card')[$allowedProviders['card'][0]]['supported_cards'] as $supportedCardType)
+                                                       <span>
+                                                            {{strtoupper($supportedCardType)}}@if(!$loop->last),@endif
+                                                       </span>
+                                                    @endforeach
+                                                </p>
                                             </div>
                                         </div>
-                                        <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                        <div
+                                            class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
                                             <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
                                         </div>
                                     </div>
                                 </div>
                             </label>
                         </div>
-                        <!-- Credit/Debit Others -->
+                    @endif
 
-                        <div class="payment-option-wrapper">
-                            <input type="radio" name="payment_method" value="card_others" id="card_others" class="sr-only payment-radio" required>
-                            <label for="card_others" class="block">
-                                                                 <div class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                <img src="{{asset('assets/images/jcb-discover-diner.png')}}" alt="">
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
-                                                <p class="text-gray-500 text-xs">JCB/DINER/DISCOVER</p>
-                                            </div>
-                                        </div>
-                                        <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
-                                            <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
+                    <!-- Credit/Debit Others -->
 
-                        <!-- Crypto Option -->
-                        <div class="payment-option-wrapper">
-                            <input type="radio" name="payment_method" value="crypto" id="crypto" class="sr-only payment-radio" required>
-                            <label for="crypto" class="block">
-                                                                 <div class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                <i class="fab fa-bitcoin text-gray-600"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-semibold text-gray-900 text-sm">Cryptocurrency</h3>
-                                                <p class="text-gray-500 text-xs">Bitcoin, Ethereum, USDT</p>
-                                            </div>
+                    @if(!empty($allowedProviders) && !empty($allowedProviders['card_others']))
+                    <div class="payment-option-wrapper">
+                        <input type="radio" name="payment_method" value="card_others" id="card_others"
+                               class="sr-only payment-radio" required>
+                        <label for="card_others" class="block">
+                            <div
+                                class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-credit-card text-gray-600"></i>
                                         </div>
-                                        <div class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
-                                            <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900 text-sm">Credit/Debit Card</h3>
+                                            <p class="text-gray-500 text-xs">
+                                                @foreach(config('constants.internal_payment_providers.card_others')[$allowedProviders['card_others'][0]]['supported_cards'] as $supportedCardType)
+                                                    <span>
+                                                            {{strtoupper($supportedCardType)}}@if(!$loop->last),@endif
+                                                       </span>
+                                                @endforeach
+                                            </p>
                                         </div>
                                     </div>
+                                    <div
+                                        class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                        <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
+                                    </div>
                                 </div>
-                            </label>
-                        </div>
+                            </div>
+                        </label>
                     </div>
+                    @endif
 
-                    <!-- Submit Button -->
-                    <div class="mt-6">
-                        <button type="submit" class="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md" id="payButton" disabled>
-                            <i class="fas fa-lock mr-2"></i>
-                            Continue to Payment
-                        </button>
+                    <!-- Crypto Option -->
+                    <div class="payment-option-wrapper">
+                        <input type="radio" name="payment_method" value="crypto" id="crypto"
+                               class="sr-only payment-radio" required>
+                        <label for="crypto" class="block">
+                            <div
+                                class="payment-option border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <i class="fab fa-bitcoin text-gray-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-gray-900 text-sm">Cryptocurrency</h3>
+                                            <p class="text-gray-500 text-xs">Bitcoin, Ethereum, USDT</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="radio-indicator w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                        <div class="indicator-dot w-2.5 h-2.5 rounded-full hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
                     </div>
-                </form>
-            </div>
-
-            <!-- Security Footer -->
-            <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-                <div class="inline-flex items-center space-x-2 text-gray-500 text-xs bg-white rounded-full px-4 py-2 shadow-sm">
-                    <i class="fas fa-shield-alt text-gray-600"></i>
-                    <span>SSL encrypted • PCI compliant • 100% secure</span>
                 </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                            class="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                            id="payButton" disabled>
+                        <i class="fas fa-lock mr-2"></i>
+                        Continue to Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Security Footer -->
+        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+            <div
+                class="inline-flex items-center space-x-2 text-gray-500 text-xs bg-white rounded-full px-4 py-2 shadow-sm">
+                <i class="fas fa-shield-alt text-gray-600"></i>
+                <span>SSL encrypted • PCI compliant • 100% secure</span>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="{{asset('common/js/jquery.min.js')}}" crossorigin="anonymous"></script>
-    <script src="{{asset('assets/js/aos.js')}}"></script>
-    <script src="{{asset('common/js/fontawesome.js')}}"></script>
-    <script src="{{asset('common/js/toastr.min.js')}}"></script>
-    <script src="{{asset('assets/js/script.js')}}"></script>
-    <script src="{{asset('common/js/script.js')}}"></script>
+<!-- Scripts -->
+<script src="{{asset('common/js/jquery.min.js')}}" crossorigin="anonymous"></script>
+<script src="{{asset('assets/js/aos.js')}}"></script>
+<script src="{{asset('common/js/fontawesome.js')}}"></script>
+<script src="{{asset('common/js/toastr.min.js')}}"></script>
+<script src="{{asset('assets/js/script.js')}}"></script>
+<script src="{{asset('common/js/script.js')}}"></script>
 
     <script>
         $(document).ready(function() {

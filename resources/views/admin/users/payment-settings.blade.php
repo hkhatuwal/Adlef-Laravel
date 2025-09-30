@@ -212,7 +212,7 @@
                                 {{ str_replace('_', ' ', $category) }} Providers
                             </h4>
                             <div class="space-y-6">
-                                @foreach($providers as $provider)
+                                @foreach($providers as $provider =>$config)
                                 <div class="p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="flex items-center">

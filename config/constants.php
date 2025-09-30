@@ -200,15 +200,35 @@ return [
     'internal_payment_providers' => [
         'card' => [
 //            "ngenius",
-            "payop",
-            "paydo",
-            "pay4work"
+            "payop"=>[
+                "max_limit"=>100000,
+                "min_limit"=>1000,
+                "supported_cards"=>["all"],
+            ],
+            "paydo"=>[
+                "max_limit"=>100000,
+                "min_limit"=>1000,
+                "supported_cards"=>["all"],
+
+            ],
+            "pay4work"=>[
+                "max_limit"=>999,
+                "min_limit"=>0,
+                "supported_cards"=>["visa","mastercard"],
+            ]
         ],
         'card_others' => [
-            "ngenius",
+            "ngenius"=>[
+                "max_limit"=>999,
+                "min_limit"=>0,
+                "supported_cards"=>["diner","jcb","discover"],
+            ],
         ],
         "crypto" => [
-            "trongrid"
+            "trongrid"=>[
+                "min_limit"=>0,
+                "max_limit"=>100000
+            ]
         ]
     ]
 ];

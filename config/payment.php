@@ -55,17 +55,6 @@ return [
                 'card',
                 'bank_transfer',
                 'wallet',
-                'crypto',
-                'qiwi',
-                'webmoney',
-                'yandex_money',
-                'perfect_money',
-                'advcash',
-                'payeer',
-                'skrill',
-                'neteller',
-                'paysafecard',
-                'mobile_payment'
             ],
         ],
         'ngenius' => [

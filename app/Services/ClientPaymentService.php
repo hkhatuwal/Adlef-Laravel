@@ -43,31 +43,84 @@ class ClientPaymentService
         }
 
         // Ensure payment settings exist and are active
-        $paymentSettings = $client->user->paymentSettings;
-        if (!$paymentSettings) {
-            $paymentSettings = UserPaymentSettings::create([
-                'user_id' => $client->user_id,
-                ...UserPaymentSettings::getDefaultSettings()
-            ]);
-        }
 
+
+        $paymentSettings=$this->getUserPaymentSettings($client->user);
         if (!$paymentSettings->is_active) {
             return null;
         }
 
 
-        foreach ($providers as $provider) {
+        foreach ($providers as $provider=> $configs) {
             if (!$paymentSettings->isProviderAllowed($provider)) {
                 continue;
             }
 
+            if ($configs['max_limit'] < $amount || $amount < $configs['min_limit']) {
+
+                continue;
+            }
+
             $limitCheck = $this->checkUserPaymentLimits($client, $amount, $provider);
+
+
             if ($limitCheck['success'] ?? false) {
                 return $provider;
             }
+
+
         }
 
         return null;
+    }
+
+
+
+    public function getAllowedPaymentMethods(ApiClient $client,$amount): array
+    {
+        $allProviders = config('constants.internal_payment_providers');
+        $allowedProviders = [];
+        $paymentSettings=$this->getUserPaymentSettings($client->user);
+        if (!$paymentSettings->is_active) {
+            return [];
+        }
+
+
+        foreach ($allProviders as $category=>$providers) {
+            foreach ($providers as $provider=> $configs) {
+                if (!$paymentSettings->isProviderAllowed($provider)) {
+                    continue;
+                }
+
+                if ($configs['max_limit'] < $amount || $amount< $configs['min_limit']) {
+                    continue;
+                }
+
+                $limitCheck = $this->checkUserPaymentLimits($client, $amount, $provider);
+                if ($limitCheck['success'] ?? false) {
+                    $allowedProviders[$category][] = $provider;
+                }
+            }
+        }
+
+        return $allowedProviders;
+
+    }
+
+
+
+    private function getUserPaymentSettings($user)
+    {
+        $paymentSettings = $user->paymentSettings;
+        if (!$paymentSettings) {
+            $paymentSettings = UserPaymentSettings::create([
+                'user_id' =>$user->id,
+                ...UserPaymentSettings::getDefaultSettings()
+            ]);
+        }
+
+        return $paymentSettings;
+
     }
 
 
@@ -631,7 +684,7 @@ class ClientPaymentService
         $stats = [];
 
         foreach ($availableProviders as $category => $providers) {
-            foreach ($providers as $provider) {
+            foreach ($providers as  $provider=>$config) {
                 $dailyUsed = PaymentTransaction::whereIn('api_client_id', $userClientIds)
                     ->where('gateway_name', $provider)
                     ->where('status', PaymentTransaction::STATUS_COMPLETED)

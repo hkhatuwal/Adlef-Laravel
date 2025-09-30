@@ -43,7 +43,8 @@ class CheckoutController extends Controller
             abort(400, 'Payment session is no longer valid');
         }
 
-        return view('checkout.payment', compact('transaction'));
+      $allowedProviders=$this->clientPaymentService->getAllowedPaymentMethods($transaction->apiClient, $transaction->amount);
+        return view('checkout.payment', compact('transaction','allowedProviders'));
     }
 
     /**

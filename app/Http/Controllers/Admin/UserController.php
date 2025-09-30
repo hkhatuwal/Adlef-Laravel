@@ -329,10 +329,11 @@ class UserController extends Controller
 
     public function updatePaymentSettings(Request $request, User $user)
     {
+
         $availableProviders = config('constants.internal_payment_providers');
         $allProviders = [];
         foreach ($availableProviders as $category => $providers) {
-            $allProviders = array_merge($allProviders, $providers);
+            $allProviders = array_merge($allProviders, array_keys($providers));
         }
 
         $validationRules = [
@@ -349,7 +350,7 @@ class UserController extends Controller
 
         // Add validation rules for each provider's limits
         foreach ($allProviders as $provider) {
-            if (in_array($provider,$request->allowed_payment_providers['card']) || in_array($provider,$request->allowed_payment_providers['card_others']) || in_array($provider,$request->allowed_payment_providers['crypto'] )) {
+            if (in_array($provider,$request->allowed_payment_providers['card']) || in_array($provider,$request->allowed_payment_providers['card_others']??[]) || in_array($provider,$request->allowed_payment_providers['crypto'] )) {
                 $validationRules["provider_limits.{$provider}.daily_limit"] = 'required|numeric|min:0|max:999999.99';
                 $validationRules["provider_limits.{$provider}.monthly_limit"] = 'required|numeric|min:0|max:999999.99';
             }
@@ -400,10 +401,10 @@ class UserController extends Controller
     {
         // Store admin user ID in session for later restoration
         session(['admin_user_id' => auth()->id()]);
-        
+
         // Log in as the target user
         auth()->login($user);
-        
+
         return redirect()->route('client.dashboard')
             ->with('success', 'You are now logged in as ' . $user->name);
     }
