@@ -102,6 +102,7 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
             Route::get('/wallet-info', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'getWalletInfo'])->name('wallet.info');
         });
 
+
     });
 
 
