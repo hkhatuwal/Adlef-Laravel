@@ -202,24 +202,24 @@ return [
 //            "ngenius",
             "payop"=>[
                 "max_limit"=>100000,
-                "min_limit"=>1000,
+                "min_limit"=>2000,
                 "supported_cards"=>["all"],
             ],
             "paydo"=>[
                 "max_limit"=>100000,
-                "min_limit"=>1000,
+                "min_limit"=>2000,
                 "supported_cards"=>["all"],
 
             ],
             "pay4work"=>[
-                "max_limit"=>999,
+                "max_limit"=>1999,
                 "min_limit"=>0,
                 "supported_cards"=>["visa","mastercard"],
             ]
         ],
         'card_others' => [
             "ngenius"=>[
-                "max_limit"=>999,
+                "max_limit"=>100000,
                 "min_limit"=>0,
                 "supported_cards"=>["diner","jcb","discover"],
             ],
