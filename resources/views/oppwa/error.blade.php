@@ -83,11 +83,8 @@
 
         <!-- Actions -->
         <div class="flex justify-center space-x-4">
-            <a href="{{ route('oppwa.create') }}" 
-               class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                Try Again
-            </a>
-            <a href="{{ route('frontend.home') }}" 
+
+            <a href="{{ route('frontend.home') }}"
                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 Back to Home
             </a>

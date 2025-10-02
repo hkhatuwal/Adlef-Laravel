@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\OppwaService;
+use App\Services\ClientPaymentService;
 use App\Models\OppwaTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -13,10 +14,12 @@ use Illuminate\Support\Facades\Log;
 class OppwaController extends Controller
 {
     private OppwaService $oppwaService;
+    private ClientPaymentService $clientPaymentService;
 
-    public function __construct(OppwaService $oppwaService)
+    public function __construct(OppwaService $oppwaService, ClientPaymentService $clientPaymentService)
     {
         $this->oppwaService = $oppwaService;
+        $this->clientPaymentService = $clientPaymentService;
     }
 
     /**
@@ -180,66 +183,46 @@ class OppwaController extends Controller
      */
     public function handleWebhook(Request $request): JsonResponse
     {
+        $payload = $request->getContent();
+
+        Log::info('OPPWA webhook received', [
+            'payload' => $payload,
+            'headers' => $request->headers->all()
+        ]);
+
         try {
-            $payload = $request->getContent();
-            $signature = $request->header('X-OPPWA-Signature', '');
-            
-            Log::info('OPPWA webhook received', [
-                'payload' => $payload,
-                'signature' => $signature,
-                'headers' => $request->headers->all()
-            ]);
-
-            // Verify webhook signature if configured
-            $webhookSecret = config('services.oppwa.webhook_secret');
-            if ($webhookSecret && !$this->oppwaService->verifyWebhookSignature($payload, $signature, $webhookSecret)) {
-                Log::warning('OPPWA webhook signature verification failed');
-                return response()->json(['error' => 'Invalid signature'], 401);
-            }
-
             $webhookData = json_decode($payload, true);
-            
-            if (!$webhookData) {
-                Log::error('OPPWA webhook payload is not valid JSON');
-                return response()->json(['error' => 'Invalid payload'], 400);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('OPPWA webhook: Invalid JSON payload', [
+                    'payload' => $payload,
+                    'json_error' => json_last_error_msg()
+                ]);
+                return response()->json(['message' => 'Invalid JSON payload'], 400);
             }
 
-            // Parse webhook data
-            $parsedData = $this->oppwaService->parseWebhookData($webhookData);
-            
-            // Find transaction by OPPWA checkout ID or payment ID
-            $transaction = null;
-            if (isset($webhookData['id'])) {
-                $transaction = OppwaTransaction::where('oppwa_checkout_id', $webhookData['id'])
-                    ->orWhere('oppwa_payment_id', $webhookData['id'])
-                    ->first();
-            }
-
-            if (!$transaction) {
-                Log::warning('OPPWA webhook: Transaction not found', ['webhook_data' => $webhookData]);
-                return response()->json(['error' => 'Transaction not found'], 404);
-            }
-
-            // Update transaction status
-            $isSuccessful = OppwaTransaction::isOppwaResponseSuccessful($webhookData);
-            $newStatus = $isSuccessful ? OppwaTransaction::STATUS_COMPLETED : OppwaTransaction::STATUS_FAILED;
-            
-            $transaction->updateStatus($newStatus, $webhookData);
-
-            Log::info('OPPWA webhook processed successfully', [
-                'transaction_id' => $transaction->transaction_id,
-                'status' => $newStatus
+            // Log the webhook data for debugging
+            Log::info('OPPWA webhook received', [
+                'event' => $webhookData['event'] ?? 'unknown',
+                'checkout_id' => $webhookData['id'] ?? null,
+                'payment_id' => $webhookData['payment_id'] ?? null,
+                'status' => $webhookData['status'] ?? null,
+                'full_payload' => $webhookData
             ]);
 
-            return response()->json(['status' => 'success']);
+            // Handle webhook through client payment service
+            $this->clientPaymentService->handleGatewayWebhook('oppwa', $webhookData);
+
+            return response()->json(['message' => 'Webhook processed successfully']);
 
         } catch (\Exception $e) {
             Log::error('OPPWA webhook processing failed', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'payload' => $payload
             ]);
 
-            return response()->json(['error' => 'Webhook processing failed'], 500);
+            return response()->json(['message' => 'Webhook processing failed'], 500);
         }
     }
 }

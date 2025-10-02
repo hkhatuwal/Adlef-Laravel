@@ -231,21 +231,22 @@ class OppwaPaymentGateway extends AbstractPaymentGateway
         }
 
         // Get the transaction from database
-        $transaction = $this->oppwaService->getTransaction($transactionId);
-        if (!$transaction) {
+        $oppwaTransaction = $this->oppwaService->getTransaction($transactionId);
+        if (!$oppwaTransaction) {
             throw new \Exception("Transaction not found: {$transactionId}");
         }
+        $transaction=PaymentTransaction::where('gateway_transaction_id', $transactionId)->first();
 
         // Extract event type
         $eventType = $webhookData['event'] ?? 'unknown';
 
         // Map OPPWA status to standardized status
-        $status = $this->mapOppwaStatusToStandard($transaction->status);
+        $status = $this->mapOppwaStatusToStandard($oppwaTransaction->status);
 
         // Extract payment method details if available
         $paymentMethodData = null;
-        if ($transaction->oppwa_response && isset($transaction->oppwa_response['paymentMethod'])) {
-            $paymentMethod = $transaction->oppwa_response['paymentMethod'];
+        if ($oppwaTransaction->oppwa_response && isset($oppwaTransaction->oppwa_response['paymentMethod'])) {
+            $paymentMethod = $oppwaTransaction->oppwa_response['paymentMethod'];
 
             $paymentMethodData = [
                 'payment_method_type' => PaymentTransaction::PAYMENT_METHOD_CARD,
@@ -263,7 +264,7 @@ class OppwaPaymentGateway extends AbstractPaymentGateway
             status: $status,
             amount: $transaction->amount,
             currency: $transaction->currency,
-            gatewayTransactionId: $transaction->oppwa_checkout_id,
+            gatewayTransactionId: $transaction->$transaction,
             rawData: $webhookData,
             eventType: $eventType,
             paymentMethodType: $paymentMethodData['payment_method_type'] ?? null,
@@ -284,7 +285,7 @@ class OppwaPaymentGateway extends AbstractPaymentGateway
      */
     protected function mapOppwaStatusToStandard(string $oppwaStatus): string
     {
-        return match (strtoupper($oppwaStatus)) {
+        return match ($oppwaStatus) {
             OppwaTransaction::STATUS_COMPLETED => 'completed',
             OppwaTransaction::STATUS_PENDING => 'pending',
             OppwaTransaction::STATUS_PROCESSING => 'pending',

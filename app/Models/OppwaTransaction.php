@@ -108,7 +108,7 @@ class OppwaTransaction extends Model
     /**
      * Update transaction status
      */
-    public function updateStatus(string $status, array $oppwaResponse = null, string $failureReason = null): void
+    public function updateStatus(string $status, array $oppwaResponse = null, string $failureReason = null)
     {
         $updateData = ['status' => $status];
 
@@ -129,6 +129,7 @@ class OppwaTransaction extends Model
         ]);
 
         $this->update($updateData);
+        return $this;
     }
 
     /**
