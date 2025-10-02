@@ -46,30 +46,8 @@ class PollOppwaTransactions implements ShouldQueue
 
             foreach ($pendingTransactions as $transaction) {
                 try {
-                    Log::channel('oppwa')->info('Checking transaction status', [
-                        'transaction_id' => $transaction->transaction_id,
-                        'oppwa_checkout_id' => $transaction->oppwa_checkout_id
-                    ]);
-
-                    // Get payment status from OPPWA
                     $statusResult = $oppwaService->getPaymentStatus($transaction->oppwa_checkout_id);
-                    if ($transaction->callback_url) {
-                        $webhookResult = $oppwaService->callWebhook($transaction);
-                        if (!$webhookResult['success']) {
-                            Log::channel('oppwa')->error('Webhook call failed', [
-                                'transaction_id' => $transaction->transaction_id,
-                                'error' => $webhookResult['error'] ?? 'Unknown error'
-                            ]);
-                        }
-                    }
-
-
                 } catch (\Exception $e) {
-                    Log::channel('oppwa')->error('Error processing transaction', [
-                        'transaction_id' => $transaction->transaction_id,
-                        'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
-                    ]);
                 }
             }
 

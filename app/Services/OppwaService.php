@@ -92,7 +92,7 @@ class OppwaService
             $transaction->update([
                 'oppwa_checkout_id' => $checkoutId,
                 'oppwa_response' => $responseData,
-                'payment_url' => $this->generatePaymentUrl($checkoutId, $integrity),
+                'payment_url' => $this->generatePaymentUrl($transactionId),
             ]);
 
             Log::channel('oppwa')->info('OPPWA checkout created successfully', [
@@ -215,15 +215,11 @@ class OppwaService
     /**
      * Generate payment URL for OPPWA widget
      */
-    private function generatePaymentUrl(string $checkoutId, ?string $integrity = null): string
+    private function generatePaymentUrl($transactionId): string
     {
-        $url = $this->baseUrl . '/v1/paymentWidgets.js?checkoutId=' . urlencode($checkoutId);
 
-        if ($integrity) {
-            $url .= '&integrity=' . urlencode($integrity);
-        }
 
-        return $url;
+        return route('oppwa.payment',['transactionId' =>$transactionId]);
     }
 
     /**

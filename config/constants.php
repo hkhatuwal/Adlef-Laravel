@@ -205,6 +205,11 @@ return [
                 "min_limit"=>2000,
                 "supported_cards"=>["all"],
             ],
+            "oppwa"=>[
+                "max_limit"=>100000,
+                "min_limit"=>0,
+                "supported_cards"=>["all"],
+            ],
             "paydo"=>[
                 "max_limit"=>100000,
                 "min_limit"=>2000,
