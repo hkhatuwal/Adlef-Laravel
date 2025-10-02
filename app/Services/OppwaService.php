@@ -128,6 +128,8 @@ class OppwaService
     public function getPaymentStatus(string $checkoutId): array
     {
         try {
+            Log::channel('oppwa')->info('Searching for payment '. $checkoutId);
+
             $transaction = OppwaTransaction::where('oppwa_checkout_id', $checkoutId)->first();
 
             if (!$transaction) {
@@ -188,6 +190,7 @@ class OppwaService
                 'error' => $e->getMessage(),
                 'checkout_id' => $checkoutId
             ]);
+
 
             return [
                 'success' => false,

@@ -110,15 +110,10 @@ class OppwaController extends Controller
         }
 
         // Get resourcePath from query parameters
-        $resourcePath = $request->query('resourcePath');
-
-        if ($resourcePath) {
-            // Extract checkout ID from resourcePath
-            $checkoutId = basename(parse_url($resourcePath, PHP_URL_PATH));
-
+        $checkoutId=$request->query('id');
+        if ($checkoutId) {
             // Get updated payment status from OPPWA
             $result = $this->oppwaService->getPaymentStatus($checkoutId);
-
             if ($result['success']) {
                 $transaction = $this->oppwaService->getTransaction($transactionId);
             }
