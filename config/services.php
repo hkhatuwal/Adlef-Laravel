@@ -46,4 +46,12 @@ return [
         'secret' => env('TRANSFER_VERIFICATION_SECRET'),
     ],
 
+    'oppwa' => [
+        'base_url' => env('OPPWA_BASE_URL', 'https://eu-prod.oppwa.com'),
+        'entity_id' => env('OPPWA_ENTITY_ID'),
+        'auth_bearer' => env('OPPWA_AUTH_BEARER'),
+        'sandbox' => env('OPPWA_SANDBOX', false),
+        'webhook_secret' => env('OPPWA_WEBHOOK_SECRET'),
+    ],
+
 ];

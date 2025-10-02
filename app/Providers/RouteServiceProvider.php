@@ -24,6 +24,12 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/admin.php'));
+
+            // Example routes (remove in production)
+            if (config('app.debug')) {
+                Route::middleware('web')
+                    ->group(base_path('routes/oppwa-examples.php'));
+            }
         });
     }
 } 

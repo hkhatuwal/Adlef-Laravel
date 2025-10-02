@@ -27,6 +27,7 @@ class PaymentGatewayManager implements PaymentGatewayFactory
         $this->registerProvider('trongrid', TronGridPaymentGateway::class);
         $this->registerProvider('ngenius', NgeniusPaymentGateway::class);
         $this->registerProvider('pay4work', Pay4WorkPaymentGateway::class);
+        $this->registerProvider('oppwa', OppwaPaymentGateway::class);
 
     }
 
