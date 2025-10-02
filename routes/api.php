@@ -49,7 +49,7 @@ Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
 Route::any('/payment/status/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'checkPaymentStatus']);
 
 // OPPWA API routes
-Route::prefix('oppwa')->group(function () {
+Route::prefix('oppwa')->name('oppwa.')->group(function () {
     Route::post('/create-checkout', [\App\Http\Controllers\Api\OppwaController::class, 'createCheckout']);
     Route::get('/payment-status/{checkoutId}', [\App\Http\Controllers\Api\OppwaController::class, 'getPaymentStatus']);
     Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Api\OppwaController::class, 'getTransaction']);
@@ -57,7 +57,7 @@ Route::prefix('oppwa')->group(function () {
     Route::get('/payment-methods', [\App\Http\Controllers\Api\OppwaController::class, 'getSupportedPaymentMethods']);
     Route::get('/currencies', [\App\Http\Controllers\Api\OppwaController::class, 'getSupportedCurrencies']);
     Route::get('/config', [\App\Http\Controllers\Api\OppwaController::class, 'getConfigStatus']);
-    Route::any('/webhook', [\App\Http\Controllers\Api\OppwaController::class, 'handleWebhook']);
+    Route::any('/webhook', [\App\Http\Controllers\Api\OppwaController::class, 'handleWebhook'])->name('webhook');
 });
 
 // Webhook routes (no authentication required as they come from payment gateways)

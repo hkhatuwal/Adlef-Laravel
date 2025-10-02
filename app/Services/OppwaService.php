@@ -45,7 +45,7 @@ class OppwaService
                 'customer_name' => $paymentData['customer_name'] ?? null,
                 'customer_phone' => $paymentData['customer_phone'] ?? null,
                 'result_url' => $paymentData['result_url'] ?? null,
-                'callback_url' => $paymentData['callback_url'] ?? null,
+                'callback_url' => route('oppwa.webhook'),
                 'status' => OppwaTransaction::STATUS_PENDING,
                 'ip_address' => $paymentData['ip_address'] ?? null,
                 'user_agent' => $paymentData['user_agent'] ?? null,
@@ -162,9 +162,16 @@ class OppwaService
                 $failureReason = OppwaTransaction::getOppwaStatusDescription($resultCode);
             }
 
-            $transaction->updateStatus($newStatus, $responseData, $failureReason);
             /* Only call the webhook if the status is new */
-            if ($newStatus!=$transaction->status) {
+            Log::channel('oppwa')->info('OPPWA transaction status updated successfully', [
+                "newStatus" => $newStatus,
+                "oldStatus" => $transaction->status,
+            ]);
+
+            $oldStatus=$transaction->status;
+            $transaction=$transaction->updateStatus($newStatus, $responseData, $failureReason);
+            $transaction=OppwaTransaction::find($transaction->id);
+            if ($newStatus!=$oldStatus) {
                 $this->callWebhook($transaction);
             }
 
