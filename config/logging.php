@@ -72,7 +72,7 @@ return [
 
         'tron_polling' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/tron_polling.log'),
+            'path' => storage_path('logs/tron/tron_polling.log'),
             'level' => 'debug',
             'days' => 14,
             'replace_placeholders' => true,
@@ -80,7 +80,7 @@ return [
 
         'oppwa' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/oppwa.log'),
+            'path' => storage_path('logs/oppwa/oppwa.log'),
             'level' => 'debug',
             'days' => 14,
             'replace_placeholders' => true,
