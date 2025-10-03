@@ -47,7 +47,7 @@
                 </div>
 
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900">Payment {{ ucfirst($transaction->status) }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Payment {{ ucfirst($transaction->status) }} |   <span class="font-normal text-red-600">{{$transaction->failure_reason}}</h3>
                     <p class="text-gray-600">{{ $transaction->description }}</p>
                 </div>
             </div>
@@ -224,7 +224,7 @@
                             <i class="fa-solid fa-times text-red-600 text-xs"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">Payment Failed</p>
+                            <p class="text-sm font-medium text-gray-900">Payment Failed <span>{{$transaction->failure_reason}}</span></p>
                             <p class="text-xs text-gray-500">{{ $transaction->updated_at->format('M j, Y g:i A') }}</p>
                         </div>
                     </div>

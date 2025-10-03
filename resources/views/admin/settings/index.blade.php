@@ -218,6 +218,46 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- OPPWA Cost Settings -->
+                        <div class="border-l-4 border-red-500 pl-4">
+                            <h4 class="text-md font-medium mb-3">OPPWA</h4>
+                            <div class="space-y-4">
+                                <!-- Cost Type Selection -->
+                                <div class="flex items-center space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="settings[oppwa_cost_type]" value="percentage" 
+                                            class="form-radio"
+                                            {{ ($settingsKeyValues['oppwa_cost_type'] ?? 'percentage') == 'percentage' ? 'checked' : '' }}>
+                                        <span class="ml-2">Percentage</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="settings[oppwa_cost_type]" value="fixed" 
+                                            class="form-radio"
+                                            {{ ($settingsKeyValues['oppwa_cost_type'] ?? '') == 'fixed' ? 'checked' : '' }}>
+                                        <span class="ml-2">Fixed Value</span>
+                                    </label>
+                                </div>
+
+                                <!-- Percentage Value -->
+                                <div class="oppwa-percentage-input {{ ($settingsKeyValues['oppwa_cost_type'] ?? 'percentage') == 'percentage' ? '' : 'hidden' }}">
+                                    <label class="block text-sm font-medium text-gray-700">Percentage Value (%)</label>
+                                    <input type="number" name="settings[oppwa_cost_percentage]" 
+                                        value="{{ $settingsKeyValues['oppwa_cost_percentage'] ?? '0' }}"
+                                        step="0.01" min="0" max="100"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+
+                                <!-- Fixed Value -->
+                                <div class="oppwa-fixed-input {{ ($settingsKeyValues['oppwa_cost_type'] ?? 'percentage') == 'fixed' ? '' : 'hidden' }}">
+                                    <label class="block text-sm font-medium text-gray-700">Fixed Value</label>
+                                    <input type="number" name="settings[oppwa_cost_fixed]" 
+                                        value="{{ $settingsKeyValues['oppwa_cost_fixed'] ?? '0' }}"
+                                        step="0.00000001" min="0"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -376,6 +416,16 @@
                 const container = this.closest('.border-l-4');
                 container.querySelector('.trongrid-percentage-input').classList.toggle('hidden', this.value !== 'percentage');
                 container.querySelector('.trongrid-fixed-input').classList.toggle('hidden', this.value !== 'fixed');
+            });
+        });
+
+        // OPPWA Cost Type Toggle
+        const oppwaCostTypeInputs = document.querySelectorAll('input[name="settings[oppwa_cost_type]"]');
+        oppwaCostTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const container = this.closest('.border-l-4');
+                container.querySelector('.oppwa-percentage-input').classList.toggle('hidden', this.value !== 'percentage');
+                container.querySelector('.oppwa-fixed-input').classList.toggle('hidden', this.value !== 'fixed');
             });
         });
     });

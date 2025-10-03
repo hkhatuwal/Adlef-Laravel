@@ -11,9 +11,11 @@ class WebhookData
         public readonly ?string $currency = null,
         public readonly ?string $gatewayTransactionId = null,
         public readonly ?array $rawData = null,
+        public readonly ?string $failureReason = null,
         public readonly ?string $eventType = null,
         public readonly ?array $metadata = null,
         public readonly ?array $paymentMethodDetails = null,
+
 
         // Payment method classification
         public readonly ?string $paymentMethodType = null,

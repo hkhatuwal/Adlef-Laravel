@@ -266,6 +266,7 @@ class OppwaPaymentGateway extends AbstractPaymentGateway
             currency: $transaction->currency,
             gatewayTransactionId: $transaction->$transaction,
             rawData: $webhookData,
+            failureReason: $oppwaTransaction->failure_reason,
             eventType: $eventType,
             paymentMethodType: $paymentMethodData['payment_method_type'] ?? null,
             cardBrand: $paymentMethodData['card_brand'] ?? null,
@@ -358,3 +359,4 @@ class OppwaPaymentGateway extends AbstractPaymentGateway
         return $this->oppwaService->isCurrencySupported($currency);
     }
 }
+
