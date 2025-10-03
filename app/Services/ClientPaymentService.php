@@ -387,8 +387,6 @@ class ClientPaymentService
             // Parse webhook data once
             $parsedData = $gateway->parseWebhookData($webhookData);
 
-            Log::info("Parse Data");
-            Log::info(json_encode($parsedData));
             // Find transaction using parsed data
             $transaction = $this->findTransactionFromParsedData($gatewayName, $parsedData);
 
@@ -449,6 +447,7 @@ class ClientPaymentService
         // Update transaction with parsed data
         $updateData = [
             'status' => $status,
+            'failure_reason'=>$parsedData->failureReason,
             'gateway_status' => $parsedData->getStatus(),
             'gateway_response' => $parsedData->toArray()
         ];

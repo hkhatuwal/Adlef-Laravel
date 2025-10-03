@@ -98,4 +98,13 @@
         </div>
     </div>
 </div>
+
+@endsection
+
+@section('post-script')
+    <script>
+        setTimeout(function () {
+            window.location.href="{{$transaction->result_url}}"
+        })
+    </script>
 @endsection
