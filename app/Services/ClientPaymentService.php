@@ -370,7 +370,7 @@ class ClientPaymentService
             'customer_phone' => $paymentData['customer_phone'] ?? '',
             'order_id' => $transaction->transaction_id, // Use our transaction ID as order ID
             'language' => $paymentData['language'] ?? 'en',
-            'return_url' => $paymentData['return_url'] ?? url('/payment/success'),
+            'return_url' => $paymentData['return_url'] ?? null,
             'cancel_url' => $paymentData['cancel_url'] ?? url('/payment/cancel'),
         ];
     }

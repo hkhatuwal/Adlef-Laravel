@@ -91,12 +91,12 @@
 
         <!-- Actions -->
         <div class="flex justify-center space-x-4">
-            <a href="{{ route('frontend.home') }}" 
+            <a href="{{ route('frontend.home') }}"
                class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 Back to Home
             </a>
             @if($transaction->external_order_id)
-            <a href="#" 
+            <a href="#"
                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 View Order
             </a>
@@ -105,7 +105,7 @@
 
         <!-- Receipt Download -->
         <div class="mt-6 text-center">
-            <button onclick="window.print()" 
+            <button onclick="window.print()"
                     class="text-sm text-blue-600 hover:text-blue-800 underline">
                 Download Receipt
             </button>
@@ -121,4 +121,13 @@
     }
 }
 </style>
+@endsection
+@section('post-script')
+    @if(isset($transaction->result_url))
+        <script>
+            setTimeout(function () {
+                window.location.href="{{$transaction->result_url}}"
+            },3000)
+        </script>
+    @endif
 @endsection
