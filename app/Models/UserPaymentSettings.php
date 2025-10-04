@@ -41,10 +41,10 @@ class UserPaymentSettings extends Model
     {
         $defaultProviderLimits = [];
         $availableProviders = config('constants.internal_payment_providers');
-        
+
         // Set default limits for each provider
         foreach ($availableProviders as $category => $providers) {
-            foreach ($providers as $provider) {
+            foreach ($providers as $provider => $config) {
                 $defaultProviderLimits[$provider] = [
                     'daily_limit' => 10000.00,
                     'monthly_limit' => 100000.00,
@@ -155,7 +155,7 @@ class UserPaymentSettings extends Model
     {
         $result = [];
         $availableProviders = config('constants.internal_payment_providers');
-        
+
         foreach ($availableProviders as $category => $providers) {
             foreach ($providers as $provider) {
                 $result[$provider] = [
@@ -165,7 +165,7 @@ class UserPaymentSettings extends Model
                 ];
             }
         }
-        
+
         return $result;
     }
 
