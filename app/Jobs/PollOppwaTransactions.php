@@ -16,12 +16,13 @@ class PollOppwaTransactions implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $oppwaService;
     /**
      * Create a new job instance.
      */
     public function __construct()
     {
-        //
+       $this->oppwaService= new OppwaService();
     }
 
     /**
@@ -43,11 +44,10 @@ class PollOppwaTransactions implements ShouldQueue
                 'count' => $pendingTransactions->count()
             ]);
 
-            $oppwaService = new OppwaService();
 
             foreach ($pendingTransactions as $transaction) {
                 try {
-                    $statusResult = $oppwaService->getPaymentStatus($transaction->oppwa_checkout_id);
+                    $statusResult = $this->oppwaService->getPaymentStatus($transaction->oppwa_checkout_id);
                 } catch (\Exception $e) {
                 }
             }
@@ -66,6 +66,10 @@ class PollOppwaTransactions implements ShouldQueue
     {
 
         $pendingTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
-            ->where('created_at', '<=', now()->subMinutes(30))->update(['status' => OppwaTransaction::STATUS_FAILED]);
+            ->where('created_at', '<=', now()->subMinutes(30))->get();
+        foreach ($pendingTransactions as $transaction) {
+            $transaction->update(['status' => OppwaTransaction::STATUS_FAILED]);
+            $this->oppwaService->callWebhook($transaction);
+        }
     }
 }
