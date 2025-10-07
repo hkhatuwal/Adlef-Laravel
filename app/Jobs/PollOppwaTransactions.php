@@ -69,8 +69,8 @@ class PollOppwaTransactions implements ShouldQueue
         $pendingOppwaTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
             ->where('created_at', '<=', now()->subMinutes(30))->get();
 
-        $pendingTransactions = PaymentTransaction::where('status',PaymentTransaction::STATUS_PENDING )
-            ->where('created_at', '<=', now()->subMinutes(30))->update(['status' => PaymentTransaction::STATUS_FAILED]);
+//        $pendingTransactions = PaymentTransaction::where('status',PaymentTransaction::STATUS_PENDING )
+//            ->where('created_at', '<=', now()->subMinutes(30))->update(['status' => PaymentTransaction::STATUS_FAILED]);
 
         Log::channel('oppwa')->info('Found pending OPPWA transactions '. count($pendingOppwaTransactions),);
         foreach ($pendingOppwaTransactions as $transaction) {
