@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\OppwaTransaction;
+use App\Models\PaymentTransaction;
 use App\Services\OppwaService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -65,10 +66,14 @@ class PollOppwaTransactions implements ShouldQueue
     private function markOlderPendingPaymentAsFailed(): void
     {
 
-        $pendingTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
+        $pendingOppwaTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
             ->where('created_at', '<=', now()->subMinutes(30))->get();
-        Log::channel('oppwa')->info('Found pending OPPWA transactions '. count($pendingTransactions),);
-        foreach ($pendingTransactions as $transaction) {
+
+        $pendingTransactions = PaymentTransaction::where('status',PaymentTransaction::STATUS_PENDING )
+            ->where('created_at', '<=', now()->subMinutes(30))->update(['status' => PaymentTransaction::STATUS_FAILED]);
+
+        Log::channel('oppwa')->info('Found pending OPPWA transactions '. count($pendingOppwaTransactions),);
+        foreach ($pendingOppwaTransactions as $transaction) {
             $transaction->update(['status' => OppwaTransaction::STATUS_FAILED]);
             $this->oppwaService->callWebhook($transaction);
         }
