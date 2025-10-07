@@ -32,9 +32,10 @@ class PollOppwaTransactions implements ShouldQueue
         Log::channel('oppwa')->info('Starting OPPWA transaction polling');
 
         try {
+            $this->markOlderPendingPaymentAsFailed();
             // Get pending transactions from the last 10 minutes
             $pendingTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
-                ->where('created_at', '>=', now()->subMinutes(100))
+                ->where('created_at', '>=', now()->subMinutes(30))
                 ->whereNotNull('oppwa_checkout_id')
                 ->get();
 
@@ -61,4 +62,10 @@ class PollOppwaTransactions implements ShouldQueue
         }
     }
 
+    private function markOlderPendingPaymentAsFailed(): void
+    {
+
+        $pendingTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
+            ->where('created_at', '<=', now()->subMinutes(30))->update(['status' => OppwaTransaction::STATUS_FAILED]);
+    }
 }
