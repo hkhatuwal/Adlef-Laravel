@@ -67,6 +67,7 @@ class PollOppwaTransactions implements ShouldQueue
 
         $pendingTransactions = OppwaTransaction::where('status', OppwaTransaction::STATUS_PENDING)
             ->where('created_at', '<=', now()->subMinutes(30))->get();
+        Log::channel('oppwa')->info('Found pending OPPWA transactions '. count($pendingTransactions),);
         foreach ($pendingTransactions as $transaction) {
             $transaction->update(['status' => OppwaTransaction::STATUS_FAILED]);
             $this->oppwaService->callWebhook($transaction);
