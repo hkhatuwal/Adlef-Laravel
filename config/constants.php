@@ -100,6 +100,7 @@ return [
         ' + 48' => 'Poland',
         ' + 49' => 'Germany',
         ' + 51' => 'Peru',
+        ' + 351' => 'Portugal',
         ' + 52' => 'Mexico',
         ' + 54' => 'Argentina',
         ' + 55' => 'Brazil',
