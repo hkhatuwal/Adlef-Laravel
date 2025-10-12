@@ -11,15 +11,34 @@
             <p class="text-gray-600 mt-1">Manage your payment transactions and API integrations</p>
         </div>
         <div class="flex space-x-3">
-            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all">
-                <i class="fa-solid fa-download mr-2"></i>
-                Export
-            </button>
+            <div class="relative export-dropdown">
+                <button id="export-dropdown-btn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all flex items-center">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Export
+                    <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                </button>
+                <div id="export-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div class="py-1">
+                        <a href="{{ route('client.payment-gateway.export.excel', request()->query()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-file-excel text-green-600 mr-2"></i>
+                            Export to Excel
+                        </a>
+                        <a href="{{ route('client.payment-gateway.export.csv', request()->query()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-file-csv text-blue-600 mr-2"></i>
+                            Export to CSV
+                        </a>
+                        <a href="{{ route('client.payment-gateway.export.pdf', request()->query()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-file-pdf text-red-600 mr-2"></i>
+                            Export to PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
             <a href="{{ route('client.payment-gateway.settlement') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all">
                 <i class="fa-solid fa-wallet mr-2"></i>
                 Settlement Center
             </a>
-            <button id="settlement-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all" 
+            <button id="settlement-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
                     data-wallet-balance="{{ $stats['wallet_balance'] ?? 0 }}">
                 <i class="fa-solid fa-money-bill-transfer mr-2"></i>
                 Quick Settlement
@@ -106,6 +125,10 @@
                     <i class="fa-solid fa-list mr-2"></i>
                     Transactions
                 </button>
+                <button class="tab-button flex items-center py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="generate-link">
+                    <i class="fa-solid fa-link mr-2"></i>
+                    Generate Payment Link
+                </button>
                 <button class="tab-button flex items-center py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="api-keys">
                     <i class="fa-solid fa-key mr-2"></i>
                     API Keys
@@ -122,6 +145,11 @@
             <!-- Transactions Tab -->
             <div id="transactions-tab" class="tab-content">
                 @include('components.payment-gateway-transactions')
+            </div>
+
+            <!-- Generate Payment Link Tab -->
+            <div id="generate-link-tab" class="tab-content hidden">
+                @include('client.payment-gateway.components.generate-payment-link')
             </div>
 
             <!-- API Keys Tab -->
@@ -147,7 +175,7 @@
                     <i class="fa-solid fa-times text-xl"></i>
                 </button>
             </div>
-            
+
             <form id="settlement-form">
                 @csrf
                 <div class="space-y-4">
@@ -157,17 +185,17 @@
                             <span class="text-lg font-semibold text-gray-900" id="available-balance">$0.00</span>
                         </div>
                     </div>
-                    
+
                     <div>
                         <label for="settlement_amount" class="block text-sm font-medium text-gray-700 mb-2">Settlement Amount *</label>
-                        <input type="number" id="settlement_amount" name="settlement_amount" step="0.01" min="0.01" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        <input type="number" id="settlement_amount" name="settlement_amount" step="0.01" min="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                placeholder="0.00" required>
                     </div>
-                    
+
                     <div>
                         <label for="settlement_method" class="block text-sm font-medium text-gray-700 mb-2">Settlement Method *</label>
-                        <select id="settlement_method" name="settlement_method" 
+                        <select id="settlement_method" name="settlement_method"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                             <option value="">Select method</option>
                             <option value="bank_transfer">Bank Transfer</option>
@@ -175,21 +203,21 @@
                             <option value="stripe">Stripe</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label for="settlement_notes" class="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
-                        <textarea id="settlement_notes" name="notes" rows="3" 
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                        <textarea id="settlement_notes" name="notes" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   placeholder="Any additional information..."></textarea>
                     </div>
                 </div>
-                
+
                 <div class="flex space-x-3 mt-6">
-                    <button type="button" id="cancel-settlement" 
+                    <button type="button" id="cancel-settlement"
                             class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
                         Cancel
                     </button>
-                    <button type="submit" id="submit-settlement" 
+                    <button type="submit" id="submit-settlement"
                             class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
                         Submit Request
                     </button>
@@ -204,7 +232,41 @@
 @section('post-script')
 <script src="{{ asset('assets/js/payment-gateway/payment-gateway.js') }}"></script>
 <script>
+// Copy to clipboard function
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(element.value).then(() => {
+        // Show temporary success message
+        const originalBtnText = event.target.innerHTML;
+        event.target.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+            event.target.innerHTML = originalBtnText;
+        }, 2000);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Export dropdown functionality
+    const exportDropdownBtn = document.getElementById('export-dropdown-btn');
+    const exportDropdownMenu = document.getElementById('export-dropdown-menu');
+
+    if (exportDropdownBtn && exportDropdownMenu) {
+        exportDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            exportDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!exportDropdownBtn.contains(e.target) && !exportDropdownMenu.contains(e.target)) {
+                exportDropdownMenu.classList.add('hidden');
+            }
+        });
+    }
+
+    // Settlement modal functionality
     const settlementBtn = document.getElementById('settlement-btn');
     const settlementModal = document.getElementById('settlement-modal');
     const closeModalBtn = document.getElementById('close-settlement-modal');
@@ -212,15 +274,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const settlementForm = document.getElementById('settlement-form');
     const availableBalanceSpan = document.getElementById('available-balance');
     const settlementAmountInput = document.getElementById('settlement_amount');
-    
+
     const walletBalance = parseFloat(settlementBtn.dataset.walletBalance) || 0;
-    
+
     // Set available balance
     availableBalanceSpan.textContent = '$' + walletBalance.toFixed(2);
-    
+
     // Set max amount for settlement input
     settlementAmountInput.max = walletBalance;
-    
+
     // Show modal
     settlementBtn.addEventListener('click', function() {
         if (walletBalance <= 0) {
@@ -229,37 +291,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         settlementModal.classList.remove('hidden');
     });
-    
+
     // Hide modal
     function hideModal() {
         settlementModal.classList.add('hidden');
         settlementForm.reset();
     }
-    
+
     closeModalBtn.addEventListener('click', hideModal);
     cancelBtn.addEventListener('click', hideModal);
-    
+
     // Close modal when clicking outside
     settlementModal.addEventListener('click', function(e) {
         if (e.target === settlementModal) {
             hideModal();
         }
     });
-    
+
     // Handle form submission
     settlementForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const submitBtn = document.getElementById('submit-settlement');
         const originalText = submitBtn.textContent;
-        
+
         // Disable submit button and show loading
         submitBtn.disabled = true;
         submitBtn.textContent = 'Processing...';
-        
+
         try {
             const formData = new FormData(settlementForm);
-            
+
             const response = await fetch('{{ route("client.payment-gateway.settlement.process") }}', {
                 method: 'POST',
                 body: formData,
@@ -267,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 }
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 alert('Settlement request submitted successfully! You will be contacted within 24 hours.');
                 hideModal();

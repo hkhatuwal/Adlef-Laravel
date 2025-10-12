@@ -89,6 +89,11 @@ Route::middleware([\App\Http\Middleware\ClientMiddleware::class, \Illuminate\Aut
             Route::get('/settlement', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'settlement'])->name('settlement');
             Route::get('/transaction/{transactionId}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'showTransaction'])->name('transaction.show');
 
+            // Export Routes
+            Route::get('/export/excel', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'exportExcel'])->name('export.excel');
+            Route::get('/export/csv', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'exportCsv'])->name('export.csv');
+            Route::get('/export/pdf', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'exportPdf'])->name('export.pdf');
+
             // API Keys Management
             Route::get('/api-keys/{apiClient}', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'getApiKey'])->name('api-keys.show');
             Route::post('/api-keys', [\App\Http\Controllers\Client\PaymentGatewayController::class, 'storeApiKey'])->name('api-keys.store');

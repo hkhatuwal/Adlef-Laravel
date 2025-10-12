@@ -18,7 +18,102 @@
         </div>
     </div>
 
+    <!-- Payment Gateway Wallets Section -->
+    @if($wallets->count() > 0 || $totalBalance > 0)
+    <div class="mb-8">
+        <div class="mb-4">
+            <h2 class="text-xl font-semibold text-slate-800 dark:text-white">Payment Gateway Wallets</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Gateway balances and settlement funds</p>
+        </div>
+
+        <!-- Gateway Wallets Grid (Including Total) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Total Balance Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mr-3">
+                                <i class="material-symbols-outlined text-green-600 dark:text-green-400">account_balance_wallet</i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Total Balance</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400">All Gateways</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Gateway Balance</label>
+                            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Combined balance</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Balance</label>
+                            <p class="mt-1 text-lg font-semibold text-green-600 dark:text-green-400">
+                                ${{ number_format($totalBalance, 2) }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Gateways</label>
+                            <p class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+                                {{ $wallets->count() }} active {{ $wallets->count() === 1 ? 'wallet' : 'wallets' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Individual Gateway Wallets -->
+            @foreach($wallets as $wallet)
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mr-3">
+                                    <i class="material-symbols-outlined text-blue-600 dark:text-blue-400">payments</i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $wallet->gateway_name)) }}</h3>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">Payment Gateway</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Gateway Name</label>
+                                <p class="mt-1 text-sm font-mono text-slate-900 dark:text-white">{{ $wallet->gateway_name }}</p>
+                            </div>
+                            
+                            <div>
+                                <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Balance</label>
+                                <p class="mt-1 text-lg font-semibold text-green-600 dark:text-green-400">
+                                    ${{ number_format($wallet->balance_usd, 2) }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Last Updated</label>
+                                <p class="mt-1 text-xs text-slate-600 dark:text-slate-400">
+                                    {{ $wallet->updated_at->format('M d, Y H:i') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <!-- Asset Accounts Section -->
+    <div class="mb-4">
+        <h2 class="text-xl font-semibold text-slate-800 dark:text-white">Asset Accounts</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Currency asset accounts and balances</p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($user->assetAccounts as $account)
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all">

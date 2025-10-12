@@ -111,7 +111,12 @@ class UserController extends Controller
     public function assets(User $user)
     {
         $user->load(['assetAccounts.currency']);
-        return view('admin.users.assets', compact('user'));
+        
+        // Get payment gateway wallet information
+        $wallets = \App\Models\PaymentGatewayWallet::getWalletsForUser($user->id);
+        $totalBalance = \App\Models\PaymentGatewayWallet::getTotalBalanceForUser($user->id);
+        
+        return view('admin.users.assets', compact('user', 'wallets', 'totalBalance'));
     }
 
     public function showBankAccount(User $user, BankAccount $bankAccount)

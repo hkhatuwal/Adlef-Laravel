@@ -16,6 +16,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PaymentTransactionsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentGatewayController extends Controller
 {
@@ -500,5 +503,72 @@ class PaymentGatewayController extends Controller
                 'total_balance' => $totalBalance
             ]
         ]);
+    }
+
+    /**
+     * Export transactions to Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        $user = Auth::user();
+        return Excel::download(
+            new PaymentTransactionsExport($request, $user->id),
+            'payment-transactions-' . now()->format('Y-m-d') . '.xlsx'
+        );
+    }
+
+    /**
+     * Export transactions to CSV
+     */
+    public function exportCsv(Request $request)
+    {
+        $user = Auth::user();
+        return Excel::download(
+            new PaymentTransactionsExport($request, $user->id),
+            'payment-transactions-' . now()->format('Y-m-d') . '.csv'
+        );
+    }
+
+    /**
+     * Export transactions to PDF
+     */
+    public function exportPdf(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Get user's API client IDs
+        $apiClientIds = $user->apiClients()->pluck('id')->toArray();
+
+        if (empty($apiClientIds)) {
+            $transactions = collect([]);
+        } else {
+            $query = PaymentTransaction::query()
+                ->whereIn('api_client_id', $apiClientIds)
+                ->with(['apiClient:id,name'])
+                ->latest();
+
+            // Apply filters from request
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('currency')) {
+                $query->where('currency', $request->currency);
+            }
+
+            if ($request->filled('from_date')) {
+                $query->whereDate('created_at', '>=', $request->from_date);
+            }
+
+            if ($request->filled('to_date')) {
+                $query->whereDate('created_at', '<=', $request->to_date);
+            }
+
+            $transactions = $query->get();
+        }
+        
+        $pdf = PDF::loadView('client.payment-gateway.pdf', compact('transactions', 'user'));
+        
+        return $pdf->download('payment-transactions-' . now()->format('Y-m-d') . '.pdf');
     }
 }

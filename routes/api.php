@@ -27,10 +27,10 @@ Route::middleware([
 Route::post('/transfers/verify', [AssetTransferVerificationController::class, 'verifyByReference']);
 
 // Payment Gateway API routes with client authentication
-Route::middleware(['api_key'])->prefix('v1/payment')->group(function () {
+Route::middleware(['api_key'])->prefix('v1/payment')->name('api.payment.')->group(function () {
     // New payment generation endpoint
-    Route::post('/generate', [\App\Http\Controllers\Api\PaymentController::class, 'generatePaymentLink']);
-    Route::any('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails']);
+    Route::post('/generate', [\App\Http\Controllers\Api\PaymentController::class, 'generatePaymentLink'])->name('generate');
+    Route::any('/details/{transactionId}', [\App\Http\Controllers\Api\PaymentController::class, 'getPaymentDetails'])->name('details');
 
     // Payop routes
 //    Route::prefix('payop')->group(function () {
