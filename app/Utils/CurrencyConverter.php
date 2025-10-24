@@ -23,14 +23,14 @@ class CurrencyConverter
 
         // First convert amount to USD value
         $amountInUSD = $amount * $from->price_usd;
-        
+
         // If target is USD, return the USD amount
         if ($to->isUSD()) {
             return $amountInUSD;
         }
-        
+
         // Convert USD amount to target currency
-        return $amountInUSD / $to->price_usd;
+        return $amountInUSD * $to->price_usd;
     }
 
     /**
@@ -47,7 +47,7 @@ class CurrencyConverter
         }
 
         // Calculate exchange rate using USD prices
-        return $from->price_usd / $to->price_usd;
+        return $from->price_usd * $to->price_usd;
     }
 
     /**
@@ -62,7 +62,7 @@ class CurrencyConverter
         if ($from->isUSD()) {
             return $amount;
         }
-        
+
         return $amount * $from->price_usd;
     }
-} 
+}
