@@ -255,6 +255,7 @@ class PaymentTransaction extends Model
             'transaction_id' => $this->transaction_id,
             'client_order_id' => $this->client_order_id,
             'status' => $this->status,
+            'failure_reason' => $this->failure_reason,
             'amount' => $this->amount,
             'currency' => $this->currency,
             'gateway_transaction_id' => $this->gateway_transaction_id,
