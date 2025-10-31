@@ -45,7 +45,7 @@ class OppwaService
                 'customer_name' => $paymentData['customer_name'] ?? null,
                 'customer_phone' => $paymentData['customer_phone'] ?? null,
                 'result_url' => $paymentData['return_url'] ?? null,
-                'callback_url' => route('webh'),
+                'callback_url' => route('oppwa.webhook'),
                 'status' => OppwaTransaction::STATUS_PENDING,
                 'ip_address' => $paymentData['ip_address'] ?? null,
                 'user_agent' => $paymentData['user_agent'] ?? null,
