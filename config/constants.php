@@ -207,7 +207,7 @@ return [
                 "supported_cards"=>["all"],
             ],
             "oppwa"=>[
-                "max_limit"=>1,
+                "max_limit"=>100000,
                 "min_limit"=>0,
                 "supported_cards"=>["all"],
             ],
