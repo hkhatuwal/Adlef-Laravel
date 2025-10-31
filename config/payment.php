@@ -144,6 +144,15 @@ return [
             ],
         ],
 
+        'tap' => [
+            'secret_key' => env('TAP_SECRET_KEY'),
+            'merchant_id' => env('TAP_MERCHANT_ID'),
+            'webhook_secret' => env('TAP_WEBHOOK_SECRET'),
+            'supported_payment_methods' => [
+                'card',
+            ],
+        ],
+
         // Add more payment providers here
         // 'square' => [
         //     'application_id' => env('SQUARE_APPLICATION_ID'),
@@ -215,6 +224,13 @@ return [
             'upi_payments',
             'qr_payments'
         ],
+        'tap' => [
+            'webhooks',
+            'multi_currency',
+            'direct_integration',
+            'hosted_payment',
+            'authorization'
+        ],
     ],
 
     /*
@@ -244,6 +260,9 @@ return [
         ],
         'pay4work' => [
             'AED', 'INR', 'USD'
+        ],
+        'tap' => [
+            'KWD', 'SAR', 'AED', 'BHD', 'QAR', 'OMR', 'USD', 'EUR'
         ],
     ],
 
@@ -294,6 +313,7 @@ return [
             'stripe' => '/api/webhooks/stripe',
             'paypal' => '/api/webhooks/paypal',
             'razorpay' => '/api/webhooks/razorpay',
+                'tap' => '/api/webhooks/tap',
         ],
         'verify_signature' => true,
         'log_requests' => env('APP_DEBUG', false),

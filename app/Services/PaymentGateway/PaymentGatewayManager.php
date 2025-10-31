@@ -28,6 +28,7 @@ class PaymentGatewayManager implements PaymentGatewayFactory
         $this->registerProvider('ngenius', NgeniusPaymentGateway::class);
         $this->registerProvider('pay4work', Pay4WorkPaymentGateway::class);
         $this->registerProvider('oppwa', OppwaPaymentGateway::class);
+        $this->registerProvider('tap', TapPaymentGateway::class);
 
     }
 

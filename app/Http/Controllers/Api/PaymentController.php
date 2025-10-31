@@ -84,7 +84,7 @@ class PaymentController extends Controller
                 'customer_email' => $request->customer_email,
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
-                'return_url' => $request->return_url ?? route('payment.success',["transaction_id"=>$transactionId]),
+                'return_url' => $request->return_url ??null,
                 'cancel_url' => $request->cancel_url ?? route('payment.failed',["transaction_id"=>$transactionId]),
                 'checkout_url' => route('payment.checkout', ['session' => $checkoutSessionId]),
                 'available_gateways' => ['credit_card', 'crypto'], // Default options

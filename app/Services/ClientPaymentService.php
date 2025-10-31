@@ -88,6 +88,7 @@ class ClientPaymentService
 
         foreach ($allProviders as $category=>$providers) {
             foreach ($providers as $provider=> $configs) {
+
                 if (!$paymentSettings->isProviderAllowed($provider)) {
                     continue;
                 }
@@ -95,6 +96,7 @@ class ClientPaymentService
                 if ($configs['max_limit'] < $amount || $amount< $configs['min_limit']) {
                     continue;
                 }
+
 
                 $limitCheck = $this->checkUserPaymentLimits($client, $amount, $provider);
                 if ($limitCheck['success'] ?? false) {
