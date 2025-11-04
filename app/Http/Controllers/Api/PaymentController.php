@@ -185,6 +185,7 @@ class PaymentController extends Controller
                 'transaction_id' => $transaction->transaction_id,
                 'status' => strtolower($transaction->status),
                 'amount' => $transaction->amount,
+                'failure_reason' => $transaction->failure_reason,
                 'currency' => $transaction->currency,
                 'gateway_name' => $transaction->gateway_name,
                 'created_at' => $transaction->created_at->toISOString(),

@@ -72,8 +72,6 @@ Route::prefix('payment')->name('payment.')->group(function () {
 
 // OPPWA Payment Routes (No authentication required for public payment processing)
 Route::prefix('oppwa')->name('oppwa.')->group(function () {
-    Route::get('/create', [\App\Http\Controllers\OppwaController::class, 'showPaymentForm'])->name('create');
-    Route::post('/create', [\App\Http\Controllers\OppwaController::class, 'createPayment'])->name('create.post');
     Route::get('/payment/{transactionId}', [\App\Http\Controllers\OppwaController::class, 'showPaymentPage'])->name('payment');
     Route::post('/payment/{transactionId}/process', [\App\Http\Controllers\OppwaController::class, 'processPayment'])->name('payment.process');
     Route::get('/result/{transactionId}', [\App\Http\Controllers\OppwaController::class, 'handlePaymentResult'])->name('result');

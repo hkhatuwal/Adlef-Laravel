@@ -44,8 +44,8 @@ class CheckoutController extends Controller
             abort(400, 'Payment session is no longer valid');
         }
 
-      $allowedProviders=$this->clientPaymentService->getAllowedPaymentMethods($transaction->apiClient, $transaction->amount);
-        return view('checkout.payment', compact('transaction','allowedProviders'));
+        $allowedProviders = $this->clientPaymentService->getAllowedPaymentMethods($transaction->apiClient, $transaction->amount);
+        return view('checkout.payment', compact('transaction', 'allowedProviders'));
     }
 
     /**
@@ -87,7 +87,7 @@ class CheckoutController extends Controller
             // Redirect to appropriate payment gateway
             return redirect($paymentUrl);
         } catch (\Exception $e) {
-            Log::error("Transaction ".$transaction->transaction_id." error: ".$e->getMessage());
+            Log::error("Transaction " . $transaction->transaction_id . " error: " . $e->getMessage());
             Log::error($e->getMessage());
             // Return error view instead of JSON
             return $this->renderErrorPage(
@@ -104,7 +104,6 @@ class CheckoutController extends Controller
                 ]
             );
         }
-
 
 
     }
@@ -315,16 +314,17 @@ class CheckoutController extends Controller
      * Helper method to render error page with transaction context
      */
     private function renderErrorPage(
-        string $title,
-        string $subtitle,
-        string $message,
+        string              $title,
+        string              $subtitle,
+        string              $message,
         ?PaymentTransaction $transaction = null,
-        ?string $errorCode = null,
-        ?string $retryUrl = null,
-        ?string $cancelUrl = null,
-        ?string $backUrl = null,
-        ?array $suggestions = null
-    ): View {
+        ?string             $errorCode = null,
+        ?string             $retryUrl = null,
+        ?string             $cancelUrl = null,
+        ?string             $backUrl = null,
+        ?array              $suggestions = null
+    ): View
+    {
         return view('checkout.error', [
             'title' => $title,
             'subtitle' => $subtitle,
