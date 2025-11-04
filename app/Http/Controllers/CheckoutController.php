@@ -41,7 +41,7 @@ class CheckoutController extends Controller
 
         // Check if transaction is already processed
         if (!$transaction->isCheckoutPending()) {
-            abort(400, 'Payment session is no longer valid');
+            abort(400, 'The payment link is already used. Please generate a new link ');
         }
 
         $allowedProviders = $this->clientPaymentService->getAllowedPaymentMethods($transaction->apiClient, $transaction->amount);
@@ -60,7 +60,7 @@ class CheckoutController extends Controller
         }
 
         if (!$transaction->isCheckoutPending()) {
-            abort(400, 'Payment session is no longer valid');
+            abort(400, 'The payment link is already used. Please generate a new link ');
         }
 
         // Validate payment method selection
