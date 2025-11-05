@@ -237,6 +237,7 @@ class PaymentTransaction extends Model
             'customer_email' => $this->customer_email,
             'customer_name' => $this->customer_name,
             'payment_url' => $this->payment_url,
+            'failure_reason' => $this->failure_reason,
             'gateway_transaction_id' => $this->gateway_transaction_id,
             'client_order_id' => $this->client_order_id,
             'payment_method' => $this->getPaymentMethodSummary(),
