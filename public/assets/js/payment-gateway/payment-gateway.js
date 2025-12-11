@@ -313,6 +313,8 @@ function toggleApiClientStatus(clientId, newStatus) {
 }
 
 function deleteApiClient(clientId) {
+    alert("Feature in maintenance mode");
+    return;
     if (confirm('Are you sure you want to delete this API key? This action cannot be undone and will stop all integrations using this key.')) {
         const $button = $(event.target).closest('button');
         const originalHtml = $button.html();
