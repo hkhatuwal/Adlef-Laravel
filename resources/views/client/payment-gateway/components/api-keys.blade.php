@@ -59,7 +59,7 @@
                                                 <i class="fa-solid fa-trash mr-2"></i>
                                                 Delete API Key
                                             </button>
-                                            -- }}
+                                            --}}
                                         </div>
                                     </div>
                                 </div>
