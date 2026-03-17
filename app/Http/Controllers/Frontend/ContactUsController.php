@@ -52,7 +52,7 @@ class ContactUsController extends Controller
         $data['other'] = $request->get('other') == "on";
         $contact = Contact::create($data);
         Mail::to($request->business_email)->send(new ContactFormSubmitted($contact));
-        Mail::to("gsharma170@gmail.com")->send(new ContactFormSubmittedForAdmin($contact));
+        Mail::to("support@adlefgroup.com")->send(new ContactFormSubmittedForAdmin($contact));
 
         return redirect()->back()->with('success', 'Contact form submitted successfully!');
     }
