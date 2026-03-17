@@ -40,9 +40,9 @@ class CheckoutController extends Controller
         }
 
         // Check if transaction is already processed
-        if (!$transaction->isCheckoutPending()) {
-            abort(400, 'The payment link is already used. Please generate a new link ');
-        }
+        // if (!$transaction->isCheckoutPending()) {
+        //     abort(400, 'The payment link is already used. Please generate a new link ');
+        // }
 
         $allowedProviders = $this->clientPaymentService->getAllowedPaymentMethods($transaction->apiClient, $transaction->amount);
         return view('checkout.payment', compact('transaction', 'allowedProviders'));
@@ -59,9 +59,9 @@ class CheckoutController extends Controller
             abort(404, 'Payment session not found');
         }
 
-        if (!$transaction->isCheckoutPending()) {
-            abort(400, 'The payment link is already used. Please generate a new link ');
-        }
+        // if (!$transaction->isCheckoutPending()) {
+        //     abort(400, 'The payment link is already used. Please generate a new link ');
+        // }
 
         // Validate payment method selection
         $request->validate([

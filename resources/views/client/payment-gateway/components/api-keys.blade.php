@@ -53,11 +53,13 @@
                                                 <i class="fa-solid fa-{{ $client->is_active ? 'ban' : 'check' }} mr-2 text-{{ $client->is_active ? 'red' : 'green' }}-500"></i>
                                                 {{ $client->is_active ? 'Disable' : 'Enable' }} API Key
                                             </button>
+                                            {{-- 
                                             <hr class="my-1">
                                             <button onclick="deleteApiClient({{ $client->id }})" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
                                                 <i class="fa-solid fa-trash mr-2"></i>
                                                 Delete API Key
                                             </button>
+                                            --}}
                                         </div>
                                     </div>
                                 </div>
