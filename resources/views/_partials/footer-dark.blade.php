@@ -5,7 +5,7 @@
         <!-- Left section -->
         <div class="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
             <img src="{{asset('assets/images/logo-light.svg?v=1')}}" class="h-20 mb-4">
-            <p class="text-gray-500">&copy; {{ date('Y') }} ADLEF NETWORK LLC. All rights reserved.</p>
+            <p class="text-gray-500">&copy; {{ date('Y') }} ADLEF HOLDING LLC. All rights reserved.</p>
             <p class="mt-4 text-gray-700">Join our email list to receive articles, tips from industry experts, and more.</p>
             <div class="mt-4 flex">
                 <input type="email" placeholder="Enter your email" class="border border-gray-300 px-4 py-2 w-full">
@@ -60,6 +60,6 @@
             </div>
         </div>
     </div>
-    <p class="mt-4 text-center w-full">Powered by <strong>Adlef Network LLC</strong></p>
+    <p class="mt-4 text-center w-full">Powered by <strong>Adlef Holding LLC</strong></p>
 
 </footer>
