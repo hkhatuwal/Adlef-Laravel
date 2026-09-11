@@ -4,7 +4,7 @@
         <!-- Left section -->
         <div class="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
             <img src="{{asset('assets/images/logo.png?v=1')}}" alt="First Digital" class="h-20 mb-4">
-            <p class="text-gray-500">&copy; 2025 ADLEF NETWORK LLC . All rights reserved.</p>
+            <p class="text-gray-500">&copy; {{ date('Y') }} ADLEF NETWORK LLC. All rights reserved.</p>
             <p class="mt-4 text-gray-700">Join our email list to receive articles, tips from industry experts, and more.</p>
             <div class="mt-4 flex">
                 <input type="email" placeholder="Enter your email" class="border border-gray-300 px-4 py-2 w-full">

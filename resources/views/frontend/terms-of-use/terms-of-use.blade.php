@@ -363,7 +363,7 @@
     <!-- Footer -->
     <section class="py-8 bg-black text-white">
         <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© 2025 ADLEF NETWORK LLC. ALL RIGHTS RESERVED.</p>
+            <p class="text-lg">© {{ date('Y') }} ADLEF NETWORK LLC. ALL RIGHTS RESERVED.</p>
         </div>
     </section>
 
