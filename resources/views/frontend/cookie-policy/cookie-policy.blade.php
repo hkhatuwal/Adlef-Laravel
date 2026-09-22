@@ -178,7 +178,7 @@
     <!-- Footer -->
     <section class="py-8 bg-black text-white">
         <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© ADLEF HOLDING LLC | <a href="https://www.adlefgroup.com" class="text-blue-400 hover:underline">www.adlefgroup.com</a></p>
+            <p class="text-lg">© Adlef Holding LLC | <a href="https://www.adlefgroup.com" class="text-blue-400 hover:underline">www.adlefgroup.com</a></p>
         </div>
     </section>
 

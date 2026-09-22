@@ -15,7 +15,7 @@
         <div class="container px-4 md:px-10 mx-auto">
             <div class="prose max-w-none font-visuletProLight">
                 <p class="text-lg leading-relaxed mb-8">
-                    ADLEF HOLDING LLC ("ADLEF GROUP," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our payment gateway, digital asset on-ramp/off-ramp, and crypto payment services (collectively, the "Services") via our website <a href="https://www.adlefgroup.com" class="text-blue-600 hover:underline">www.adlefgroup.com</a>.
+                    Adlef Holding LLC ("ADLEF GROUP," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our payment gateway, digital asset on-ramp/off-ramp, and crypto payment services (collectively, the "Services") via our website <a href="https://www.adlefgroup.com" class="text-blue-600 hover:underline">www.adlefgroup.com</a>.
                 </p>
                 <p class="text-lg leading-relaxed mb-8">
                     By using our Services, you consent to the practices described in this policy.
@@ -31,7 +31,7 @@
             <div class="bg-white p-8 rounded-lg shadow-sm">
                 <h3 class="text-2xl font-semibold mb-6">Data Controller:</h3>
                 <div class="space-y-4">
-                    <p class="text-lg"><strong>ADLEF HOLDING LLC</strong></p>
+                    <p class="text-lg"><strong>Adlef Holding LLC</strong></p>
                     <ul class="space-y-2 text-lg">
                         <li><strong>License No.:</strong> 426125212 (Money Service License)</li>
                         <li><strong>Address:</strong> Office Space N3, N31g, Meskheti Str, Borjomi City, Georgia</li>
@@ -410,7 +410,7 @@
     <!-- Footer -->
     <section class="py-8 bg-black text-white">
         <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© ADLEF HOLDING LLC | <a href="https://www.adlefgroup.com" class="text-blue-400 hover:underline">www.adlefgroup.com</a></p>
+            <p class="text-lg">© Adlef Holding LLC | <a href="https://www.adlefgroup.com" class="text-blue-400 hover:underline">www.adlefgroup.com</a></p>
         </div>
     </section>
 
