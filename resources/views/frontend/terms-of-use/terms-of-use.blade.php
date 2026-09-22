@@ -16,7 +16,7 @@
             <h2 class="text-4xl font-bold mb-8">1. ACCEPTANCE OF TERMS</h2>
             <div class="prose max-w-none font-visuletProLight">
                 <p class="text-lg leading-relaxed mb-6">
-                    These Terms of Use ("Terms") constitute a legally binding agreement between you ("User," "you") and ADLEF NETWORK LLC ("ADLEF GROUP," "we," "us," or "our") governing your access to and use of our cryptocurrency payment gateway, digital asset on-ramp/off-ramp, and related services (collectively, the "Services") available through <a href="https://www.adlefgroup.com" class="text-blue-600 hover:underline">www.adlefgroup.com</a> and associated platforms.
+                    These Terms of Use ("Terms") constitute a legally binding agreement between you ("User," "you") and ADLEF HOLDING LLC ("ADLEF GROUP," "we," "us," or "our") governing your access to and use of our cryptocurrency payment gateway, digital asset on-ramp/off-ramp, and related services (collectively, the "Services") available through <a href="https://www.adlefgroup.com" class="text-blue-600 hover:underline">www.adlefgroup.com</a> and associated platforms.
                 </p>
                 <div class="p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded">
                     <p class="text-lg font-medium text-yellow-800">
@@ -363,7 +363,7 @@
     <!-- Footer -->
     <section class="py-8 bg-black text-white">
         <div class="container px-4 md:px-10 mx-auto text-center">
-            <p class="text-lg">© {{ date('Y') }} ADLEF NETWORK LLC. ALL RIGHTS RESERVED.</p>
+            <p class="text-lg">© {{ date('Y') }} ADLEF HOLDING LLC. ALL RIGHTS RESERVED.</p>
         </div>
     </section>
 
