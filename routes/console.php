@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::call(function () {
    \App\Jobs\UpdateFiatCurrencyPrices::dispatchSync();
    \App\Jobs\UpdateCryptoPrices::dispatchSync();
-})->hourly();
+})->hourly()->evenInMaintenanceMode();
 
 Schedule::call(function () {
     \App\Jobs\PollTronTransactions::dispatchSync();
-})->everyThirtySeconds();
+})->everyThirtySeconds()->evenInMaintenanceMode();
 
 Schedule::call(function () {
     \App\Jobs\PollOppwaTransactions::dispatchSync();
-})->everyMinute();
+})->everyMinute()->evenInMaintenanceMode();
 
 

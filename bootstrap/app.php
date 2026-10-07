@@ -25,6 +25,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'payment/success'
         ]);
 
+        $middleware->replace(
+            \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+            \App\Http\Middleware\PreventRequestsDuringMaintenance::class
+        );
+
         // Register API key middleware
         $middleware->alias([
             'api_key' => \App\Http\Middleware\ApiKeyMiddleware::class,
